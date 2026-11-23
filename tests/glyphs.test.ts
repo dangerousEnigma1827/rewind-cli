@@ -4,6 +4,7 @@ import { inflateSync } from 'node:zlib';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { GLYPHS } from '../src/lib/glyphs';
+import { captures } from './capture';
 
 /** Code points mapped in a WOFF 1.0 file's cmap (formats 4 and 12). */
 function cmapOf(file: string): Set<number> {
@@ -61,8 +62,11 @@ describe('glyph audit (§5.3)', () => {
     expect(coverage('ibm-plex-mono').has('A'.codePointAt(0)!)).toBe(true);
   });
 
-  it('every capture glyph is covered by Plex Mono or the DejaVu Mono fallback', () => {
-    const dejavu = coverage('dejavu-mono');
-    expect(missing(coverage('ibm-plex-mono')).filter((g) => !dejavu.has(g.codePointAt(0)!))).toEqual([]);
+  it('every glyph in the captures is in Plex Mono, or in GLYPHS and covered by the DejaVu Mono fallback', () => {
+    const plex = coverage('ibm-plex-mono'), dejavu = coverage('dejavu-mono');
+    const used = new Set(captures.flatMap((c) => [...c.txt]).filter((g) => g.codePointAt(0)! > 127));
+    const fallback = [...used].filter((g) => !plex.has(g.codePointAt(0)!));
+    expect(fallback.filter((g) => !GLYPHS.includes(g))).toEqual([]);
+    expect(missing(plex).filter((g) => !dejavu.has(g.codePointAt(0)!))).toEqual([]);
   });
 });

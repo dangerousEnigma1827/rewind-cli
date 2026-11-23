@@ -43,18 +43,19 @@
   --text: var(--p-paper-text);
   --rule: color-mix(in oklab, var(--p-mute) 45%, var(--surface));
 
-  /* Ink = coloured *text*, ≥ 4.5:1. Violet ink is approved: uv.lo in light (5.69). */
+  /* Ink = coloured *text*: the mark's hue at an OKLCH lightness that is ≥ 4.5:1 on both this theme's
+     surfaces. Violet ink is the approved pair: uv.lo in light. The rest is written by `npm run ink`. */
   --ink-uv: var(--p-uv-lo);
-  /* shortcut: until M1's ink-step generator writes the OKLCH-shifted values, these are the raw marks
-     (3.6–4.1:1 in light). Nothing in M0 renders coloured text; M1's contrast test replaces them. */
-  --ink-mute: var(--p-mute);
-  --ink-err: var(--p-err);
-  --ink-ok: var(--p-ok);
-  --ink-write: var(--p-write);
-  --ink-r1: var(--p-r1);
-  --ink-r2: var(--p-r2);
-  --ink-r3: var(--p-r3);
-  --ink-r4: var(--p-r4);
+  /* ink:light */
+  --ink-mute: #6D6D7A;
+  --ink-err: #CE303A;
+  --ink-ok: #0B7D4C;
+  --ink-write: #95640E;
+  --ink-r1: #0E7A87;
+  --ink-r2: #B24A6E;
+  --ink-r3: #697512;
+  --ink-r4: #496DAD;
+  /* /ink:light */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -62,8 +63,18 @@
     --surface: var(--p-night);
     --surface-term: var(--p-night-step);
     --text: var(--p-night-text);
-    /* Violet ink is approved: uv.hi in dark (5.17). */
+    /* Violet ink is the approved pair: uv.hi in dark. */
     --ink-uv: var(--p-uv-hi);
+    /* ink:dark */
+    --ink-mute: #81818F;
+    --ink-err: #E5484D;
+    --ink-ok: #25925D;
+    --ink-write: #AB7723;
+    --ink-r1: #2E8E9B;
+    --ink-r2: #C95E81;
+    --ink-r3: #7D8A2E;
+    --ink-r4: #5B81C2;
+    /* /ink:dark */
   }
 }
 

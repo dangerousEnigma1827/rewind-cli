@@ -1,7 +1,7 @@
-// Every non-ASCII char in ../rewind/rewind/*.py at 388fe45. IBM Plex Mono's fontsource subsets lack the
-// arrows, box drawing, shapes and dingbats, so these route to the DejaVu Mono fallback (§5.3 glyph audit).
-// shortcut: hand-collected from source, switch to scanning src/data/capture once M1 commits captures.
-export const GLYPHS = '·»×—•…←↑→─│┃┈┼║▀▄█▸►▼◂◄◆◉○◌●♦⚙✎✖';
+// Non-ASCII glyphs Rewind prints: every one in the captures (tests/glyphs.test.ts enforces it), plus the rest of
+// ../rewind/rewind/*.py's output glyphs at the captured sha. Those IBM Plex Mono's fontsource subsets lack
+// (arrows, box drawing, shapes, dingbats) route to the DejaVu Mono fallback via this list's unicode-range (§5.3).
+export const GLYPHS = '·»×—•…←↑→─│┃┈└├┼║▀▄█▸►▼◂◄◆◉○◌●♦⚙✎✖';
 
 /** CSS unicode-range for the given chars, e.g. "U+2190,U+2192". */
 export const unicodeRange = (chars: string) =>
