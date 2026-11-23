@@ -8,12 +8,15 @@ import { chromium } from 'playwright';
 const MARK = readFileSync('brand/rewind-mark.svg', 'utf8');
 const inner = MARK.replace(/^[\s\S]*?<g /, '<g ').replace(/<\/svg>\s*$/, '').replace(/<!--[\s\S]*?-->/g, '').trim();
 const PURPLE = /fill="(#[0-9A-F]{6})"/i.exec(MARK)[1];
-const TILE = '#09090B'; // the site background
+// Favicons: a violet tile (the mark's own purple) with the mark in the site's near-black, 5.4:1 against it.
+const TILE = PURPLE;
+const ON_TILE = '#09090B';
+const tileInner = inner.split(PURPLE).join(ON_TILE);
 
 /** The mark on a near-black rounded tile (website favicon). `round` = false for Apple, which rounds the icon itself. */
 const tile = (round = true) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <rect width="100" height="100" rx="${round ? 22 : 0}" fill="${TILE}"/>
-  <g transform="translate(50 50) scale(0.78) translate(-50 -50)">${inner}</g>
+  <g transform="translate(50 50) scale(0.74) translate(-50 -50)">${tileInner}</g>
 </svg>`;
 
 mkdirSync('public', { recursive: true });
@@ -72,4 +75,4 @@ const sizes = Array.from({ length: n }, (_, i) => ico.readUInt8(6 + 16 * i));
 if (ico.readUInt16LE(2) !== 1 || sizes.join() !== '16,32,48') throw new Error(`favicon.ico: frames ${sizes}`);
 for (let i = 0; i < n; i++) if (!dims(ico.subarray(ico.readUInt32LE(6 + 16 * i + 12)))) throw new Error('favicon.ico: frame is not PNG');
 console.log(`ok  public/favicon.ico  ICO ${sizes.join(', ')} (PNG frames)`);
-console.log(`colour ${PURPLE} on ${TILE} (favicons) and #000000 (submission)`);
+console.log(`favicons: ${ON_TILE} mark on a ${TILE} tile · submission: ${PURPLE} mark on #000000`);
