@@ -22,8 +22,6 @@ html:not(.js) .inv-js { display: none; }
 .step-of { font: 400 0.8125rem/1 var(--font-mono); color: var(--ink-mute); }
 
 /* ── panel ── */
-.inv-panel { animation: inv-in 200ms ease-out; }
-@keyframes inv-in { from { opacity: 0; } }
 .inv-head { display: grid; gap: 0.5rem; margin: 1.5rem 0 1rem; }
 .inv-head h3 { margin: 0; font-size: 1.375rem; }
 .inv-head p { margin: 0; max-width: 72ch; }
@@ -52,7 +50,7 @@ html:not(.js) .inv-js { display: none; }
 }
 .seq::before {
   content: ''; position: absolute; inset: -1px -2px; border-radius: 3px; z-index: -1;
-  background: color-mix(in oklab, var(--mark-uv) 22%, transparent); opacity: 0; transition: opacity 150ms ease-out;
+  background: color-mix(in oklab, var(--mark-uv) 22%, transparent); opacity: 0; transition: opacity 150ms var(--ease-out);
 }
 .seq.hl::before { opacity: 1; }
 .seq.pin::before { opacity: 1; background: color-mix(in oklab, var(--mark-uv) 38%, transparent); }
@@ -62,7 +60,7 @@ html:not(.js) .inv-js { display: none; }
 .lanes { margin: 0; }
 .lane-grid { position: relative; display: grid; }
 .lane { display: grid; grid-template-columns: var(--label-w) minmax(0, 1fr); align-items: center; min-height: 48px; }
-.lane .span, .lane .mk, .lane .lane-label { transition: opacity 150ms ease-out; }
+.lane .span, .lane .mk, .lane .lane-label { transition: opacity 150ms var(--ease-out); }
 /* a lane out of focus recedes, but a highlighted or pinned marker in it stays (e.g. step 5: the #3 write) */
 .lane.dim .span, .lane.dim .mk:not(.hl):not(.pin), .lane.dim .lane-label { opacity: 0.35; }
 .lane-label {
@@ -87,7 +85,7 @@ span.lane-label { cursor: default; color: var(--ink-mute); }
 .mk.k-error-uncaught, .mk.k-error-logged { color: var(--mark-err); }
 .mk::after, .used::after, .seg::after {
   content: ''; position: absolute; inset: -3px; border-radius: inherit; border: 2px solid var(--mark-uv);
-  opacity: 0; transition: opacity 150ms ease-out; pointer-events: none;
+  opacity: 0; transition: opacity 150ms var(--ease-out); pointer-events: none;
 }
 .mk.hl::after, .used.hl::after, .seg.hl::after { opacity: 0.6; }
 .mk.pin::after, .used.pin::after, .seg.pin::after { opacity: 1; }
@@ -105,7 +103,7 @@ span.lane-label { cursor: default; color: var(--ink-mute); }
 .used.error::before { border-left-color: var(--mark-err); }
 .band-none { position: absolute; top: 12px; left: 0; font: 400 0.75rem/1 var(--font-mono); color: var(--ink-mute); }
 .playhead-wrap { position: absolute; top: 0; bottom: 0; left: var(--label-w); right: 0; pointer-events: none; overflow: hidden; }
-.playhead { width: 100%; height: 100%; border-left: 1px solid var(--mark-uv); transition: transform 250ms ease-out, opacity 150ms ease-out; }
+.playhead { width: 100%; height: 100%; border-left: 1px solid var(--mark-uv); transition: transform 250ms var(--ease-out), opacity 150ms var(--ease-out); }
 .prov { margin: 0.5rem 0 0; font: 400 0.75rem/1.4 var(--font-mono); color: var(--ink-mute); }
 
 /* ── event detail ── */
@@ -159,7 +157,7 @@ span.lane-label { cursor: default; color: var(--ink-mute); }
   .step-nav button:hover:not(:disabled), .watch:hover, .orow:hover, .irow > button:hover, .chip:hover { border-color: var(--mark-uv); }
   .tl.fd:hover { background: color-mix(in oklab, var(--mark-uv) 6%, transparent); }
 }
-.steps [role='tab'], .step-nav button, .watch, .dtabs [role='tab'], .chip, .orow, .irow > button, .copy { transition: transform 100ms ease-out; }
+.steps [role='tab'], .step-nav button, .watch, .dtabs [role='tab'], .chip, .orow, .irow > button, .copy { transition: transform 100ms var(--ease-out); }
 .steps [role='tab']:active, .step-nav button:active:not(:disabled), .watch:active, .dtabs [role='tab']:active,
 .chip:active, .orow:active, .irow > button:active, .copy:active { transform: scale(0.97); }
 .inv pre { overscroll-behavior-x: contain; }

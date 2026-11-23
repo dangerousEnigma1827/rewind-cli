@@ -37,7 +37,7 @@ const lines = Object.fromEntries(WIDTHS.map((w) => [w, heroExcerpt(w)]));
   .lv.d { color: var(--ink-uv); font-weight: 400; }
   .lv.i { color: var(--ink-mute); font-style: italic; font-weight: 400; }
   .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 2rem 0; }
-  .btn { display: inline-flex; align-items: center; gap: 0.5ch; min-height: 44px; padding: 0 1.25rem; border-radius: 6px; border: 1px solid var(--rule); color: var(--text); text-decoration: none; font-weight: 500; transition: transform 100ms ease-out; }
+  .btn { display: inline-flex; align-items: center; gap: 0.5ch; min-height: 44px; padding: 0 1.25rem; border-radius: 6px; border: 1px solid var(--rule); color: var(--text); text-decoration: none; font-weight: 500; transition: transform 100ms var(--ease-out); }
   .btn.primary { background: var(--ink-uv); border-color: var(--ink-uv); color: var(--surface); }
   .btn:active { transform: scale(0.97); }
   @media (hover: hover) and (pointer: fine) { .btn:hover { border-color: var(--mark-uv); } }

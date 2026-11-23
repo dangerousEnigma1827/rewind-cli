@@ -13,7 +13,7 @@ async function open(query = '', opts = {}) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, ...opts });
   await page.goto(BASE + query + '#investigate');
   await page.locator('.inv [role="tab"]').first().waitFor();
-  await page.waitForFunction(() => !document.querySelector('astro-island[ssr]')); // hydrated
+  await page.locator('.inv[data-ready]').waitFor(); // hydrated and URL state applied
   return page;
 }
 const visibleRefs = (page, sel) => page.$$eval(sel, (els) => els.filter((e) => e.offsetParent || e.getClientRects().length).map((e) => e.dataset.ref));
@@ -90,14 +90,14 @@ const visibleRefs = (page, sel) => page.$$eval(sel, (els) => els.filter((e) => e
   check(await page.locator('.lane.r2 .lane-label').getAttribute('aria-pressed') === 'true', 'request=2 restores the lane');
   const seq = (await page.locator('.lanes .mk').first().getAttribute('data-ref')).split(':')[1];
   await page.goto(BASE + `?step=5&seq=${seq}#investigate`);
-  await page.waitForFunction(() => !document.querySelector('astro-island[ssr]'));
+  await page.locator('.inv[data-ready]').waitFor();
   check((await page.locator('.detail.side .detail-head').textContent()).includes(`seq ${seq}`), `seq=${seq} restores the pinned event`);
   await page.goto(BASE + '?step=6&watch=off#investigate');
-  await page.waitForFunction(() => !document.querySelector('astro-island[ssr]'));
+  await page.locator('.inv[data-ready]').waitFor();
   check(await page.locator('button.watch').getAttribute('aria-pressed') === 'false', 'watch=off restores the toggle');
   check((await page.locator('.band-none').textContent()).includes('not recorded'), 'watch off: no writes are claimed');
   await page.locator('button.watch').click();
-  check(new URL(page.url()).searchParams.get('watch') === 'on', 'toggling updates the URL');
+  check(await page.waitForURL(/watch=on/, { timeout: 3000 }).then(() => true, () => false), 'toggling updates the URL');
   await page.close();
 }
 

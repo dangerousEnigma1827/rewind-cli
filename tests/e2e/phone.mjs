@@ -53,8 +53,8 @@ for (const width of [390, 320]) {
   let covered = 0;
   for (const c of await page.locator('.inv pre:visible .chip').all()) {
     await c.focus();
-    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
-    covered += await page.evaluate(() => { const a = document.activeElement.getBoundingClientRect(), b = document.querySelector('.step-nav.bar').getBoundingClientRect(); return a.bottom > b.top + 1 ? 1 : 0; });
+    await page.waitForTimeout(250); // the engine's focus scroll, then the island's correction
+    covered += await page.evaluate(() => { const a = document.activeElement.getBoundingClientRect(), b = document.querySelector('.step-nav.bar').getBoundingClientRect(); return b.bottom >= innerHeight - 1 && a.bottom > b.top + 1 ? 1 : 0; /* only when the bar is stuck over content */ });
   }
   check(covered === 0, `${width}px: no focused chip is covered by the sticky step bar (${covered})`);
   // tapping a seq of another request switches the inspector and says so

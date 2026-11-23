@@ -17,13 +17,13 @@ export interface Props {
 // ---- state (§6.3) --------------------------------------------------------------------------------------
 
 interface Ref { run: Label; seq: number }
-interface State { step: number; pinned: Ref | null; hover: Ref | null; finding: Ref[] | null; request: number | null; watch: 'on' | 'off'; diffTab: 'aligned' | 'terminal' }
+interface State { step: number; pinned: Ref | null; hover: Ref | null; finding: Ref[] | null; request: number | null; watch: 'on' | 'off'; diffTab: 'aligned' | 'terminal'; ready: boolean }
 type Action =
   | { type: 'step'; step: number } | { type: 'pin'; ref: Ref | null } | { type: 'hover'; ref: Ref | null }
   | { type: 'finding'; refs: Ref[] | null } | { type: 'request'; request: number | null }
   | { type: 'watch'; watch: 'on' | 'off' } | { type: 'diffTab'; tab: 'aligned' | 'terminal' } | { type: 'restore'; state: State };
 
-const defaults: State = { step: 1, pinned: null, hover: null, finding: null, request: null, watch: 'on', diffTab: 'aligned' };
+const defaults: State = { step: 1, pinned: null, hover: null, finding: null, request: null, watch: 'on', diffTab: 'aligned', ready: false };
 
 function reducer(s: State, a: Action): State {
   switch (a.type) {
@@ -42,7 +42,7 @@ const key = (r: Ref) => `${r.run}:${r.seq}`;
 
 // URL: ?step=4&seq=371&request=3&watch=off#investigate. A seq of another run than the step's is `good:159`.
 function fromUrl(steps: Step[]): State {
-  const s: State = { ...defaults };
+  const s: State = { ...defaults, ready: true };
   const q = new URLSearchParams(location.search);
   const n = Number(q.get('step'));
   if (n >= 1 && n <= steps.length) s.step = n;
@@ -118,10 +118,15 @@ export default function Investigation(p: Props) {
     const onFocus = (e: FocusEvent) => {
       const bar = el.querySelector('.step-nav.bar'), t = e.target as HTMLElement;
       if (!bar || bar.contains(t)) return;
-      requestAnimationFrame(() => { // after the browser's own scroll-into-view
+      const clear = () => {
+        t.scrollIntoView({ block: 'nearest', inline: 'nearest' }); // fully inside its own scroll box (Firefox stops at partly)
         const over = t.getBoundingClientRect().bottom - bar.getBoundingClientRect().top + 8;
         if (over > 0) window.scrollBy(0, over);
-      });
+      };
+      // after the browser's own scroll-into-view, whose timing differs by engine
+      requestAnimationFrame(() => requestAnimationFrame(clear));
+      window.addEventListener('scrollend', clear, { once: true });
+      setTimeout(() => window.removeEventListener('scrollend', clear), 1000);
     };
     el.addEventListener('focusin', onFocus);
     return () => el.removeEventListener('focusin', onFocus);
@@ -142,7 +147,7 @@ export default function Investigation(p: Props) {
   const go = (n: number) => dispatch({ type: 'step', step: n });
 
   return (
-    <div class={`inv${narrow ? ' narrow' : ''}`} ref={root}>
+    <div class={`inv${narrow ? ' narrow' : ''}`} ref={root} data-ready={s.ready ? '' : undefined}>
       <Stepper steps={p.steps} step={s.step} go={go} narrow={narrow} />
       <div class="inv-panel" role="tabpanel" id="inv-panel" aria-labelledby={`inv-tab-${s.step}`} key={s.step}>
         <div class="inv-head">
@@ -257,11 +262,14 @@ function TermLines({ w, lines, block, runs, act }: { w: number; lines: TermLine[
   lines.forEach((l) => l.finding !== undefined && byFinding.set(l.finding, [...(byFinding.get(l.finding) ?? []),
     ...l.segs.filter((x) => x.hot).map((x) => refOf(x.hot!.run, x.hot!.seq))]));
   return (
-    <pre class={`w${w}`} translate="no" tabIndex={-1}>
+    <pre class={`w${w}`} translate="no" tabIndex={0}>
       {lines.map((l, i) => (
         <span class={`tl${l.finding !== undefined ? ' fd' : ''}`} key={i}
           onMouseEnter={l.finding !== undefined ? () => act.dispatch({ type: 'finding', refs: byFinding.get(l.finding!)! }) : undefined}
-          onMouseLeave={l.finding !== undefined ? () => act.dispatch({ type: 'finding', refs: null }) : undefined}>
+          onMouseLeave={l.finding !== undefined ? () => act.dispatch({ type: 'finding', refs: null }) : undefined}
+          // keyboard twin: focusing a seq inside a finding highlights everything that finding cites
+          onFocusIn={l.finding !== undefined ? () => act.dispatch({ type: 'finding', refs: byFinding.get(l.finding!)! }) : undefined}
+          onFocusOut={l.finding !== undefined ? () => act.dispatch({ type: 'finding', refs: null }) : undefined}>
           {l.segs.map((x, j) => {
             if (!x.hot || !block.runs.length) return x.cls ? <span class={x.cls} key={j}>{x.text}</span> : x.text;
             const ref = refOf(x.hot.run, x.hot.seq);

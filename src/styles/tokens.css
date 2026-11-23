@@ -84,6 +84,9 @@
   /* 'Rewind Glyphs' (DejaVu Mono, unicode-range limited) supplies what Plex Mono lacks; see Base.astro. */
   --font-mono: 'IBM Plex Mono', 'Rewind Glyphs', ui-monospace, monospace;
 
+  /* the one easing curve: a strong ease-out, so motion responds at once (review-animations) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
   --page-max: 1200px;
   --gutter: 16px;
   --nav-h: 48px;
