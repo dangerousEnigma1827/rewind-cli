@@ -7,6 +7,7 @@ import manifest from '../data/capture/manifest.json';
 import Terminal from './Terminal.astro';
 import { orders, price, charged, WIDTHS } from '../lib/investigation';
 import { victims } from '../lib/site';
+import { rewindTheme } from '../lib/shiki-theme';
 
 const os = orders();
 const c = charged('bad');
@@ -38,7 +39,7 @@ const transformers = [{ line(this: any, node: any, line: number) { if (MARKS[lin
 
 <div class="split">
   <figure class="code">
-    <Code code={checkout} lang="js" themes={{ light: 'min-light', dark: 'min-dark' }} defaultColor={false} transformers={transformers} />
+    <Code code={checkout} lang="js" theme={rewindTheme as any} transformers={transformers} />
     <figcaption>
       <ul class="legend">{Object.entries(MARKS).map(([n, [k, t]]) => <li class={`mark-${k}`}><span class="num">line {n}</span> <b>{k}</b>: {t}</li>)}</ul>
       <p class="prov">demo/checkout.js at rewind@{manifest.rewind.short}, verbatim · ◇ line marks are ours</p>
@@ -74,16 +75,16 @@ const transformers = [{ line(this: any, node: any, line: number) { if (MARKS[lin
 <style>
   .orders { overflow-x: auto; margin-bottom: 2.5rem; }
   table { border-collapse: collapse; width: 100%; font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
-  th, td { text-align: left; padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  th, td { text-align: left; padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
   thead th { font: 400 0.75rem/1.3 var(--font-mono); color: var(--ink-mute); }
   .prov { margin: 0.5rem 0 0; font: 400 0.75rem/1.4 var(--font-mono); color: var(--ink-mute); }
   .split { display: grid; gap: 1.5rem; margin-bottom: 2.5rem; }
   @media (min-width: 960px) { .split { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: start; } }
   .code { margin: 0; min-width: 0; }
-  .code :global(pre) { margin: 0; padding: 0.75rem 0; border-radius: 6px; overflow-x: auto; font: 400 12.5px/1.6 var(--font-mono); background: var(--term-bg) !important; }
-  .code :global(.line) { display: inline-block; min-width: 100%; padding: 0 0.75rem; box-sizing: border-box; }
-  .code :global(.astro-code span) { color: var(--shiki-light); }
-  @media (prefers-color-scheme: dark) { .code :global(.astro-code span) { color: var(--shiki-dark); } }
+  .code :global(pre) { margin: 0; padding: var(--s-4) 0; border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; font: 400 13px/1.7 var(--font-mono); background: var(--term-bg) !important; counter-reset: ln; }
+  .code :global(.line) { display: inline-block; min-width: 100%; padding: 0 var(--s-4) 0 0; box-sizing: border-box; counter-increment: ln; }
+  /* readable line numbers, from CSS counters: not part of the copied source */
+  .code :global(.line::before) { content: counter(ln); display: inline-block; width: 3.5ch; margin-right: 2ch; text-align: right; color: var(--text-3); user-select: none; }
   .code :global(.line.mark-shared) { box-shadow: inset 3px 0 0 var(--mark-uv); background: color-mix(in oklab, var(--mark-uv) 10%, transparent); }
   .code :global(.line.mark-write) { box-shadow: inset 3px 0 0 var(--mark-write); background: color-mix(in oklab, var(--mark-write) 12%, transparent); }
   .code :global(.line.mark-use) { box-shadow: inset 3px 0 0 var(--mark-err); background: color-mix(in oklab, var(--mark-err) 10%, transparent); }
@@ -94,7 +95,7 @@ const transformers = [{ line(this: any, node: any, line: number) { if (MARKS[lin
   .legend .mark-use { box-shadow: inset 3px 0 0 var(--mark-err); }
   .legend .num { font-family: var(--font-mono); color: var(--ink-mute); }
   .victims { display: grid; gap: 1rem; }
-  .victim { border: 1px solid var(--rule); border-radius: 6px; padding: 1rem; }
+  .victim { border: 1px solid var(--line); border-radius: 6px; padding: 1rem; }
   .victim p { margin: 0; }
   .victim .who { font-weight: 600; margin-bottom: 0.5rem; }
   .victim code { overflow-wrap: anywhere; font-size: 0.875em; }

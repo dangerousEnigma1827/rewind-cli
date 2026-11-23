@@ -87,13 +87,13 @@ const W = 340, H = 64, GAP = 30;
   .pn { font-family: var(--font-mono); color: var(--ink-uv); }
   .pb { margin: 0; font-size: 0.875rem; }
   .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 0; }
-  .chip { display: inline-flex; align-items: center; min-height: 32px; padding: 0 0.5rem; border: 1px solid var(--rule); border-radius: 4px; font: 400 0.75rem/1 var(--font-mono); text-decoration: none; overflow-wrap: anywhere; }
+  .chip { display: inline-flex; align-items: center; min-height: 32px; padding: 0 0.5rem; border: 1px solid var(--line); border-radius: 4px; font: 400 0.75rem/1 var(--font-mono); text-decoration: none; overflow-wrap: anywhere; }
   @media (pointer: coarse) { .chip { min-height: 44px; } }
   .split { display: grid; gap: 2rem; margin-bottom: 3rem; }
   @media (min-width: 960px) { .split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
   figure { margin: 0; min-width: 0; }
   .chain svg { width: 100%; max-width: 420px; height: auto; display: block; font-family: var(--font-mono); }
-  .n { fill: var(--surface-term); stroke: var(--rule); }
+  .n { fill: var(--surface-1); stroke: var(--line); }
   .n.crash { stroke: var(--mark-err); stroke-width: 1.5; }
   .n.req { stroke-width: 1.5; }
   .t1 { font-size: 14px; font-weight: 700; fill: var(--text); }

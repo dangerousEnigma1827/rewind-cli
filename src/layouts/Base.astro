@@ -1,19 +1,29 @@
 ---
+// Shared layout for every page (plan §4.1): head, fonts, dark-only meta, skip link, navigation, main, footer.
+import '@fontsource/space-grotesk/500.css';
+import '@fontsource/space-grotesk/600.css';
+import '@fontsource/space-grotesk/700.css';
 import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/400-italic.css';
+import '@fontsource/ibm-plex-sans/500.css';
 import '@fontsource/ibm-plex-sans/600.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/400-italic.css';
+import '@fontsource/ibm-plex-mono/500.css';
 import '@fontsource/ibm-plex-mono/700.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/terminal.css';
 import monoLatin from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url';
+import displayLatin from '@fontsource/space-grotesk/files/space-grotesk-latin-600-normal.woff2?url';
 import dejavu400 from '@fontsource/dejavu-mono/files/dejavu-mono-latin-400-normal.woff2?url';
 import dejavu700 from '@fontsource/dejavu-mono/files/dejavu-mono-latin-700-normal.woff2?url';
 import { GLYPHS, unicodeRange } from '../lib/glyphs';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
 
-interface Props { title: string; description: string }
-const { title, description } = Astro.props;
+interface Props { title: string; description: string; current: 'home' | 'investigation' | 'docs' }
+const { title, description, current } = Astro.props;
 
 // Fallback face restricted to the glyphs Plex Mono lacks, so DejaVu never replaces Plex's own letters.
 // size-adjust: DejaVu advances 1233/2048 em, Plex 0.6 em; scaling by 0.6/(1233/2048) keeps columns aligned.
@@ -30,17 +40,21 @@ const glyphFaces = [[400, dejavu400], [700, dejavu700]]
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FAFAF9" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101014" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#09090B" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <link rel="preload" href={monoLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={displayLatin} as="font" type="font/woff2" crossorigin />
     <style is:inline set:html={glyphFaces}></style>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <slot />
+    <Nav current={current} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
   </body>
 </html>
