@@ -1,0 +1,64 @@
+  ◂◂ why  run 47a9592d (bad)  · event seq 258
+
+  » order A-101: charged $161
+
+  findings ┈┈┈ ● observed  ◆ derived  ? 
+inferred
+  ● log: order A-101: charged $161            
+  ● ran inside the callback of Timeout        
+    paymentConfirmed from chargePayment,      
+    created at demo/checkout.js:18            
+  ◆ causal chain: Timeout paymentConfirmed    
+    from chargePayment (demo/checkout.js:18) ←
+    FSREQCALLBACK from loadCart               
+    (demo/checkout.js:9) ← request #2 POST    
+    /order                                    
+  ◆ belongs to request #2 POST /order: its    
+    async ancestry reaches that request's     
+    handler                                   
+  ◆ request #3 POST /order was active while #2
+    POST /order was in flight (arrived, wrote 
+    state)                                    
+  ● last write to `currentCart` before this   
+    point: `currentCart` = at                 
+    demo/checkout.js:12:5, new value          
+    {"order":"B-202","items":[{"sku":"dock-04"
+    ,"price":149},{"sku":"cable-03","price":12
+    },{"sku":"mat-05","price":25}]}           
+  ◆ that write was made by request #3 POST    
+    /order                                    
+  ◆ #2 POST /order set `currentCart` itself   
+    (seq 177); request #3 overwrote it (seq   
+    254) before this point (seq 258)          
+  ? if #2 POST /order read `currentCart` after
+    seq 254, it got request #3's data, not its
+    own: a likely race between concurrent     
+    requests. (Reads are not recorded, so this
+    is not proven.)                           
+
+  causal chain ┈┈┈┈┈┈┈┈┈┈┈┈ innermost first
+    Timeout paymentConfirmed  scheduled in 
+chargePayment demo/checkout.js:18
+  ↑ FSREQCALLBACK  scheduled in loadCart 
+demo/checkout.js:9
+  ↑ #2 POST /order
+
+  story of request #2 POST /order ┈┈┈ + other 
+requests' writes to watched variables
+  seq     ms     req     event                
+  138   67.2  │  #2   →  POST /order          
+  177   70.5  │  #2   ✎  currentCart = null → 
+                         {"order":"A-101","ite
+                         ms":[{"sku":"kbd-01",
+                         "pric…               
+                         demo/checkout.js:12:5
+  254  101.3  │  #3   ✎  currentCart =        
+                         {"order":"A-101","ite
+                         ms":[{"sku":"kbd-01",
+                         "pric… →             
+                         {"order":"B-202","ite
+                         ms":[{"sku":"dock-04"
+                         ,"pri…               
+                         demo/checkout.js:12:5
+  258  160.6  │  #2   »  order A-101: charged 
+                         $161                 

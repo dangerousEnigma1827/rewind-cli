@@ -1,0 +1,8 @@
+  ◂◂ runs  4 runs  · newest first
+     .rewind
+
+  run         label     status      even…    errors    ex…    when      
+  c4dc7167    fixed     ● ok          518         0      0    1s ago    
+  cc603922    good      ● ok          441         0      0    1s ago    
+  52038d68    nowat…    ✖ failed      443         1      1    2s ago    
+  47a9592d    bad       ✖ failed      448         1      1    2s ago    

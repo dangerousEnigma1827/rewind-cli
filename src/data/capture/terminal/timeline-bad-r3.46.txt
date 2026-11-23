@@ -1,0 +1,45 @@
+  ◂◂ timeline  run 47a9592d (bad)  · 7 events 
+shown of 448 recorded
+
+  seq     ms     req     event            con…
+  215   99.4  │  #3   →  POST /order          
+  221   99.5  │  #3   ▸  TickObject from      
+                         handleOrder          
+                         fired ·              
+                         scheduled at         
+                         demo/checkout.j      
+                         s:29                 
+  244  101.0  │  #3   ▸  FSREQCALLBACK        
+                         from loadCart        
+                         fired ·              
+                         scheduled at         
+                         demo/checkout.j      
+                         s:9                  
+  254  101.3  │  #3   ✎  currentCart =    in …
+                         {"order":"A-101      
+                         ","items":[{"sk      
+                         u":"kbd-01","pr      
+                         ic… →                
+                         {"order":"B-202      
+                         ","items":[{"sk      
+                         u":"dock-04","p      
+                         ri…                  
+                         demo/checkout.j      
+                         s:12:5               
+  445  253.2  │  #3   ▸  Timeout              
+                         paymentConfirme      
+                         d from               
+                         chargePayment        
+                         fired ·              
+                         scheduled at         
+                         demo/checkout.j      
+                         s:18                 
+  446  254.0  ┃  #3   ✖  TypeError:       in …
+                         Cannot read          
+                         properties of        
+                         undefined            
+                         (reading             
+                         'price')             
+                         demo/checkout.j      
+                         s:23                 
+  447  254.2  │  ··   ◉  exit 1               

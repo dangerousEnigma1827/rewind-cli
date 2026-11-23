@@ -1,0 +1,35 @@
+  ◂◂ timeline  run 47a9592d (bad)  · 16 events shown of 448 recorded
+
+  seq     ms     req     event                               context    
+    4   15.0  │  ··   ◉  node demo/traffic.js  v24.22.1                 
+    7   28.5  │  ··   ⚙  instrumented demo/checkout.js (1               
+                         write site, watch=currentCart)                 
+   43   49.6  │  #1   →  GET /health                                    
+   59   51.1  │  #1   ←  404 GET /health 1.6ms                          
+  138   67.2  │  #2   →  POST /order                                    
+  177   70.5  │  #2   ✎  currentCart = null →                in FSREQCA…
+                         {"order":"A-101","items":[{"sku":"             
+                         kbd-01","pric…                                 
+                         demo/checkout.js:12:5                          
+  215   99.4  │  #3   →  POST /order                                    
+  254  101.3  │  #3   ✎  currentCart =                       in FSREQCA…
+                         {"order":"A-101","items":[{"sku":"             
+                         kbd-01","pric… →                               
+                         {"order":"B-202","items":[{"sku":"             
+                         dock-04","pri…                                 
+                         demo/checkout.js:12:5                          
+  258  160.6  │  #2   »  order A-101: charged $161           in Timeout…
+  271  163.7  │  #2   ←  200 POST /order 96.6ms                         
+  348  168.7  │  #4   →  POST /order                                    
+  387  170.9  │  #4   ✎  currentCart =                       in FSREQCA…
+                         {"order":"B-202","items":[{"sku":"             
+                         dock-04","pri… →                               
+                         {"order":"C-303","items":[{"sku":"             
+                         cable-03","pr…                                 
+                         demo/checkout.js:12:5                          
+  391  191.8  │  #4   »  order C-303: charged $11            in Timeout…
+  403  192.4  │  #4   ←  200 POST /order 23.8ms                         
+  446  254.0  ┃  #3   ✖  TypeError: Cannot read properties   in Timeout…
+                         of undefined (reading 'price')                 
+                         demo/checkout.js:23                            
+  447  254.2  │  ··   ◉  exit 1                                         

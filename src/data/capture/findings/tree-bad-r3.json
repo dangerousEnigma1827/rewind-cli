@@ -1,0 +1,65 @@
+{
+ "run": "47a9592d",
+ "pruned": 1,
+ "root": {
+  "aid": 80,
+  "type": "REWIND_REQUEST",
+  "name": null,
+  "request": 3,
+  "site": null,
+  "hidden": 0,
+  "events": [
+   215
+  ],
+  "children": [
+   {
+    "aid": 83,
+    "type": "FSREQCALLBACK",
+    "name": null,
+    "request": null,
+    "site": {
+     "fn": "loadCart",
+     "file": "demo/checkout.js",
+     "line": 9,
+     "col": 6
+    },
+    "hidden": 0,
+    "events": [],
+    "children": [
+     {
+      "aid": 87,
+      "type": "FSREQCALLBACK",
+      "name": null,
+      "request": null,
+      "site": null,
+      "hidden": 2,
+      "events": [
+       254
+      ],
+      "children": [
+       {
+        "aid": 88,
+        "type": "Timeout",
+        "name": "paymentConfirmed",
+        "request": null,
+        "site": {
+         "fn": "chargePayment",
+         "file": "demo/checkout.js",
+         "line": 18,
+         "col": 3
+        },
+        "hidden": 0,
+        "events": [
+         446,
+         447
+        ],
+        "children": []
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "provenance": "derived"
+}

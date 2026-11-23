@@ -1,0 +1,288 @@
+{
+ "a": [
+  {
+   "token": "#1 http.in GET /health",
+   "seq": 43
+  },
+  {
+   "token": "#1 http.out 404 GET /health",
+   "seq": 59
+  },
+  {
+   "token": "#2 http.in POST /order",
+   "seq": 117
+  },
+  {
+   "token": "#2 ▸ FSREQCALLBACK from loadCart @ demo/checkout.js:9",
+   "seq": 146
+  },
+  {
+   "token": "#2 ✎ currentCart = @ demo/checkout.js:12:5",
+   "seq": 156
+  },
+  {
+   "token": "#2 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
+   "seq": 159
+  },
+  {
+   "token": "#2 log order A-101: charged $128",
+   "seq": 160
+  },
+  {
+   "token": "#2 http.out 200 POST /order",
+   "seq": 173
+  },
+  {
+   "token": "#3 http.in POST /order",
+   "seq": 224
+  },
+  {
+   "token": "#3 ▸ FSREQCALLBACK from loadCart @ demo/checkout.js:9",
+   "seq": 253
+  },
+  {
+   "token": "#3 ✎ currentCart = @ demo/checkout.js:12:5",
+   "seq": 263
+  },
+  {
+   "token": "#3 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
+   "seq": 266
+  },
+  {
+   "token": "#3 log order B-202: charged $186",
+   "seq": 267
+  },
+  {
+   "token": "#3 http.out 200 POST /order",
+   "seq": 279
+  },
+  {
+   "token": "#4 http.in POST /order",
+   "seq": 330
+  },
+  {
+   "token": "#4 ▸ FSREQCALLBACK from loadCart @ demo/checkout.js:9",
+   "seq": 359
+  },
+  {
+   "token": "#4 ✎ currentCart = @ demo/checkout.js:12:5",
+   "seq": 369
+  },
+  {
+   "token": "#4 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
+   "seq": 372
+  },
+  {
+   "token": "#4 log order C-303: charged $11",
+   "seq": 373
+  },
+  {
+   "token": "#4 http.out 200 POST /order",
+   "seq": 385
+  },
+  {
+   "token": "run.end exit 0",
+   "seq": 440
+  }
+ ],
+ "b": [
+  {
+   "token": "#1 http.in GET /health",
+   "seq": 43
+  },
+  {
+   "token": "#1 http.out 404 GET /health",
+   "seq": 59
+  },
+  {
+   "token": "#2 http.in POST /order",
+   "seq": 138
+  },
+  {
+   "token": "#2 ▸ FSREQCALLBACK from loadCart @ demo/checkout.js:9",
+   "seq": 167
+  },
+  {
+   "token": "#2 ✎ currentCart = @ demo/checkout.js:12:5",
+   "seq": 177
+  },
+  {
+   "token": "#3 http.in POST /order",
+   "seq": 215
+  },
+  {
+   "token": "#3 ▸ FSREQCALLBACK from loadCart @ demo/checkout.js:9",
+   "seq": 244
+  },
+  {
+   "token": "#3 ✎ currentCart = @ demo/checkout.js:12:5",
+   "seq": 254
+  },
+  {
+   "token": "#2 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
+   "seq": 257
+  },
+  {
+   "token": "#2 log order A-101: charged $161",
+   "seq": 258
+  },
+  {
+   "token": "#2 http.out 200 POST /order",
+   "seq": 271
+  },
+  {
+   "token": "#4 http.in POST /order",
+   "seq": 348
+  },
+  {
+   "token": "#4 ▸ FSREQCALLBACK from loadCart @ demo/checkout.js:9",
+   "seq": 377
+  },
+  {
+   "token": "#4 ✎ currentCart = @ demo/checkout.js:12:5",
+   "seq": 387
+  },
+  {
+   "token": "#4 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
+   "seq": 390
+  },
+  {
+   "token": "#4 log order C-303: charged $11",
+   "seq": 391
+  },
+  {
+   "token": "#4 http.out 200 POST /order",
+   "seq": 403
+  },
+  {
+   "token": "#3 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
+   "seq": 445
+  },
+  {
+   "token": "#3 error.uncaught Cannot read properties of undefined (reading 'price')",
+   "seq": 446
+  },
+  {
+   "token": "run.end exit 1",
+   "seq": 447
+  }
+ ],
+ "opcodes": [
+  [
+   "equal",
+   0,
+   5,
+   0,
+   5
+  ],
+  [
+   "delete",
+   5,
+   8,
+   5,
+   5
+  ],
+  [
+   "equal",
+   8,
+   11,
+   5,
+   8
+  ],
+  [
+   "replace",
+   11,
+   14,
+   8,
+   11
+  ],
+  [
+   "equal",
+   14,
+   20,
+   11,
+   17
+  ],
+  [
+   "replace",
+   20,
+   21,
+   17,
+   20
+  ]
+ ],
+ "findings": [
+  {
+   "level": "derived",
+   "text": "14 of 21 (A) / 20 (B) normalised steps line up",
+   "evidence": [],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "identical up to and including: #2 ✎ currentCart = @ demo/checkout.js:12:5",
+   "evidence": [
+    156
+   ],
+   "run": "A"
+  },
+  {
+   "level": "observed",
+   "text": "next, A does: #2 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
+   "evidence": [
+    159
+   ],
+   "run": "A"
+  },
+  {
+   "level": "observed",
+   "text": "next, B does: #3 http.in POST /order",
+   "evidence": [
+    215
+   ],
+   "run": "B"
+  },
+  {
+   "level": "derived",
+   "text": "that step also happens in A, but 3 step(s) later: the interleaving changed, not the code path",
+   "evidence": [
+    224
+   ],
+   "run": "A"
+  },
+  {
+   "level": "derived",
+   "text": "3 step(s) occur in both runs at different positions (reordered)",
+   "evidence": [],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "4 step(s) only in A, e.g. #2 log order A-101: charged $128",
+   "evidence": [
+    160
+   ],
+   "run": "A"
+  },
+  {
+   "level": "derived",
+   "text": "3 step(s) only in B, e.g. #2 log order A-101: charged $161",
+   "evidence": [
+    258
+   ],
+   "run": "B"
+  },
+  {
+   "level": "inferred",
+   "text": "run B fails and A does not. The first divergence above is the earliest observable point where they part ways; it is the place to start, not necessarily the cause. Run `rewind why` on B for the causal story.",
+   "evidence": [
+    446
+   ],
+   "run": "B"
+  }
+ ],
+ "provenance": {
+  "a,b,opcodes": "derived",
+  "findings[].level": "copied from Finding.level"
+ }
+}

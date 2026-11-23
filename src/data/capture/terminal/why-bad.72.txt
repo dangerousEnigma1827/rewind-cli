@@ -1,0 +1,70 @@
+  ◂◂ why  run 47a9592d (bad)  · error 1 of 1
+
+  ✖ TypeError  Cannot read properties of undefined (reading 'price')
+    demo/checkout.js:23  in applyDiscount
+      23 │ for (let i = 0; i < order.items.length; i++) total += 
+currentCart.items[i].price;
+
+  findings ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈ ● observed  ◆ derived  ? inferred
+  ● TypeError: Cannot read properties of                         seq 446
+    undefined (reading 'price')  (uncaught                              
+    exception)                                                          
+  ● thrown in applyDiscount at                                   seq 446
+    demo/checkout.js:23                                                 
+  ● ran inside the callback of Timeout                      seq 255, 446
+    paymentConfirmed from chargePayment, created                        
+    at demo/checkout.js:18                                              
+  ◆ causal chain: Timeout paymentConfirmed from        seq 255, 236, 213
+    chargePayment (demo/checkout.js:18) ←                               
+    FSREQCALLBACK from loadCart                                         
+    (demo/checkout.js:9) ← request #3 POST /order                       
+  ◆ belongs to request #3 POST /order: its async                 seq 215
+    ancestry reaches that request's handler                             
+  ◆ request #2 POST /order was active while #3              seq 258, 271
+    POST /order was in flight (logged, responded)                       
+  ◆ request #4 POST /order was active while #3    seq 348, 387, 391, 403
+    POST /order was in flight (arrived, logged,                         
+    responded, wrote state)                                             
+  ◆ the failing line reads watched variable                      seq 446
+    `currentCart`:  for (let i = 0; i <                                 
+    order.items.length; i++) total +=                                   
+    currentCart.items[i].price;                                         
+  ● last write to `currentCart` before this                      seq 387
+    point: `currentCart` = at                                           
+    demo/checkout.js:12:5, new value                                    
+    {"order":"C-303","items":[{"sku":"cable-03","                       
+    price":12}]}                                                        
+  ◆ that write was made by request #4 POST /order                seq 387
+  ◆ #3 POST /order set `currentCart` itself (seq       seq 254, 387, 446
+    254); request #4 overwrote it (seq 387)                             
+    before this point (seq 446)                                         
+  ? likely root cause: a race on shared                seq 254, 387, 446
+    module-level state. Another request overwrote                       
+    it between this request's own write and its                         
+    read, so this request computed with another                         
+    request's data. Fix: keep this state per                            
+    request instead of in a module-level                                
+    variable.                                                           
+
+  causal chain ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈ innermost first
+    Timeout paymentConfirmed  scheduled in chargePayment 
+demo/checkout.js:18
+  ↑ FSREQCALLBACK  scheduled in loadCart demo/checkout.js:9
+  ↑ #3 POST /order
+
+  story of request #3 POST /order ┈┈┈ + other requests' writes to 
+watched variables
+  seq     ms     req     event                                          
+  215   99.4  │  #3   →  POST /order                                    
+  254  101.3  │  #3   ✎  currentCart =                                  
+                         {"order":"A-101","items":[{"sku":"kbd-01","pric
+                         … →                                            
+                         {"order":"B-202","items":[{"sku":"dock-04","pri
+                         …  demo/checkout.js:12:5                       
+  387  170.9  │  #4   ✎  currentCart =                                  
+                         {"order":"B-202","items":[{"sku":"dock-04","pri
+                         … →                                            
+                         {"order":"C-303","items":[{"sku":"cable-03","pr
+                         …  demo/checkout.js:12:5                       
+  446  254.0  ┃  #3   ✖  TypeError: Cannot read properties of undefined 
+                         (reading 'price')  demo/checkout.js:23         

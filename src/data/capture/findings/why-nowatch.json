@@ -1,0 +1,133 @@
+{
+ "run": "52038d68",
+ "target": 441,
+ "request": 3,
+ "findings": [
+  {
+   "level": "observed",
+   "text": "TypeError: Cannot read properties of undefined (reading 'price')  (uncaught exception)",
+   "evidence": [
+    441
+   ],
+   "run": null
+  },
+  {
+   "level": "observed",
+   "text": "thrown in applyDiscount at demo/checkout.js:23",
+   "evidence": [
+    441
+   ],
+   "run": null
+  },
+  {
+   "level": "observed",
+   "text": "ran inside the callback of Timeout paymentConfirmed from chargePayment, created at demo/checkout.js:18",
+   "evidence": [
+    250,
+    441
+   ],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "causal chain: Timeout paymentConfirmed from chargePayment (demo/checkout.js:18) ← FSREQCALLBACK from loadCart (demo/checkout.js:9) ← request #3 POST /order",
+   "evidence": [
+    250,
+    232,
+    209
+   ],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "belongs to request #3 POST /order: its async ancestry reaches that request's handler",
+   "evidence": [
+    211
+   ],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "request #2 POST /order was active while #3 POST /order was in flight (logged, responded)",
+   "evidence": [
+    253,
+    267
+   ],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "request #4 POST /order was active while #3 POST /order was in flight (arrived, logged, responded)",
+   "evidence": [
+    344,
+    386,
+    398
+   ],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "the failing line uses module-level binding(s) `currentCart`, shared by every request:  for (let i = 0; i < order.items.length; i++) total += currentCart.items[i].price;",
+   "evidence": [
+    441
+   ],
+   "run": null
+  },
+  {
+   "level": "inferred",
+   "text": "shared state suspected, but writes were not recorded. Re-record with `--watch currentCart` to confirm who changed it.",
+   "evidence": [
+    441
+   ],
+   "run": null
+  }
+ ],
+ "chain": [
+  {
+   "seq": 250,
+   "aid": 86,
+   "type": "Timeout",
+   "name": "paymentConfirmed",
+   "describe": "Timeout paymentConfirmed from chargePayment",
+   "site": {
+    "fn": "chargePayment",
+    "file": "demo/checkout.js",
+    "line": 18,
+    "col": 3
+   },
+   "request": null
+  },
+  {
+   "seq": 232,
+   "aid": 81,
+   "type": "FSREQCALLBACK",
+   "name": null,
+   "describe": "FSREQCALLBACK from loadCart",
+   "site": {
+    "fn": "loadCart",
+    "file": "demo/checkout.js",
+    "line": 9,
+    "col": 6
+   },
+   "request": null
+  },
+  {
+   "seq": 209,
+   "aid": 78,
+   "type": "REWIND_REQUEST",
+   "name": null,
+   "describe": "request #3 POST /order",
+   "site": null,
+   "request": 3
+  }
+ ],
+ "branch": [
+  211,
+  441
+ ],
+ "provenance": {
+  "findings[].level": "copied from Finding.level",
+  "chain": "derived",
+  "branch": "derived"
+ }
+}

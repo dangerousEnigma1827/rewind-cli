@@ -6,7 +6,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "capture": "node capture/run.mjs",
+    "ink": "node scripts/ink.ts"
   },
   "dependencies": {
     "@astrojs/preact": "6.1.6",

@@ -1,0 +1,41 @@
+  [1;38;2;127;90;240m◂◂[0m [1mwhy[0m  run [38;2;127;90;240m52038d68[0m ([1mnowatch[0m)  [38;2;126;126;140m· error 1 of 1[0m
+
+  [1;38;2;229;72;77m✖ TypeError[0m  [38;2;229;72;77mCannot read properties of undefined (reading 'price')[0m
+    demo/checkout.js:23  [38;2;126;126;140min[0m [1mapplyDiscount[0m
+    [38;2;126;126;140m  23 │[0m for (let i = 0; i < order.items.length; i++) total += 
+currentCart.items[i].price;
+
+  [1mfindings[0m [38;2;126;126;140m┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈[0m [1m●[0m [38;2;126;126;140mobserved[0m  [38;2;127;90;240m◆[0m [38;2;126;126;140mderived[0m  [3;38;2;126;126;140m? inferred[0m
+  [1m●[0m [1mTypeError: Cannot read properties of undefined (reading 'price')  [0m  
+    [1m(uncaught exception)[0m                                                
+  [1m●[0m [1mthrown in applyDiscount at demo/checkout.js:23[0m                      
+  [1m●[0m [1mran inside the callback of Timeout paymentConfirmed from [0m           
+    [1mchargePayment, created at demo/checkout.js:18[0m                       
+  [38;2;127;90;240m◆[0m causal chain: Timeout paymentConfirmed from chargePayment           
+    (demo/checkout.js:18) ← FSREQCALLBACK from loadCart                 
+    (demo/checkout.js:9) ← request #3 POST /order                       
+  [38;2;127;90;240m◆[0m belongs to request #3 POST /order: its async ancestry reaches that  
+    request's handler                                                   
+  [38;2;127;90;240m◆[0m request #2 POST /order was active while #3 POST /order was in flight
+    (logged, responded)                                                 
+  [38;2;127;90;240m◆[0m request #4 POST /order was active while #3 POST /order was in flight
+    (arrived, logged, responded)                                        
+  [38;2;127;90;240m◆[0m the failing line uses module-level binding(s) `currentCart`, shared 
+    by every request:  for (let i = 0; i < order.items.length; i++)     
+    total += currentCart.items[i].price;                                
+  [3;38;2;126;126;140m?[0m [3;38;2;126;126;140mshared state suspected, but writes were not recorded. Re-record with[0m
+    [3;38;2;126;126;140m`--watch currentCart` to confirm who changed it.[0m                    
+
+  [1mcausal chain[0m [38;2;126;126;140m┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈[0m [38;2;126;126;140minnermost first[0m
+    [38;2;126;126;140mTimeout[0m [1mpaymentConfirmed[0m  [38;2;126;126;140mscheduled in[0m chargePayment 
+demo/checkout.js:18
+  [38;2;126;126;140m↑ [0m[38;2;126;126;140mFSREQCALLBACK[0m  [38;2;126;126;140mscheduled in[0m loadCart demo/checkout.js:9
+  [38;2;126;126;140m↑ [0m[38;2;125;138;46m#3[0m [1mPOST /order[0m
+
+  [1mstory of request [0m[1;38;2;125;138;46m#3[0m[1m POST /order[0m [38;2;126;126;140m┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈[0m
+  [38;2;126;126;140mseq[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m   ms[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140mreq[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140mevent                                          [0m
+  [38;2;126;126;140m211[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m118.0[0m[38;2;126;126;140m [0m [38;2;126;126;140m│[0m  [38;2;125;138;46m#3[0m   →  POST /order                                    
+  [38;2;126;126;140m441[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m271.5[0m[38;2;126;126;140m [0m [1;38;2;229;72;77m┃[0m  [38;2;125;138;46m#3[0m   [1;38;2;229;72;77m✖[0m  [38;2;229;72;77mTypeError: Cannot read properties of undefined [0m
+  [38;2;126;126;140m    [0m[38;2;126;126;140m       [0m            [38;2;229;72;77m(reading 'price')[0m  demo/checkout.js:23         
+
+  [38;2;126;126;140mtip: record with[0m [1m--watch <variable>[0m [38;2;126;126;140mto capture writes to shared state[0m

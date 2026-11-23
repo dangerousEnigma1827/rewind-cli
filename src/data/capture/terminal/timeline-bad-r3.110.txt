@@ -1,0 +1,16 @@
+  ◂◂ timeline  run 47a9592d (bad)  · 7 events shown of 448 recorded
+
+  seq     ms     req     event                                                            context             
+  215   99.4  │  #3   →  POST /order                                                                          
+  221   99.5  │  #3   ▸  TickObject from handleOrder fired · scheduled at                                     
+                         demo/checkout.js:29                                                                  
+  244  101.0  │  #3   ▸  FSREQCALLBACK from loadCart fired · scheduled at                                     
+                         demo/checkout.js:9                                                                   
+  254  101.3  │  #3   ✎  currentCart = {"order":"A-101","items":[{"sku":"kbd-01","pric…   in FSREQCALLBACK vi…
+                         → {"order":"B-202","items":[{"sku":"dock-04","pri…                                   
+                         demo/checkout.js:12:5                                                                
+  445  253.2  │  #3   ▸  Timeout paymentConfirmed from chargePayment fired · scheduled                        
+                         at demo/checkout.js:18                                                               
+  446  254.0  ┃  #3   ✖  TypeError: Cannot read properties of undefined (reading          in Timeout paymentC…
+                         'price')  demo/checkout.js:23                                                        
+  447  254.2  │  ··   ◉  exit 1                                                                               
