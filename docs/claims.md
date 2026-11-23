@@ -14,13 +14,15 @@ Rewind document · **artifact** = read from the capture · **authored** = writte
 |---|---|---|
 | "Postmortem debugging for asynchronous Node.js." | `rewind/render.py:TAGLINE` → `source/render.json` | artifact (verbatim) |
 | Headline "Record a Node.js run once. Then ask *why*." | approved copy (plan §4.1) | authored |
-| "records which request scheduled what, then explains a failure with graded evidence" | README.md:5 — "Rewind tells you which request it belonged to, which callback scheduled the failing work and from where"; README.md:7–11 evidence table | cited |
-| excerpt of `why bad --evidence` | `terminal/why-bad.<w>.ansi`; `tests/site.test.ts` checks every line is verbatim and in order | artifact |
-| tile: 0 edits to the app; preloaded with --require | `rewind/cli.py:84` — `subprocess.Popen([node, "--require", str(RECORDER), *cmd[1:]], env=env)` | cited (code) |
-| tile: events recorded → timeline story lines | `runs/bad.json` `event_count`, `story_count` | artifact |
-| tile: N tests pass, against real node processes | `manifest.json` `pytest`; README.md:116 — "54 tests; most run real node processes end to end"; `tests/conftest.py:40` spawns `node` | artifact + cited |
+| "A stack trace says where an error surfaced. Rewind says which request caused it, who scheduled the failing work, and who changed the state it read." | README.md:5 — "Rewind tells you which request it belonged to, which callback scheduled the failing work and from where, what other requests were doing meanwhile, who last changed the state it read" | cited |
+| excerpt of `why bad --evidence` (findings only; the title line with the run id is left out) | `terminal/why-bad.<w>.ansi`; `tests/site.test.ts` checks every line is verbatim and in order | artifact |
+| fact: Zero application code changes; Rewind records the run through Node.js preloading | `rewind/cli.py:84` — `subprocess.Popen([node, "--require", str(RECORDER), *cmd[1:]], env=env)`; README.md commands table — "runs the program with the recorder preloaded" | cited (code) |
+| benefit: the crash traced back to its request and order | `findings/why-bad.json` (request), `runs/bad.json` (error event), order mapping as in the Scenario | derived (Rewind) |
+| benefit: the overcharge (charged vs expected), no error | `runs/bad.json` log event; expected from prices.json | observed + authored |
+| benefit: findings graded; Rewind says when it cannot see something (a read) | README.md:7–13; `analysis.py:349–351` "(Reads are not recorded, so this is not proven.)" | cited |
+| not on Home (moved or dropped): events recorded → story lines varies per capture (425–515 recorded across runs; `timeline bad` shows "16 events shown of 451 recorded"); the test count belongs to the captured commit (`manifest.json` `pytest`, shown in Documentation → Evidence) | `runs/*.json`, `manifest.json` | — |
 
-## Scenario (§4.1 #2)
+## Investigation page: The Wrong Order Total Bug (formerly called the Phantom Discount)
 
 | claim | source | class |
 |---|---|---|
@@ -28,8 +30,7 @@ Rewind document · **artifact** = read from the capture · **authored** = writte
 | expected totals | prices summed, coupon as `checkout.js:24` (`Math.round(total * 0.9)`) | authored (computed) |
 | request numbers of the orders; #1 is GET /health | `runs/bad.json` events (`request`) | derived (Rewind) |
 | lines marked shared / write / use | found in `source/checkout.js` by pattern at build time | authored marks on verbatim source |
-| victim: the crash (TypeError at checkout.js:23) | `runs/bad.json` error event | observed |
-| victim: the overcharge (charged vs expected) | `runs/bad.json` log event; expected as above | observed + authored |
+| charged column (wrong total, crash, correct total) | `runs/bad.json` log and error events (`charged()`) | observed |
 | notes on the plain trace (no order id, no request, no loadCart, nothing flags the total) | `terminal/plain-node.txt`; `tests/site.test.ts` checks each note against it | authored, tested |
 
 ## Investigation (§4.1 #3)

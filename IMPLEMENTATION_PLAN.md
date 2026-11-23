@@ -323,17 +323,21 @@ M0–M6 built a correct single page. Its presentation did not communicate the pr
 The engineering (capture pipeline, investigation logic, real output, evidence, tests, browser compatibility) is preserved. The redesign changes information architecture and presentation.
 
 ### 4.1 Pages and navigation
-Three Astro pages share one layout. Primary navigation: **Home · Investigation · Documentation · GitHub ↗**.
+Three Astro pages share one layout. Primary navigation: **Home · Investigation · Documentation · GitHub ↗ · Get Started** (Get Started is the one filled ultraviolet control and goes to `/docs/#install` from every route).
+
+**Naming (refinement, 2026-11-23):** the user-facing name of the scenario is **The Wrong Order Total Bug** ("Concurrent checkout requests interfere with each other, causing one customer to be charged the wrong amount while another checkout crashes."). "Phantom Discount" remains only in internal identifiers and in Rewind's own files, which are shown verbatim.
+
+**Footer:** the ◂◂ rewind mark, "Built for CODEFESTTHON 2026", and links to the three pages. No commit hashes, run ids or repeated links. Capture provenance lives in the artifacts and the documentation, not on Home.
 
 #### Home (`/`), concise
 - **Hero:** Rewind wordmark; a strong statement of what Rewind does; the approved headline "Record a Node.js run once. Then ask *why*."; the problem in one sentence (a stack trace says where an error surfaced, not which request caused it, who scheduled it or who changed the state). Primary action **Open the investigation**; secondary **GitHub**.
 - **Investigation preview:** real, static, server-rendered: the bad run's swimlanes, the `currentCart` band, and a short real `rewind why bad` excerpt, generated from committed artifacts with the same model and rendering code. Home ships no investigation island. Clicking the preview opens the investigation at the matching stage.
 - **Why Rewind is useful:** three concise points, each backed by captured evidence: which request an error belongs to; silent failures such as the Phantom Discount overcharge; observed / derived / inferred conclusions.
-- **Fact tiles:** artifact-sourced only (manifest, run JSON).
+- **One fact:** "Zero application code changes: Rewind records the run through Node.js preloading" (`rewind/cli.py:84`). The event-count reduction (it varies per capture) and the test count (pinned to the captured commit) are not homepage statistics; the test count is shown in Documentation → Evidence.
 - Concise footer with the provenance line.
 
 #### Investigation (`/investigation/`), the central product experience
-The Phantom Discount scenario and every existing investigation function, organised as the existing 8 steps (§3.6) grouped into four stages:
+The Wrong Order Total Bug and every existing investigation function, organised as the existing 8 steps (§3.6) grouped into four stages:
 
 | stage | contains | leads with |
 |---|---|---|
