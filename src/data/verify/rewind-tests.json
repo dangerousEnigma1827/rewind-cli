@@ -1,0 +1,8 @@
+{
+ "rewind_sha": "388fe457558ec7c145b76572731f86e07839bbf0",
+ "verified_at": "2026-11-23",
+ "passed": 54,
+ "real_process": 44,
+ "method": "pytest -q -p nodespy (capture/nodespy.py) in a fresh clone of Rewind.git at the sha above; real_process = tests that start a node process, directly or through `rewind record`",
+ "note": "A later local, unpushed Rewind commit (1c34e77) had 56 passed, 45 real-process; the site states the published version that the captures come from."
+}
