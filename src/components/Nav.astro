@@ -1,5 +1,5 @@
 ---
-// Primary navigation: Home · Investigation · Documentation · GitHub ↗ · Get Started (→ the install instructions).
+// Primary navigation: Home · Investigation · Documentation · GitHub ↗ · Install (→ /#install, the one filled control).
 import { REPO } from '../lib/site';
 interface Props { current: 'home' | 'investigation' | 'docs' }
 const { current } = Astro.props;
@@ -21,7 +21,7 @@ const links = [
     </ul>
     <div class="actions">
       <a class="gh" href={REPO}>GitHub <span aria-hidden="true">↗</span></a>
-      <a class="start" href="/#get-started">Get Started</a>
+      <a class="start" href="/#install">Install</a>
     </div>
   </nav>
 </header>

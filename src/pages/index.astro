@@ -10,13 +10,13 @@ import render from '../data/capture/source/render.json';
 ---
 <Base title="Rewind · Postmortem debugging for asynchronous Node.js" description={`${render.TAGLINE} Record a Node.js run once, then ask why: which request failed, who scheduled it, and who changed the state.`} current="home">
   <script is:inline>
-    // Links from the old single page: /#investigate, /?step=N … → /investigation/; /#how … → /docs/; /#start → #get-started.
+    // Links from the old single page: /#investigate, /?step=N … → /investigation/; /#how … → /docs/; /#start, /#get-started → #install.
     function go() {
       var h = location.hash, q = location.search;
       var inv = { '#investigate': 1, '#scenario': 1 }, docs = { '#how': '#how', '#evidence': '#evidence', '#limits': '#limits' };
       if (inv[h] || /[?&]step=/.test(q)) location.replace('/investigation/' + q);
       else if (docs[h]) location.replace('/docs/' + docs[h]);
-      else if (h === '#start') location.replace('/#get-started');
+      else if (h === '#start' || h === '#get-started') location.replace('/#install');
     }
     go();
     addEventListener('hashchange', go);

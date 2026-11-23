@@ -1,23 +1,25 @@
 ---
-// The footer: Rewind's own block wordmark (render.WORDMARK, the CLI's splash) with the mark, the event, and links.
-// No licence line: neither Rewind nor this site has a licence file. No hashes, run ids or repeated install blocks.
+// Footer: on the left, Rewind's block wordmark (render.WORDMARK, the CLI splash) and the attribution; on the right,
+// three compact link columns. No licence line or link: neither Rewind nor this site has a licence file. GitHub is
+// the repository, so it appears once.
 import render from '../data/capture/source/render.json';
 import { REPO } from '../lib/site';
 const tones = ['uv-hi', 'uv', 'uv-lo'];
 const groups = [
-  { title: 'Product', links: [['CLI commands', '/#commands'], ['Features', '/#features'], ['Investigation', '/investigation/'], ['Get Started', '/#get-started']] },
-  { title: 'Learn', links: [['Documentation', '/docs/'], ['How it works', '/docs/#how'], ['Limitations', '/docs/#limits']] },
-  { title: 'Project', links: [['Rewind on GitHub ↗', REPO]] },
+  { title: 'Product', links: [['CLI Commands', '/#commands'], ['Investigation', '/investigation/'], ['Features', '/#features'], ['Install', '/#install']] },
+  { title: 'Learn', links: [['Documentation', '/docs/']] },
+  { title: 'Project', links: [['GitHub ↗', REPO]] },
 ];
 ---
 <footer>
   <div class="inner">
-    <div class="brand" role="img" aria-label="Rewind">
-      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><g fill="#8D6CFF" stroke="#8D6CFF" stroke-width="6" stroke-linejoin="round"><path d="M12 50 L49 24 L49 76 Z"/><path d="M51 50 L88 24 L88 76 Z"/></g></svg>
-      <pre class="wordmark" aria-hidden="true">{render.WORDMARK.map((row, i) => <span class={`wm-${tones[i]}`}>{row}{'\n'}</span>)}</pre>
+    <div class="sig">
+      <div class="brand" role="img" aria-label="Rewind">
+        <svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><g fill="#8D6CFF" stroke="#8D6CFF" stroke-width="6" stroke-linejoin="round"><path d="M12 50 L49 24 L49 76 Z"/><path d="M51 50 L88 24 L88 76 Z"/></g></svg>
+        <pre class="wordmark" aria-hidden="true">{render.WORDMARK.map((row, i) => <span class={`wm-${tones[i]}`}>{row}{'\n'}</span>)}</pre>
+      </div>
+      <p class="attr">Built for <span translate="no">CODEFESTTHON 2026</span></p>
     </div>
-    <p class="attr">Built for <span translate="no">CODEFESTTHON 2026</span></p>
-    <hr />
     <nav class="cols" aria-label="Footer">
       {groups.map((g) => (
         <div>
@@ -31,17 +33,22 @@ const groups = [
 
 <style>
   footer { margin-top: var(--s-10); border-top: 1px solid var(--line); background: var(--bg); }
-  .inner { max-width: var(--page-max); margin-inline: auto; padding: var(--s-8) var(--gutter) var(--s-7); }
-  .brand { display: flex; align-items: center; gap: clamp(12px, 2.5vw, 28px); container-type: inline-size; }
-  .mark { flex: none; width: clamp(40px, 9vw, 104px); height: auto; }
-  /* 38 cells wide: the font size follows the room left beside the mark, so it never overflows */
-  .wordmark { margin: 0; font: 400 clamp(8px, 3.4vw, 30px)/1 var(--font-mono); letter-spacing: 0; white-space: pre; }
+  .inner {
+    max-width: var(--page-max); margin-inline: auto; padding: var(--s-7) var(--gutter);
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6);
+  }
+  @media (min-width: 900px) { .inner { grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: var(--s-8); } }
+  .brand { display: flex; align-items: center; gap: var(--s-3); }
+  .mark { flex: none; width: 36px; height: auto; }
+  /* 38 cells at 11px: about 250px wide, distinct but not dominant */
+  .wordmark { margin: 0; font: 400 11px/1 var(--font-mono); letter-spacing: 0; white-space: pre; }
   .wm-uv-hi { color: var(--p-uv-hi); } .wm-uv { color: var(--p-uv); } .wm-uv-lo { color: var(--p-uv-lo); }
-  .attr { margin: var(--s-5) 0 0; font: 500 16px/1.4 var(--font-sans); color: var(--text-2); }
-  hr { margin: var(--s-6) 0; border: 0; border-top: 1px solid var(--line); }
-  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: var(--s-6); }
-  h2 { margin: 0 0 var(--s-3); font: 500 12px/1.4 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
-  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-1); }
-  a { display: inline-flex; align-items: center; min-height: 44px; color: var(--text-2); text-decoration: none; font-size: 15px; }
+  .attr { margin: var(--s-4) 0 0; font: 500 15px/1.4 var(--font-sans); color: var(--text-2); }
+  .cols { display: grid; grid-template-columns: repeat(3, auto); gap: var(--s-7); }
+  @media (max-width: 479px) { .cols { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5); } }
+  h2 { margin: 0 0 var(--s-2); font: 500 12px/1.4 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; }
+  a { display: inline-flex; align-items: center; min-height: 40px; color: var(--text-2); text-decoration: none; font-size: 15px; }
+  @media (pointer: coarse) { a { min-height: 44px; } }
   @media (hover: hover) and (pointer: fine) { a:hover { color: var(--text); } }
 </style>
