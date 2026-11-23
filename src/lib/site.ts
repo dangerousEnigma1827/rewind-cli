@@ -29,27 +29,6 @@ export function heroExcerpt(w: number): TermLine[] {
   return [...lines.slice(rule, firstFinding), ...lines.filter((l) => l.finding !== undefined && heroFindings.includes(l.finding))];
 }
 
-/** The one homepage fact: a product property, verifiable in rewind/cli.py:84 (`node --require <recorder>`).
- *  Event counts (they vary run to run) and the test count (pinned to the captured commit) live in the docs. */
-export const fact = {
-  title: 'Zero application code changes',
-  text: 'Rewind records the run through Node.js preloading.',
-  source: 'rewind/cli.py:84',
-};
-
-/** Home: three benefits, each shown by the captured investigation and linking to the step that shows it. */
-export function benefits() {
-  const v = victims();
-  return [
-    { title: 'Which request failed', href: '/investigation/?step=3',
-      text: `A stack trace stops at a timer callback. Rewind traces the crash back to request #${v.crash.request}, order ${v.crash.order.id}.` },
-    { title: 'Silent failures, too', href: '/investigation/?step=5',
-      text: `Order ${v.overcharge.order.id} was charged $${v.overcharge.amount} instead of $${v.overcharge.order.expected}, with no error. Rewind ties that line to the request that logged it.` },
-    { title: 'Evidence, graded', href: '/investigation/?step=6',
-      text: 'Every finding is marked ● observed, ◆ derived or ? inferred. When Rewind cannot see something, such as a variable read, it says so.' },
-  ];
-}
-
 // ---- scenario -----------------------------------------------------------------------------------------
 
 /** The two victims of the concurrent run, from its own events. */

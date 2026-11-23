@@ -1,0 +1,88 @@
+---
+// A small, static preview of the investigation, drawn from the captured concurrent run (no island, no JS).
+import { preview } from '../lib/home';
+import { fmtMs } from '../lib/investigation';
+const p = preview();
+const pad = (p.end - p.start) * 0.05;
+const x = (ms: number) => ((ms - (p.start - pad)) / (p.end - p.start + 2 * pad)) * 100;
+---
+<section id="preview" class="mini" aria-labelledby="preview-title">
+  <div class="intro">
+    <p class="eyebrow">The investigation</p>
+    <h2 id="preview-title">See the cause, not just the crash</h2>
+    <p class="lede">Three customers place orders at nearly the same time. While it processes them, the app keeps the order data in one shared place, so one customer’s request can overwrite another’s.</p>
+    <ul class="key">
+      <li><span class="g w" aria-hidden="true">✎</span> writes the shared order data</li>
+      <li><span class="g e" aria-hidden="true">✖</span> the request fails</li>
+      <li><span class="g" aria-hidden="true">»</span> logs the amount charged</li>
+      <li><span class="g" aria-hidden="true">A B C</span> whose order data is in the shared state</li>
+    </ul>
+    <a class="btn" href="/investigation/">Explore the investigation</a>
+  </div>
+  <figure class="viz"
+    aria-label={`Order processing for three customers on a time axis. ${p.overwrite.by}’s request wrote the shared order data at ${fmtMs(p.overwrite.ms)} ms; ${p.crash.lane}’s request failed afterwards.`}>
+    <div class="lanes" aria-hidden="true">
+      <p class="group">Order processing</p>
+      {p.lanes.map((l) => (
+        <div class={`lane r${l.id}`}>
+          <span class="label">{l.label}</span>
+          <div class="track">
+            <span class="span" style={{ left: `${x(l.inMs)}%`, width: `${x(l.endMs) - x(l.inMs)}%` }} />
+            {l.markers.filter((m) => m.kind === 'mutation' || m.kind === 'log' || m.kind.startsWith('error.')).map((m) => (
+              <span class={`mk ${m.kind === 'mutation' ? 'w' : m.kind === 'log' ? 'l' : 'e'}${m.seq === p.overwrite.seq ? ' hl' : ''}`} style={{ left: `${x(m.ms)}%` }}>{m.glyph}</span>
+            ))}
+          </div>
+        </div>
+      ))}
+      <div class="lane band">
+        <span class="label">Shared state</span>
+        <div class="track">
+          {p.holders.map((h) => (
+            <span class={`seg w${h.writer}${h.seq === p.overwrite.seq ? ' hl' : ''}`} style={{ left: `${x(h.fromMs)}%`, width: `${x(h.toMs) - x(h.fromMs)}%` }}>{h.by.replace('Customer ', '')}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+    <figcaption>
+      <p class="callout"><span class="g w" aria-hidden="true">✎</span> {p.overwrite.by}’s request overwrote the shared order data, then <span class="g e" aria-hidden="true">✖</span> {p.crash.lane}’s request failed.</p>
+      <p class="note">Rewind recorded the writes and the failure. Reads are not recorded, so the link between them is its inference:</p>
+      <p class="inf"><span aria-hidden="true">?</span> “{p.inference.split('. ')[0]}.”</p>
+    </figcaption>
+  </figure>
+</section>
+
+<style>
+  .mini { max-width: var(--page-max); margin-inline: auto; padding: var(--s-9) var(--gutter) 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-7); align-items: center; }
+  .mini > * { min-width: 0; }
+  @media (min-width: 1024px) { .mini { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); } }
+  h2 { margin: 0 0 var(--s-3); }
+  .lede { margin: 0 0 var(--s-5); }
+  .key { list-style: none; margin: 0 0 var(--s-6); padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); color: var(--text-2); font-size: 15px; }
+  .g { font: 700 15px/1 var(--font-mono); color: var(--text); }
+  .g.w { color: var(--mark-write); } .g.e { color: var(--mark-err); }
+  .btn { display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--s-5); border-radius: 8px; background: var(--accent); color: var(--bg); font-weight: 600; text-decoration: none; transition: transform 100ms var(--ease-out); }
+  .btn:active { transform: scale(0.97); }
+  @media (hover: hover) and (pointer: fine) { .btn:hover { background: #A28AFF; } }
+
+  .viz { margin: 0; padding: var(--s-5); background: var(--surface-1); border: 1px solid var(--line); border-radius: 12px; }
+  .lanes { display: grid; gap: var(--s-2); }
+  .lane { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); align-items: center; min-height: 40px; }
+  .label { font: 500 13px/1.2 var(--font-mono); color: var(--text-2); }
+  .track { position: relative; height: 40px; border-bottom: 1px solid var(--line); }
+  .r2 { --lane: var(--mark-r2); } .r3 { --lane: var(--mark-r3); } .r4 { --lane: var(--mark-r4); }
+  .span { position: absolute; top: 50%; height: 6px; margin-top: -3px; border-radius: 3px; background: var(--lane); }
+  .mk { position: absolute; top: 50%; transform: translate(-50%, -50%); display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--surface-1); font: 700 14px/1 var(--font-mono); color: var(--text); }
+  .mk.w { color: var(--mark-write); } .mk.e { color: var(--mark-err); }
+  .mk.hl { box-shadow: 0 0 0 2px var(--accent-fill); }
+  .band .track { border: 0; }
+  .seg { position: absolute; top: 6px; height: 28px; padding: 0 6px; white-space: nowrap; text-align: center; border-radius: 4px; font: 500 12px/28px var(--font-mono); color: var(--text); background: color-mix(in oklab, var(--wl) 24%, var(--surface-1)); box-shadow: inset 0 -3px 0 var(--wl), 2px 0 0 var(--surface-1); }
+  .seg.w2 { --wl: var(--mark-r2); } .seg.w3 { --wl: var(--mark-r3); } .seg.w4 { --wl: var(--mark-r4); }
+  .seg.hl { outline: 2px solid var(--accent-fill); outline-offset: 1px; }
+  figcaption { margin-top: var(--s-4); display: grid; gap: var(--s-2); }
+  figcaption p { margin: 0; }
+  .callout { font-size: 16px; color: var(--text); }
+  .group { margin: 0 0 var(--s-1); font: 500 12px/1.4 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
+  .note { font-size: 14px; color: var(--text-2); }
+  .inf { font: italic 400 14px/1.5 var(--font-mono); color: var(--text-3); }
+  @media (max-width: 479px) { .lane { grid-template-columns: 5.25rem minmax(0, 1fr); } .label { font-size: 12px; } .seg { font-size: 11px; padding: 0 4px; } }
+</style>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { benefits, fact, heroExcerpt, heroFindings, victims } from '../src/lib/site';
+import { heroExcerpt, heroFindings, victims } from '../src/lib/site';
 import { existsSync, readFileSync } from 'node:fs';
 import { WIDTHS } from '../src/lib/investigation';
 import { json, manifest, read, runs } from './capture';
@@ -26,16 +26,9 @@ describe('hero (M4)', () => {
     expect(heroFindings.length).toBe(5);
   });
 
-  it('the one fact is sourced; benefits come from the captured run', () => {
-    expect(read('source/README.md')).toContain('runs the program with the recorder preloaded');
-    expect(fact.title).toBe('Zero application code changes');
-    const v = victims(), [a, b] = benefits();
-    expect(a.text).toContain(`request #${v.crash.request}`);
-    expect(b.text).toContain(`charged $${v.overcharge.amount} instead of $${v.overcharge.order.expected}`);
-  });
-
-  it.runIf(existsSync('dist/index.html'))('the home page shows no run ids, commit hashes or capture bookkeeping', () => {
-    const html = readFileSync('dist/index.html', 'utf8');
+  it.runIf(existsSync('dist/index.html'))('outside real captured output, Home shows no run ids, commit hashes or capture bookkeeping', () => {
+    // terminal output is Rewind's own and keeps whatever it printed; everything else must not expose ids
+    const html = readFileSync('dist/index.html', 'utf8').replace(/<pre[\s\S]*?<\/pre>/g, '');
     for (const r of Object.values(manifest.runs) as { id: string }[]) expect(html).not.toContain(r.id);
     expect(html).not.toContain(manifest.rewind.short);
     expect(html).not.toMatch(/Captured from/i);

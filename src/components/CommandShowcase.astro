@@ -1,0 +1,99 @@
+---
+// Every Rewind command beside its real captured output. A tablist with JavaScript; without it, all six stack.
+import Terminal from './Terminal.astro';
+import { showcase } from '../lib/home';
+const cmds = showcase();
+---
+<section id="commands" class="showcase" aria-labelledby="commands-title">
+  <p class="eyebrow">The CLI</p>
+  <h2 id="commands-title">Six commands, real output</h2>
+  <p class="lede">Each command below shows the output Rewind actually printed for the run on the investigation page.</p>
+  <div class="grid">
+    <div class="list" role="tablist" aria-label="Rewind commands" aria-orientation="vertical">
+      {cmds.map((c, i) => (
+        <button type="button" role="tab" id={`cmd-tab-${c.name}`} aria-controls={`cmd-panel-${c.name}`}
+          aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+          <code class="name" translate="no">rewind {c.name}</code>
+          <span class="desc">{c.desc}</span>
+        </button>
+      ))}
+    </div>
+    <div class="panels">
+      {cmds.map((c, i) => (
+        <div class="panel" role="tabpanel" id={`cmd-panel-${c.name}`} aria-labelledby={`cmd-tab-${c.name}`} data-first={i === 0 ? '' : undefined}>
+          <p class="pdesc"><code translate="no">rewind {c.name}</code> {c.desc}</p>
+          <Terminal command={c.command} ansi={c.ansi} diff={c.diff} />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Tabs (WAI-ARIA tablist): click or arrow keys select a command; its panel replaces the terminal.
+  const list = document.querySelector<HTMLElement>('.showcase [role="tablist"]');
+  if (list) {
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const select = (t: HTMLButtonElement, focus = false) => {
+      for (const x of tabs) {
+        const on = x === t;
+        x.setAttribute('aria-selected', String(on));
+        x.tabIndex = on ? 0 : -1;
+        document.getElementById(x.getAttribute('aria-controls')!)!.hidden = !on;
+      }
+      if (focus) t.focus();
+      window.dispatchEvent(new Event('resize')); // the newly shown terminal re-measures its "more lines" count
+    };
+    tabs.forEach((t) => t.addEventListener('click', () => select(t)));
+    list.addEventListener('keydown', (e) => {
+      const i = tabs.indexOf(document.activeElement as HTMLButtonElement);
+      const to = { ArrowDown: i + 1, ArrowRight: i + 1, ArrowUp: i - 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (to === undefined || i < 0) return;
+      e.preventDefault();
+      select(tabs[(to + tabs.length) % tabs.length], true);
+    });
+    select(tabs[0]);
+  }
+</script>
+
+<style>
+  .showcase { max-width: var(--page-max); margin-inline: auto; padding: var(--s-9) var(--gutter) 0; }
+  h2 { margin: 0 0 var(--s-3); }
+  .lede { margin: 0 0 var(--s-6); }
+  .grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  .grid > * { min-width: 0; }
+  @media (min-width: 1024px) { .grid { grid-template-columns: 19rem minmax(0, 1fr); gap: var(--s-6); align-items: start; } }
+
+  .list { display: grid; gap: var(--s-2); }
+  [role='tab'] {
+    display: grid; gap: var(--s-1); min-height: 44px; padding: var(--s-3) var(--s-4); text-align: left; cursor: pointer;
+    background: transparent; border: 0; border-radius: 6px; color: var(--text-2);
+    transition: transform 100ms var(--ease-out);
+  }
+  [role='tab']:active { transform: scale(0.98); }
+  /* active: ultraviolet text on a restrained ultraviolet tint, no border or side accent */
+  [role='tab'][aria-selected='true'] { background: color-mix(in oklab, var(--accent-fill) 14%, var(--bg)); color: var(--text); }
+  @media (hover: hover) and (pointer: fine) { [role='tab'][aria-selected='false']:hover { background: var(--surface-1); color: var(--text); } }
+  .name { font: 600 15px/1.3 var(--font-mono); color: var(--text-2); }
+  [role='tab'][aria-selected='true'] .name { color: var(--accent); }
+  .desc { font-size: 14px; line-height: 1.45; }
+  .pdesc { display: none; margin: 0 0 var(--s-3); font-size: 15px; color: var(--text-2); }
+  .pdesc code { color: var(--accent); font-weight: 600; margin-right: 0.5ch; }
+
+  /* a fixed terminal height, so switching commands never shifts the page; long output scrolls inside */
+  .panel :global(.term pre) { height: min(62vh, 30rem); max-height: none; }
+
+  /* phones and tablets: a compact selector of command names above the terminal */
+  @media (max-width: 1023px) {
+    .list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); }
+    [role='tab'] { justify-items: center; padding: var(--s-2); }
+    [role='tab'][aria-selected='false'] { background: var(--surface-1); }
+    [role='tab'] .desc { display: none; }
+    .name { font-size: 14px; }
+    .pdesc { display: block; }
+  }
+  /* without JavaScript: no tabs, every command and its output in order */
+  :global(html:not(.js)) .list { display: none; }
+  :global(html:not(.js)) .panel { margin-bottom: var(--s-6); }
+  :global(html:not(.js)) .pdesc { display: block; }
+</style>
