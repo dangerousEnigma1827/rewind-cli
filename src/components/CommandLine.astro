@@ -1,0 +1,30 @@
+---
+// A real command with a copy button. One shared copy script for every static instance.
+interface Props { command: string }
+const { command } = Astro.props;
+---
+<div class="term-cmd">
+  <span class="prompt" aria-hidden="true">$</span>
+  <code translate="no">{command}</code>
+  <button class="copy" type="button" data-copy={command} hidden>Copy</button>
+</div>
+
+<script>
+  // Shown only when the clipboard is available; the result is announced politely.
+  const live = Object.assign(document.createElement('div'), { className: 'visually-hidden' });
+  live.setAttribute('aria-live', 'polite');
+  document.body.append(live);
+  for (const b of document.querySelectorAll<HTMLButtonElement>('button[data-copy]')) {
+    if (!navigator.clipboard) continue;
+    b.hidden = false;
+    b.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(b.dataset.copy!);
+        b.textContent = live.textContent = 'Copied';
+      } catch {
+        b.textContent = live.textContent = 'Copy failed';
+      }
+      setTimeout(() => (b.textContent = 'Copy'), 1500);
+    });
+  }
+</script>

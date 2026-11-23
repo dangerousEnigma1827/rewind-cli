@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Section from '../components/Section.astro';
+import InvestigationSection from '../components/InvestigationSection.astro';
 ---
 <Base title="Rewind · Postmortem debugging for asynchronous Node.js" description="Postmortem debugging for asynchronous Node.js.">
   <Nav />
@@ -10,7 +11,9 @@ import Section from '../components/Section.astro';
       <h1 id="top-title">Record a Node.js run once. Then ask <em>why</em>.</h1>
     </section>
     <Section id="scenario" title="The Phantom Discount" />
-    <Section id="investigate" title="Investigation" />
+    <Section id="investigate" title="Investigation">
+      <InvestigationSection />
+    </Section>
     <Section id="how" title="How it works" />
     <Section id="evidence" title="Built on evidence" />
     <Section id="limits" title="Limits" />

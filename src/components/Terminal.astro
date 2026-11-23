@@ -1,0 +1,17 @@
+---
+// A captured terminal block, rendered statically by the one renderer (lib/terminal.ts). No JS.
+import { renderSpans } from '../lib/terminal';
+import CommandLine from './CommandLine.astro';
+
+interface Props { command: string; ansi: Record<number, string>; diff?: boolean; label?: string }
+const { command, ansi, diff = false, label } = Astro.props;
+const widths = Object.keys(ansi).map(Number).sort((a, b) => b - a);
+---
+<figure class="term" aria-label={label ?? `Output of ${command}`}>
+  <CommandLine command={command} />
+  {widths.map((w) => (
+    <pre class={`w${w}`} translate="no" tabindex="0">{renderSpans(ansi[w], { diff }).map((l) => (
+      <>{l.segs.map((s) => (s.cls ? <span class={s.cls}>{s.text}</span> : s.text))}{'\n'}</>
+    ))}</pre>
+  ))}
+</figure>
