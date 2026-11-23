@@ -1,0 +1,61 @@
+  ◂◂ diff  A run 472d0408 (good)  ·  B run 
+c68f09f8 (bad)
+
+  findings ┈┈┈ ● observed  ◆ derived  ? 
+inferred
+  ◆ 14 of 21 (A) / 20 (B) normalised          
+    steps line up                             
+  ◆ identical up to and including:   A seq 156
+    #2 ✎ currentCart = @                      
+    demo/checkout.js:12:5                     
+  ● next, A does: #2 ▸ Timeout       A seq 159
+    paymentConfirmed from                     
+    chargePayment @                           
+    demo/checkout.js:18                       
+  ● next, B does: #3 http.in POST    B seq 215
+    /order                                    
+  ◆ that step also happens in A, but A seq 224
+    3 step(s) later: the                      
+    interleaving changed, not the             
+    code path                                 
+  ◆ 3 step(s) occur in both runs at           
+    different positions (reordered)           
+  ◆ 4 step(s) only in A, e.g. #2 log A seq 160
+    order A-101: charged $128                 
+  ◆ 3 step(s) only in B, e.g. #2 log B seq 260
+    order A-101: charged $161                 
+  ? run B fails and A does not. The  B seq 449
+    first divergence above is the             
+    earliest observable point where           
+    they part ways; it is the place           
+    to start, not necessarily the             
+    cause. Run `rewind why` on B for          
+    the causal story.                         
+
+  aligned steps ┈┈┈ - only in A   + only in B 
+seq from A, or B on + lines
+    ·····  3 identical steps
+      146  #2 ▸ FSREQCALLBACK from loadCart @…
+      156  #2 ✎ currentCart = @ demo/checkout…
+    ▼ first divergence ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+  -   159  #2 ▸ Timeout paymentConfirmed from…
+  -   160  #2 log order A-101: charged $128
+  -   173  #2 http.out 200 POST /order
+      224  #3 http.in POST /order
+      253  #3 ▸ FSREQCALLBACK from loadCart @…
+      263  #3 ✎ currentCart = @ demo/checkout…
+  -   268  #3 ▸ Timeout paymentConfirmed from…
+  -   269  #3 log order B-202: charged $186
+  -   282  #3 http.out 200 POST /order
+  +   259  #2 ▸ Timeout paymentConfirmed from…
+  +   260  #2 log order A-101: charged $161
+  +   274  #2 http.out 200 POST /order
+      333  #4 http.in POST /order
+      362  #4 ▸ FSREQCALLBACK from loadCart @…
+    ·····  2 identical steps
+      376  #4 log order C-303: charged $11
+      388  #4 http.out 200 POST /order
+  -   443  run.end exit 0
+  +   448  #3 ▸ Timeout paymentConfirmed from…
+  +   449  #3 error.uncaught Cannot read prop…
+  +   450  run.end exit 1

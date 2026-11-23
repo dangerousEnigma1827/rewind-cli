@@ -1,0 +1,23 @@
+---
+import Wordmark from './Wordmark.astro';
+import { REPO, blob, short, runIds, capturedOn } from '../lib/site';
+---
+<footer>
+  <div class="inner">
+    <Wordmark size="small" />
+    <ul class="links">
+      <li><a href={REPO}>Rewind on GitHub <span aria-hidden="true">↗</span></a></li>
+      <li><a href={blob('docs/ARCHITECTURE.md')}>docs/ARCHITECTURE.md</a></li>
+      <li><a href={blob('spikes/RESULTS.md')}>spikes/RESULTS.md</a></li>
+    </ul>
+    <p class="prov" translate="no">Captured from rewind@{short}, runs {runIds.join(', ')}, {capturedOn}.</p>
+  </div>
+</footer>
+
+<style>
+  footer { border-top: 1px solid var(--rule); }
+  .inner { max-width: var(--page-max); margin-inline: auto; padding: 2rem var(--gutter) 3rem; display: grid; gap: 1rem; }
+  .links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+  .links a { display: inline-flex; align-items: center; min-height: 44px; }
+  .prov { margin: 0; font: 400 0.75rem/1.5 var(--font-mono); color: var(--ink-mute); overflow-wrap: anywhere; }
+</style>

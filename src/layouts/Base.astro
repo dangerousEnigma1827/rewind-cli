@@ -1,0 +1,46 @@
+---
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/400-italic.css';
+import '@fontsource/ibm-plex-mono/700.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/terminal.css';
+import monoLatin from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url';
+import dejavu400 from '@fontsource/dejavu-mono/files/dejavu-mono-latin-400-normal.woff2?url';
+import dejavu700 from '@fontsource/dejavu-mono/files/dejavu-mono-latin-700-normal.woff2?url';
+import { GLYPHS, unicodeRange } from '../lib/glyphs';
+
+interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+
+// Fallback face restricted to the glyphs Plex Mono lacks, so DejaVu never replaces Plex's own letters.
+// size-adjust: DejaVu advances 1233/2048 em, Plex 0.6 em; scaling by 0.6/(1233/2048) keeps columns aligned.
+const range = unicodeRange(GLYPHS);
+const glyphFaces = [[400, dejavu400], [700, dejavu700]]
+  .map(([w, url]) => `@font-face{font-family:'Rewind Glyphs';font-weight:${w};font-display:swap;src:url(${url}) format('woff2');unicode-range:${range};size-adjust:99.66%}`)
+  .join('');
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FAFAF9" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101014" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <link rel="preload" href={monoLatin} as="font" type="font/woff2" crossorigin />
+    <style is:inline set:html={glyphFaces}></style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <slot />
+  </body>
+</html>

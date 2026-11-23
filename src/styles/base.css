@@ -1,0 +1,79 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: var(--nav-h);
+}
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--text);
+  font: 400 1rem/1.55 var(--font-sans);
+  -webkit-tap-highlight-color: transparent; /* replaced by the :active and focus styles below */
+}
+
+h1, h2, h3 {
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+h1 { font-size: clamp(2rem, 1.4rem + 3vw, 3.25rem); }
+h2 { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); }
+
+code, kbd, pre, samp, .mono { font-family: var(--font-mono); }
+.num { font-variant-numeric: tabular-nums; }
+
+a { color: var(--link); text-underline-offset: 0.2em; }
+@media (hover: hover) and (pointer: fine) { a:hover { text-decoration-thickness: 2px; } }
+a, button { touch-action: manipulation; }
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Every in-page target clears the sticky nav, so focus rings are never covered. */
+[id] { scroll-margin-top: calc(var(--nav-h) + 8px); }
+
+/* Labelled dotted rule, after the CLI's "findings ┈┈┈┈" (§5.1). */
+.rule-label {
+  display: flex;
+  align-items: center;
+  gap: 1ch;
+  font: 400 0.8125rem/1 var(--font-mono);
+}
+.rule-label::after {
+  content: '';
+  flex: 1;
+  border-top: 1px dotted var(--rule);
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -100px;
+  z-index: 10;
+  padding: 0.5rem 0.75rem;
+  background: var(--surface);
+  color: var(--link);
+}
+.skip-link:focus { top: 8px; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* §5.6: allowed transitions are instant under reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}

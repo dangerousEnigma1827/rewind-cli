@@ -1,0 +1,17 @@
+  ◂◂ recording c68f09f8  node demo/traffic.js  watch=currentCart
+order A-101: charged $161
+order C-303: charged $11
+…\demo\checkout.js:23
+  for (let i = 0; i < order.items.length; i++) total += currentCart.items[i].price;
+                                                                             ^
+
+TypeError: Cannot read properties of undefined (reading 'price')
+    at applyDiscount (…\demo\checkout.js:23:78)
+    at …\demo\checkout.js:34:23
+    at Timeout.paymentConfirmed [as _onTimeout] (…\demo\checkout.js:18:44)
+    at listOnTimeout (node:internal/timers:685:17)
+    at process.processTimers (node:internal/timers:618:7)
+
+Node.js v24.22.1
+  ✖ recorded run c68f09f8 bad  451 events · 1 error · exit 1 · failed  
+0.3s

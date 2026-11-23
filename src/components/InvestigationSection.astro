@@ -1,0 +1,29 @@
+---
+// The centrepiece (§4.1 #3): the island, plus the no-JS fallback (an ordered list of the 8 steps with their captures).
+import Investigation from '../islands/Investigation';
+import Terminal from './Terminal.astro';
+import { charged, orders, runModel, steps } from '../lib/investigation';
+import { diffView } from '../lib/diffview';
+import patch from '../data/capture/source/fix.patch?raw';
+import '../styles/investigation.css';
+
+const all = steps();
+const runs = { bad: runModel('bad'), nowatch: runModel('nowatch'), good: runModel('good'), fixed: runModel('fixed') };
+const props = { steps: all, runs, diff: diffView(), patch, orders: orders(), charged: { bad: charged('bad'), fixed: charged('fixed') } };
+---
+<div class="inv-js">
+  <Investigation client:visible {...props} />
+</div>
+<noscript>
+  <ol class="inv-static">
+    {all.map((s) => (
+      <li>
+        <h3>{s.title}</h3>
+        <p>{s.sentence}</p>
+        {[...s.views.on.terminals, ...(s.views.off?.terminals ?? [])].map((t) => (
+          <Terminal command={t.command} ansi={t.ansi} diff={t.diff} />
+        ))}
+      </li>
+    ))}
+  </ol>
+</noscript>

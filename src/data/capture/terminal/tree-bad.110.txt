@@ -1,0 +1,38 @@
+  ◂◂ async tree  run c68f09f8 (bad)  · who scheduled whom
+
+  ◉ main module                                                                                               
+  └── TCPSERVERWRAP at demo/traffic.js:26 in <anonymous>                                                      
+      ├── HTTPINCOMINGMESSAGE +1 internal                                                                     
+      │   ├── #1 GET /health                                                                                  
+      │   │   ├── → GET /health                                                                               
+      │   │   └── ← 404 GET /health 2.2ms                                                                     
+      │   └── #2 POST /order                                                                                  
+      │       ├── → POST /order                                                                               
+      │       ├── ← 200 POST /order 94.0ms                                                                    
+      │       └── FSREQCALLBACK at demo/checkout.js:9 in loadCart                                             
+      │           └── FSREQCALLBACK +2 internal                                                               
+      │               ├── ✎ currentCart = null → {"order":"A-101","items":[{"sku":"kbd-01","pric…             
+      │               │   demo/checkout.js:12:5                                                               
+      │               └── Timeout paymentConfirmed at demo/checkout.js:18 in chargePayment                    
+      │                   └── » order A-101: charged $161                                                     
+      ├── #3 POST /order +2 internal                                                                          
+      │   ├── → POST /order                                                                                   
+      │   └── FSREQCALLBACK at demo/checkout.js:9 in loadCart                                                 
+      │       └── FSREQCALLBACK +2 internal                                                                   
+      │           ├── ✎ currentCart = {"order":"A-101","items":[{"sku":"kbd-01","pric… →                      
+      │           │   {"order":"B-202","items":[{"sku":"dock-04","pri…  demo/checkout.js:12:5                 
+      │           └── Timeout paymentConfirmed at demo/checkout.js:18 in chargePayment ✖                      
+      │               ├── ✖ TypeError: Cannot read properties of undefined (reading 'price')                  
+      │               │   demo/checkout.js:23                                                                 
+      │               └── ◉ exit 1                                                                            
+      └── #4 POST /order +2 internal                                                                          
+          ├── → POST /order                                                                                   
+          ├── ← 200 POST /order 27.7ms                                                                        
+          └── FSREQCALLBACK at demo/checkout.js:9 in loadCart                                                 
+              └── FSREQCALLBACK +2 internal                                                                   
+                  ├── ✎ currentCart = {"order":"B-202","items":[{"sku":"dock-04","pri… →                      
+                  │   {"order":"C-303","items":[{"sku":"cable-03","pr…  demo/checkout.js:12:5                 
+                  └── Timeout paymentConfirmed at demo/checkout.js:18 in chargePayment                        
+                      └── » order C-303: charged $11                                                          
+
+  107 quiet async resources with no observable effect hidden (--full shows all)

@@ -1,0 +1,61 @@
+  [1;38;2;127;90;240m◂◂[0m [1mdiff[0m  [38;2;126;126;140mA[0m run [38;2;127;90;240m472d0408[0m ([1mgood[0m)  [38;2;126;126;140m·[0m  [38;2;126;126;140mB[0m run 
+[38;2;127;90;240mc68f09f8[0m ([1mbad[0m)
+
+  [1mfindings[0m [38;2;126;126;140m┈┈┈[0m [1m●[0m [38;2;126;126;140mobserved[0m  [38;2;127;90;240m◆[0m [38;2;126;126;140mderived[0m  [3;38;2;126;126;140m? [0m
+[3;38;2;126;126;140minferred[0m
+  [38;2;127;90;240m◆[0m 14 of 21 (A) / 20 (B) normalised [38;2;126;126;140m         [0m
+    steps line up                    [38;2;126;126;140m         [0m
+  [38;2;127;90;240m◆[0m identical up to and including:   [38;2;126;126;140mA seq 156[0m
+    #2 ✎ currentCart = @             [38;2;126;126;140m         [0m
+    demo/checkout.js:12:5            [38;2;126;126;140m         [0m
+  [1m●[0m [1mnext, A does: #2 ▸ Timeout [0m      [38;2;126;126;140mA seq 159[0m
+    [1mpaymentConfirmed from [0m           [38;2;126;126;140m         [0m
+    [1mchargePayment @ [0m                 [38;2;126;126;140m         [0m
+    [1mdemo/checkout.js:18[0m              [38;2;126;126;140m         [0m
+  [1m●[0m [1mnext, B does: #3 http.in POST [0m   [38;2;126;126;140mB seq 215[0m
+    [1m/order[0m                           [38;2;126;126;140m         [0m
+  [38;2;127;90;240m◆[0m that step also happens in A, but [38;2;126;126;140mA seq 224[0m
+    3 step(s) later: the             [38;2;126;126;140m         [0m
+    interleaving changed, not the    [38;2;126;126;140m         [0m
+    code path                        [38;2;126;126;140m         [0m
+  [38;2;127;90;240m◆[0m 3 step(s) occur in both runs at  [38;2;126;126;140m         [0m
+    different positions (reordered)  [38;2;126;126;140m         [0m
+  [38;2;127;90;240m◆[0m 4 step(s) only in A, e.g. #2 log [38;2;126;126;140mA seq 160[0m
+    order A-101: charged $128        [38;2;126;126;140m         [0m
+  [38;2;127;90;240m◆[0m 3 step(s) only in B, e.g. #2 log [38;2;126;126;140mB seq 260[0m
+    order A-101: charged $161        [38;2;126;126;140m         [0m
+  [3;38;2;126;126;140m?[0m [3;38;2;126;126;140mrun B fails and A does not. The [0m [38;2;126;126;140mB seq 449[0m
+    [3;38;2;126;126;140mfirst divergence above is the [0m   [38;2;126;126;140m         [0m
+    [3;38;2;126;126;140mearliest observable point where [0m [38;2;126;126;140m         [0m
+    [3;38;2;126;126;140mthey part ways; it is the place [0m [38;2;126;126;140m         [0m
+    [3;38;2;126;126;140mto start, not necessarily the [0m   [38;2;126;126;140m         [0m
+    [3;38;2;126;126;140mcause. Run `rewind why` on B for[0m [38;2;126;126;140m         [0m
+    [3;38;2;126;126;140mthe causal story.[0m                [38;2;126;126;140m         [0m
+
+  [1maligned steps[0m [38;2;126;126;140m┈┈┈[0m [38;2;126;126;140m- only in A   + only in B [0m
+[38;2;126;126;140mseq from A, or B on + lines[0m
+  [38;2;126;126;140m  ·····  3 identical steps[0m
+  [38;2;126;126;140m [0m [38;2;126;126;140m  146[0m  [38;2;126;126;140m#2 ▸ FSREQCALLBACK from loadCart @…[0m
+  [38;2;126;126;140m [0m [38;2;126;126;140m  156[0m  [38;2;126;126;140m#2 ✎ currentCart = @ demo/checkout…[0m
+  [1;38;2;127;90;240m  ▼ first divergence[0m [38;2;127;90;240m┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈[0m
+  [38;2;229;72;77m-[0m [38;2;126;126;140m  159[0m  [38;2;229;72;77m#2 ▸ Timeout paymentConfirmed from…[0m
+  [38;2;229;72;77m-[0m [38;2;126;126;140m  160[0m  [38;2;229;72;77m#2 log order A-101: charged $128[0m
+  [38;2;229;72;77m-[0m [38;2;126;126;140m  173[0m  [38;2;229;72;77m#2 http.out 200 POST /order[0m
+  [38;2;126;126;140m [0m [38;2;126;126;140m  224[0m  [38;2;126;126;140m#3 http.in POST /order[0m
+  [38;2;126;126;140m [0m [38;2;126;126;140m  253[0m  [38;2;126;126;140m#3 ▸ FSREQCALLBACK from loadCart @…[0m
+  [38;2;126;126;140m [0m [38;2;126;126;140m  263[0m  [38;2;126;126;140m#3 ✎ currentCart = @ demo/checkout…[0m
+  [38;2;229;72;77m-[0m [38;2;126;126;140m  268[0m  [38;2;229;72;77m#3 ▸ Timeout paymentConfirmed from…[0m
+  [38;2;229;72;77m-[0m [38;2;126;126;140m  269[0m  [38;2;229;72;77m#3 log order B-202: charged $186[0m
+  [38;2;229;72;77m-[0m [38;2;126;126;140m  282[0m  [38;2;229;72;77m#3 http.out 200 POST /order[0m
+  [38;2;35;144;92m+[0m [38;2;126;126;140m  259[0m  [38;2;35;144;92m#2 ▸ Timeout paymentConfirmed from…[0m
+  [38;2;35;144;92m+[0m [38;2;126;126;140m  260[0m  [38;2;35;144;92m#2 log order A-101: charged $161[0m
+  [38;2;35;144;92m+[0m [38;2;126;126;140m  274[0m  [38;2;35;144;92m#2 http.out 200 POST /order[0m
+  [38;2;126;126;140m [0m [38;2;126;126;140m  333[0m  [38;2;126;126;140m#4 http.in POST /order[0m
+  [38;2;126;126;140m [0m [38;2;126;126;140m  362[0m  [38;2;126;126;140m#4 ▸ FSREQCALLBACK from loadCart @…[0m
+  [38;2;126;126;140m  ·····  2 identical steps[0m
+  [38;2;126;126;140m [0m [38;2;126;126;140m  376[0m  [38;2;126;126;140m#4 log order C-303: charged $11[0m
+  [38;2;126;126;140m [0m [38;2;126;126;140m  388[0m  [38;2;126;126;140m#4 http.out 200 POST /order[0m
+  [38;2;229;72;77m-[0m [38;2;126;126;140m  443[0m  [38;2;229;72;77mrun.end exit 0[0m
+  [38;2;35;144;92m+[0m [38;2;126;126;140m  448[0m  [38;2;35;144;92m#3 ▸ Timeout paymentConfirmed from…[0m
+  [38;2;35;144;92m+[0m [38;2;126;126;140m  449[0m  [38;2;35;144;92m#3 error.uncaught Cannot read prop…[0m
+  [38;2;35;144;92m+[0m [38;2;126;126;140m  450[0m  [38;2;35;144;92mrun.end exit 1[0m

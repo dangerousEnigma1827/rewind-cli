@@ -1,0 +1,13 @@
+  [1;38;2;127;90;240m◂◂[0m [1masync tree[0m  run [38;2;127;90;240mc68f09f8[0m ([1mbad[0m)  [38;2;126;126;140m· who scheduled whom[0m
+
+  [38;2;125;138;46m#3[0m [1mPOST /order[0m                                                                                              
+  [38;2;126;126;140m├── [0m→ POST /order                                                                                           
+  [38;2;126;126;140m└── [0m[38;2;126;126;140mFSREQCALLBACK[0m [38;2;126;126;140mat[0m demo/checkout.js:9 [38;2;126;126;140min loadCart[0m                                                         
+  [38;2;126;126;140m    [0m[38;2;126;126;140m└── [0m[38;2;126;126;140mFSREQCALLBACK[0m [38;2;126;126;140m+2 internal[0m                                                                           
+  [38;2;126;126;140m    [0m[38;2;126;126;140m    [0m[38;2;126;126;140m├── [0m[38;2;168;116;31m✎[0m [1mcurrentCart[0m = [38;2;126;126;140m{"order":"A-101","items":[{"sku":"kbd-01","pric… →[0m                              
+  [38;2;126;126;140m    [0m[38;2;126;126;140m    [0m[38;2;126;126;140m│   [0m{"order":"B-202","items":[{"sku":"dock-04","pri…  demo/checkout.js:12:5                         
+  [38;2;126;126;140m    [0m[38;2;126;126;140m    [0m[38;2;126;126;140m└── [0m[38;2;126;126;140mTimeout[0m [1mpaymentConfirmed[0m [38;2;126;126;140mat[0m demo/checkout.js:18 [38;2;126;126;140min chargePayment[0m [1;38;2;229;72;77m✖[0m                              
+  [38;2;126;126;140m    [0m[38;2;126;126;140m    [0m[38;2;126;126;140m    [0m[38;2;126;126;140m├── [0m[1;38;2;229;72;77m✖[0m [38;2;229;72;77mTypeError: Cannot read properties of undefined (reading 'price')[0m  demo/checkout.js:23     
+  [38;2;126;126;140m    [0m[38;2;126;126;140m    [0m[38;2;126;126;140m    [0m[38;2;126;126;140m└── [0m[38;2;127;90;240m◉[0m exit 1                                                                                    
+
+  [38;2;126;126;140m1 quiet async resource with no observable effect hidden (--full shows all)[0m

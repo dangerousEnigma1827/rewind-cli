@@ -1,0 +1,5 @@
+  ◂◂ recording 472d0408  node demo/traffic.js --sequential  watch=currentCart
+order A-101: charged $128
+order B-202: charged $186
+order C-303: charged $11
+  ● recorded run 472d0408 good  444 events · no errors · exit 0 · ok  0.5s

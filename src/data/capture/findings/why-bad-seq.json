@@ -1,0 +1,136 @@
+{
+ "run": "c68f09f8",
+ "target": 260,
+ "request": 2,
+ "findings": [
+  {
+   "level": "observed",
+   "text": "log: order A-101: charged $161",
+   "evidence": [
+    260
+   ],
+   "run": null
+  },
+  {
+   "level": "observed",
+   "text": "ran inside the callback of Timeout paymentConfirmed from chargePayment, created at demo/checkout.js:18",
+   "evidence": [
+    178,
+    260
+   ],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "causal chain: Timeout paymentConfirmed from chargePayment (demo/checkout.js:18) ← FSREQCALLBACK from loadCart (demo/checkout.js:9) ← request #2 POST /order",
+   "evidence": [
+    178,
+    159,
+    136
+   ],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "belongs to request #2 POST /order: its async ancestry reaches that request's handler",
+   "evidence": [
+    138
+   ],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "request #3 POST /order was active while #2 POST /order was in flight (arrived, wrote state)",
+   "evidence": [
+    215,
+    254
+   ],
+   "run": null
+  },
+  {
+   "level": "observed",
+   "text": "last write to `currentCart` before this point: `currentCart` = at demo/checkout.js:12:5, new value {\"order\":\"B-202\",\"items\":[{\"sku\":\"dock-04\",\"price\":149},{\"sku\":\"cable-03\",\"price\":12},{\"sku\":\"mat-05\",\"price\":25}]}",
+   "evidence": [
+    254
+   ],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "that write was made by request #3 POST /order",
+   "evidence": [
+    254
+   ],
+   "run": null
+  },
+  {
+   "level": "derived",
+   "text": "#2 POST /order set `currentCart` itself (seq 177); request #3 overwrote it (seq 254) before this point (seq 260)",
+   "evidence": [
+    177,
+    254,
+    260
+   ],
+   "run": null
+  },
+  {
+   "level": "inferred",
+   "text": "if #2 POST /order read `currentCart` after seq 254, it got request #3's data, not its own: a likely race between concurrent requests. (Reads are not recorded, so this is not proven.)",
+   "evidence": [
+    177,
+    254,
+    260
+   ],
+   "run": null
+  }
+ ],
+ "chain": [
+  {
+   "seq": 178,
+   "aid": 66,
+   "type": "Timeout",
+   "name": "paymentConfirmed",
+   "describe": "Timeout paymentConfirmed from chargePayment",
+   "site": {
+    "fn": "chargePayment",
+    "file": "demo/checkout.js",
+    "line": 18,
+    "col": 3
+   },
+   "request": null
+  },
+  {
+   "seq": 159,
+   "aid": 61,
+   "type": "FSREQCALLBACK",
+   "name": null,
+   "describe": "FSREQCALLBACK from loadCart",
+   "site": {
+    "fn": "loadCart",
+    "file": "demo/checkout.js",
+    "line": 9,
+    "col": 6
+   },
+   "request": null
+  },
+  {
+   "seq": 136,
+   "aid": 58,
+   "type": "REWIND_REQUEST",
+   "name": null,
+   "describe": "request #2 POST /order",
+   "site": null,
+   "request": 2
+  }
+ ],
+ "branch": [
+  138,
+  177,
+  260
+ ],
+ "provenance": {
+  "findings[].level": "copied from Finding.level",
+  "chain": "derived",
+  "branch": "derived"
+ }
+}

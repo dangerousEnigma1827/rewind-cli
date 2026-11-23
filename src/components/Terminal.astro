@@ -1,0 +1,19 @@
+---
+// A captured terminal block, rendered statically by the one renderer (lib/terminal.ts). No JS.
+// `ansi` is a whole capture per width; `lines` is an already-cut excerpt of one (the hero).
+import { renderSpans, type TermLine } from '../lib/terminal';
+import CommandLine from './CommandLine.astro';
+
+interface Props { command: string; ansi?: Record<number, string>; lines?: Record<number, TermLine[]>; diff?: boolean; label?: string }
+const { command, ansi, lines, diff = false, label } = Astro.props;
+const byWidth: Record<number, TermLine[]> = lines ?? Object.fromEntries(Object.entries(ansi!).map(([w, a]) => [w, renderSpans(a, { diff })]));
+const widths = Object.keys(byWidth).map(Number).sort((a, b) => b - a);
+---
+<figure class="term" aria-label={label ?? `Output of ${command}`}>
+  <CommandLine command={command} />
+  {widths.map((w) => (
+    <pre class={`w${w}`} translate="no" tabindex="0">{byWidth[w].map((l) => (
+      <>{l.segs.map((s) => (s.cls ? <span class={s.cls}>{s.text}</span> : s.text))}{'\n'}</>
+    ))}</pre>
+  ))}
+</figure>

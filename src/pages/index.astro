@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Section from '../components/Section.astro';
+import Hero from '../components/Hero.astro';
+import Scenario from '../components/Scenario.astro';
+import InvestigationSection from '../components/InvestigationSection.astro';
+import Footer from '../components/Footer.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import BuiltOnEvidence from '../components/BuiltOnEvidence.astro';
+import Limits from '../components/Limits.astro';
+import GetStarted from '../components/GetStarted.astro';
+import render from '../data/capture/source/render.json';
+import { orders, steps } from '../lib/investigation';
+---
+<Base title="Rewind · Postmortem debugging for asynchronous Node.js" description={`${render.TAGLINE} An interactive walk through a real investigation, with real output.`}>
+  <Nav />
+  <main id="main">
+    <Hero />
+    <Section id="scenario" tag="the bug" title="The Phantom Discount"
+      lede={`A tiny checkout service keeps one cart in a module-level variable. ${orders().length} orders arrive close together, and the requests overwrite each other’s cart.`}>
+      <Scenario />
+    </Section>
+    <Section id="investigate" tag="investigate" title="Investigation"
+      lede={`${steps().length} steps, each a real command with its real output. Hover, focus or tap any seq to see the recorded event behind it.`}>
+      <InvestigationSection />
+    </Section>
+    <Section id="how" tag="mechanism" title="How it works"
+      lede="A preloaded recorder writes facts as the program runs. Python reads them afterwards and does all the interpreting.">
+      <HowItWorks />
+    </Section>
+    <Section id="evidence" tag="credibility" title="Built on evidence"
+      lede="The main design choices were tested in experiments before they were built, and the experiments are written up with their numbers.">
+      <BuiltOnEvidence />
+    </Section>
+    <Section id="limits" tag="scope" title="Limits"
+      lede="What Rewind records, what it does not, and what has not been tested.">
+      <Limits />
+    </Section>
+    <Section id="start" tag="try it" title="Get started"
+      lede="Clone Rewind, install it, and run the tour on the demo that ships with it.">
+      <GetStarted />
+    </Section>
+  </main>
+  <Footer />
+</Base>

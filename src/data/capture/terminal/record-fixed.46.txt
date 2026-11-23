@@ -1,0 +1,7 @@
+  ◂◂ recording 08e3540f  node demo/traffic.js 
+watch=currentCart
+order A-101: charged $128
+order C-303: charged $11
+order B-202: charged $186
+  ● recorded run 08e3540f fixed  515 events · 
+no errors · exit 0 · ok  0.4s

@@ -1,0 +1,35 @@
+---
+// §4.1 #6: what Rewind captures and what it doesn't, shown in full, in a neutral tone.
+import { captures, notCaptured, untested, overhead } from '../lib/depth';
+import { blob, short } from '../lib/site';
+---
+<div class="cols">
+  <div>
+    <h3>Captures</h3>
+    <ul>{captures.map((c) => <li>{c.text}</li>)}</ul>
+  </div>
+  <div>
+    <h3>Does not capture</h3>
+    <ul>{notCaptured.map((c) => <li>{c.text}</li>)}</ul>
+  </div>
+</div>
+<div class="cols">
+  <div>
+    <h3>Not tested</h3>
+    <ul>{untested.map((c) => <li>{c.text}</li>)}</ul>
+  </div>
+  <div>
+    <h3>Overhead</h3>
+    <p>{overhead.text}</p>
+  </div>
+</div>
+<p class="prov">From Rewind’s <a href={blob('README.md')}>README</a> and <a href={blob('docs/handover/FEATURES_AND_LIMITATIONS.md')}>FEATURES_AND_LIMITATIONS.md</a> at rewind@{short}; each line is mapped to its source in docs/claims.md</p>
+
+<style>
+  .cols { display: grid; gap: 1rem 2.5rem; margin-bottom: 1.5rem; }
+  @media (min-width: 768px) { .cols { grid-template-columns: 1fr 1fr; } }
+  h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
+  ul { margin: 0; padding-left: 1.25rem; display: grid; gap: 0.4rem; }
+  p { margin: 0; max-width: 62ch; }
+  .prov { font: 400 0.75rem/1.4 var(--font-mono); color: var(--ink-mute); }
+</style>

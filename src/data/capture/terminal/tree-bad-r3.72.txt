@@ -1,0 +1,18 @@
+  ◂◂ async tree  run c68f09f8 (bad)  · who scheduled whom
+
+  #3 POST /order                                                        
+  ├── → POST /order                                                     
+  └── FSREQCALLBACK at demo/checkout.js:9 in loadCart                   
+      └── FSREQCALLBACK +2 internal                                     
+          ├── ✎ currentCart =                                           
+          │   {"order":"A-101","items":[{"sku":"kbd-01","pric… →        
+          │   {"order":"B-202","items":[{"sku":"dock-04","pri…          
+          │   demo/checkout.js:12:5                                     
+          └── Timeout paymentConfirmed at demo/checkout.js:18 in        
+              chargePayment ✖                                           
+              ├── ✖ TypeError: Cannot read properties of undefined      
+              │   (reading 'price')  demo/checkout.js:23                
+              └── ◉ exit 1                                              
+
+  1 quiet async resource with no observable effect hidden (--full shows 
+all)

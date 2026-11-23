@@ -1,0 +1,236 @@
+{
+ "run": "c68f09f8",
+ "pruned": 107,
+ "root": {
+  "aid": 1,
+  "type": null,
+  "name": null,
+  "request": null,
+  "site": null,
+  "hidden": 0,
+  "events": [],
+  "children": [
+   {
+    "aid": 6,
+    "type": "TCPSERVERWRAP",
+    "name": null,
+    "request": null,
+    "site": {
+     "fn": "<anonymous>",
+     "file": "demo/traffic.js",
+     "line": 26,
+     "col": 31
+    },
+    "hidden": 0,
+    "events": [],
+    "children": [
+     {
+      "aid": 22,
+      "type": "HTTPINCOMINGMESSAGE",
+      "name": null,
+      "request": null,
+      "site": null,
+      "hidden": 1,
+      "events": [],
+      "children": [
+       {
+        "aid": 24,
+        "type": "REWIND_REQUEST",
+        "name": null,
+        "request": 1,
+        "site": null,
+        "hidden": 0,
+        "events": [
+         43,
+         59
+        ],
+        "children": []
+       },
+       {
+        "aid": 58,
+        "type": "REWIND_REQUEST",
+        "name": null,
+        "request": 2,
+        "site": null,
+        "hidden": 0,
+        "events": [
+         138,
+         274
+        ],
+        "children": [
+         {
+          "aid": 61,
+          "type": "FSREQCALLBACK",
+          "name": null,
+          "request": null,
+          "site": {
+           "fn": "loadCart",
+           "file": "demo/checkout.js",
+           "line": 9,
+           "col": 6
+          },
+          "hidden": 0,
+          "events": [],
+          "children": [
+           {
+            "aid": 65,
+            "type": "FSREQCALLBACK",
+            "name": null,
+            "request": null,
+            "site": null,
+            "hidden": 2,
+            "events": [
+             177
+            ],
+            "children": [
+             {
+              "aid": 66,
+              "type": "Timeout",
+              "name": "paymentConfirmed",
+              "request": null,
+              "site": {
+               "fn": "chargePayment",
+               "file": "demo/checkout.js",
+               "line": 18,
+               "col": 3
+              },
+              "hidden": 0,
+              "events": [
+               260
+              ],
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "aid": 80,
+      "type": "REWIND_REQUEST",
+      "name": null,
+      "request": 3,
+      "site": null,
+      "hidden": 2,
+      "events": [
+       215
+      ],
+      "children": [
+       {
+        "aid": 83,
+        "type": "FSREQCALLBACK",
+        "name": null,
+        "request": null,
+        "site": {
+         "fn": "loadCart",
+         "file": "demo/checkout.js",
+         "line": 9,
+         "col": 6
+        },
+        "hidden": 0,
+        "events": [],
+        "children": [
+         {
+          "aid": 87,
+          "type": "FSREQCALLBACK",
+          "name": null,
+          "request": null,
+          "site": null,
+          "hidden": 2,
+          "events": [
+           254
+          ],
+          "children": [
+           {
+            "aid": 88,
+            "type": "Timeout",
+            "name": "paymentConfirmed",
+            "request": null,
+            "site": {
+             "fn": "chargePayment",
+             "file": "demo/checkout.js",
+             "line": 18,
+             "col": 3
+            },
+            "hidden": 0,
+            "events": [
+             449,
+             450
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "aid": 115,
+      "type": "REWIND_REQUEST",
+      "name": null,
+      "request": 4,
+      "site": null,
+      "hidden": 2,
+      "events": [
+       351,
+       406
+      ],
+      "children": [
+       {
+        "aid": 118,
+        "type": "FSREQCALLBACK",
+        "name": null,
+        "request": null,
+        "site": {
+         "fn": "loadCart",
+         "file": "demo/checkout.js",
+         "line": 9,
+         "col": 6
+        },
+        "hidden": 0,
+        "events": [],
+        "children": [
+         {
+          "aid": 122,
+          "type": "FSREQCALLBACK",
+          "name": null,
+          "request": null,
+          "site": null,
+          "hidden": 2,
+          "events": [
+           390
+          ],
+          "children": [
+           {
+            "aid": 123,
+            "type": "Timeout",
+            "name": "paymentConfirmed",
+            "request": null,
+            "site": {
+             "fn": "chargePayment",
+             "file": "demo/checkout.js",
+             "line": 18,
+             "col": 3
+            },
+            "hidden": 0,
+            "events": [
+             394
+            ],
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "provenance": "derived"
+}

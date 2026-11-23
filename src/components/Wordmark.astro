@@ -1,0 +1,23 @@
+---
+// Rewind's own wordmark: render.WORDMARK (half blocks drawn from render.LETTERS), rows light → deep violet like
+// render._splash. Below 45 columns' room it falls back to the compact mark, as render.py does.
+import render from '../data/capture/source/render.json';
+interface Props { size?: 'large' | 'small' }
+const { size = 'large' } = Astro.props;
+const tones = ['uv-hi', 'uv', 'uv-lo'];
+---
+<div class={`wordmark ${size}`} role="img" aria-label="Rewind">
+  {size === 'large' && <pre class="full" aria-hidden="true">{render.WORDMARK.map((row, i) => <span class={`wm-${tones[i]}`}>{row}{'\n'}</span>)}</pre>}
+  <span class="compact" aria-hidden="true" translate="no"><b>◂◂</b> r e w i n d</span>
+</div>
+
+<style>
+  .wordmark { container-type: inline-size; font-family: var(--font-mono); }
+  pre { margin: 0; font: 400 15px/1 var(--font-mono); letter-spacing: 0; }
+  .wm-uv-hi { color: var(--p-uv-hi); } .wm-uv { color: var(--p-uv); } .wm-uv-lo { color: var(--p-uv-lo); }
+  .compact { display: none; font: 400 1rem/1 var(--font-mono); color: var(--text); }
+  .compact b { color: var(--p-uv); }
+  .small .compact { display: inline; }
+  /* 45 cells at 15px × 0.6em: below that room, the compact mark */
+  @container (max-width: 405px) { .full { display: none; } .compact { display: inline; } }
+</style>

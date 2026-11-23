@@ -1,0 +1,130 @@
+  ◂◂ why  run c68f09f8 (bad)  · error 1 of 1
+
+  ✖ TypeError  Cannot read properties of 
+undefined (reading 'price')
+    demo/checkout.js:23  in applyDiscount
+      23 │ for (let i = 0; i < 
+order.items.length; i++) total += 
+currentCart.items[i].price;
+
+  findings ┈┈┈ ● observed  ◆ derived  ? 
+inferred
+  ● TypeError: Cannot                  seq 449
+    read properties of                        
+    undefined (reading                        
+    'price')  (uncaught                       
+    exception)                                
+  ● thrown in                          seq 449
+    applyDiscount at                          
+    demo/checkout.js:23                       
+  ● ran inside the                seq 255, 449
+    callback of Timeout                       
+    paymentConfirmed                          
+    from chargePayment,                       
+    created at                                
+    demo/checkout.js:18                       
+  ◆ causal chain:            seq 255, 236, 213
+    Timeout                                   
+    paymentConfirmed                          
+    from chargePayment                        
+    (demo/checkout.js:1                       
+    8) ← FSREQCALLBACK                        
+    from loadCart                             
+    (demo/checkout.js:9                       
+    ) ← request #3 POST                       
+    /order                                    
+  ◆ belongs to request                 seq 215
+    #3 POST /order: its                       
+    async ancestry                            
+    reaches that                              
+    request's handler                         
+  ◆ request #2 POST               seq 260, 274
+    /order was active                         
+    while #3 POST                             
+    /order was in                             
+    flight (logged,                           
+    responded)                                
+  ◆ request #4 POST     seq 351, 390, 394, 406
+    /order was active                         
+    while #3 POST                             
+    /order was in                             
+    flight (arrived,                          
+    logged, responded,                        
+    wrote state)                              
+  ◆ the failing line                   seq 449
+    reads watched                             
+    variable                                  
+    `currentCart`:  for                       
+    (let i = 0; i <                           
+    order.items.length;                       
+    i++) total +=                             
+    currentCart.items[i                       
+    ].price;                                  
+  ● last write to                      seq 390
+    `currentCart`                             
+    before this point:                        
+    `currentCart` = at                        
+    demo/checkout.js:12                       
+    :5, new value                             
+    {"order":"C-303","i                       
+    tems":[{"sku":"cabl                       
+    e-03","price":12}]}                       
+  ◆ that write was made                seq 390
+    by request #4 POST                        
+    /order                                    
+  ◆ #3 POST /order set       seq 254, 390, 449
+    `currentCart`                             
+    itself (seq 254);                         
+    request #4                                
+    overwrote it (seq                         
+    390) before this                          
+    point (seq 449)                           
+  ? likely root cause:       seq 254, 390, 449
+    a race on shared                          
+    module-level state.                       
+    Another request                           
+    overwrote it                              
+    between this                              
+    request's own write                       
+    and its read, so                          
+    this request                              
+    computed with                             
+    another request's                         
+    data. Fix: keep                           
+    this state per                            
+    request instead of                        
+    in a module-level                         
+    variable.                                 
+
+  causal chain ┈┈┈┈┈┈┈┈┈┈┈┈ innermost first
+    Timeout paymentConfirmed  scheduled in 
+chargePayment demo/checkout.js:18
+  ↑ FSREQCALLBACK  scheduled in loadCart 
+demo/checkout.js:9
+  ↑ #3 POST /order
+
+  story of request #3 POST /order ┈┈┈ + other 
+requests' writes to watched variables
+  seq     ms     req     event                
+  215  107.1  │  #3   →  POST /order          
+  254  109.3  │  #3   ✎  currentCart =        
+                         {"order":"A-101","ite
+                         ms":[{"sku":"kbd-01",
+                         "pric… →             
+                         {"order":"B-202","ite
+                         ms":[{"sku":"dock-04"
+                         ,"pri…               
+                         demo/checkout.js:12:5
+  390  171.0  │  #4   ✎  currentCart =        
+                         {"order":"B-202","ite
+                         ms":[{"sku":"dock-04"
+                         ,"pri… →             
+                         {"order":"C-303","ite
+                         ms":[{"sku":"cable-03
+                         ","pr…               
+                         demo/checkout.js:12:5
+  449  275.3  ┃  #3   ✖  TypeError: Cannot    
+                         read properties of   
+                         undefined (reading   
+                         'price')             
+                         demo/checkout.js:23  

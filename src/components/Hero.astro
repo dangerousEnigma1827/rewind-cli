@@ -1,0 +1,49 @@
+---
+// §4.1 #1: what Rewind does, and real output, on the first screen.
+import render from '../data/capture/source/render.json';
+import manifest from '../data/capture/manifest.json';
+import Wordmark from './Wordmark.astro';
+import Terminal from './Terminal.astro';
+import { heroExcerpt, tiles, REPO } from '../lib/site';
+import { WIDTHS } from '../lib/investigation';
+
+const lines = Object.fromEntries(WIDTHS.map((w) => [w, heroExcerpt(w)]));
+---
+<section id="top" class="hero" aria-labelledby="top-title">
+  <div class="intro">
+    <Wordmark />
+    <h1 id="top-title">Record a Node.js run once. Then ask <em>why</em>.</h1>
+    <p class="sub">{render.TAGLINE} Rewind records which request scheduled what, then explains a failure with graded evidence: <span class="lv">● observed</span>, <span class="lv d">◆ derived</span>, <span class="lv i">? inferred</span>.</p>
+    <div class="actions">
+      <a class="btn primary" href="#investigate">Investigate the bug</a>
+      <a class="btn" href={REPO}>GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+    <ul class="tiles">
+      {tiles.map((t) => <li><span class="big num" translate="no">{t.big}</span> <span>{t.text}</span></li>)}
+    </ul>
+  </div>
+  <div class="exhibit">
+    <Terminal command={manifest.views['why-bad'].command} lines={lines} label="Excerpt of rewind why bad --evidence: five of its findings, verbatim" />
+    <p class="prov">Excerpt: five of the run’s findings, verbatim from the capture. The full report is step 3 of the investigation.</p>
+  </div>
+</section>
+
+<style>
+  .hero { max-width: var(--page-max); margin-inline: auto; padding: 3rem var(--gutter) 4rem; display: grid; gap: 2.5rem; }
+  @media (min-width: 960px) { .hero { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); align-items: start; padding-top: 4rem; } }
+  h1 { margin: 1.5rem 0 1rem; }
+  .sub { margin: 0; max-width: 52ch; font-size: 1.125rem; }
+  .lv { font-family: var(--font-mono); font-size: 0.9em; white-space: nowrap; font-weight: 700; }
+  .lv.d { color: var(--ink-uv); font-weight: 400; }
+  .lv.i { color: var(--ink-mute); font-style: italic; font-weight: 400; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 2rem 0; }
+  .btn { display: inline-flex; align-items: center; gap: 0.5ch; min-height: 44px; padding: 0 1.25rem; border-radius: 6px; border: 1px solid var(--rule); color: var(--text); text-decoration: none; font-weight: 500; transition: transform 100ms var(--ease-out); }
+  .btn.primary { background: var(--ink-uv); border-color: var(--ink-uv); color: var(--surface); }
+  .btn:active { transform: scale(0.97); }
+  @media (hover: hover) and (pointer: fine) { .btn:hover { border-color: var(--mark-uv); } }
+  .tiles { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+  .tiles li { display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: 1rem; align-items: baseline; border-top: 1px dotted var(--rule); padding-top: 0.75rem; font-size: 0.9375rem; }
+  .big { font: 600 1.375rem/1 var(--font-mono); white-space: nowrap; }
+  .exhibit { min-width: 0; }
+  .prov { margin: 0.5rem 0 0; font: 400 0.75rem/1.4 var(--font-mono); color: var(--ink-mute); }
+</style>

@@ -1,0 +1,22 @@
+---
+// Section head: a tag, a short title that names the thing, and one sentence on the mechanism (§5.7).
+interface Props { id: string; title: string; tag?: string; lede?: string }
+const { id, title, tag, lede } = Astro.props;
+---
+<section id={id} aria-labelledby={`${id}-title`}>
+  {tag && <p class="rule-label tag">{tag}</p>}
+  <h2 id={`${id}-title`}>{title}</h2>
+  {lede && <p class="lede">{lede}</p>}
+  <slot />
+</section>
+
+<style>
+  section {
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding: 4rem var(--gutter);
+  }
+  .tag { color: var(--ink-uv); margin: 0 0 0.75rem; }
+  h2 { margin: 0 0 0.75rem; }
+  .lede { margin: 0 0 2rem; max-width: 68ch; font-size: 1.0625rem; color: var(--text); }
+</style>

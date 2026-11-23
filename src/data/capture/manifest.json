@@ -1,0 +1,193 @@
+{
+ "schema_version": 1,
+ "rewind": {
+  "sha": "388fe457558ec7c145b76572731f86e07839bbf0",
+  "short": "388fe45",
+  "version": "0.1.0",
+  "repo": "https://github.com/dangerousEnigma1827/Rewind"
+ },
+ "captured_at": "2026-11-23T12:44:38+00:00",
+ "platform": {
+  "os": "Windows",
+  "release": "11",
+  "node": "v24.22.1",
+  "python": "3.15.2",
+  "rich": "15.0.0",
+  "typer": "0.29.2"
+ },
+ "widths": [
+  110,
+  72,
+  46
+ ],
+ "plain_node": {
+  "command": "node demo/traffic.js",
+  "exit_code": 1
+ },
+ "runs": {
+  "bad": {
+   "id": "c68f09f8",
+   "label": "bad",
+   "command": "rewind record -l bad -w currentCart -- node demo/traffic.js",
+   "exit_code": 1,
+   "status": "failed",
+   "event_count": 451,
+   "error_count": 1,
+   "watch": [
+    "currentCart"
+   ]
+  },
+  "nowatch": {
+   "id": "8532372a",
+   "label": "nowatch",
+   "command": "rewind record -l nowatch -- node demo/traffic.js",
+   "exit_code": 1,
+   "status": "failed",
+   "event_count": 425,
+   "error_count": 1,
+   "watch": []
+  },
+  "good": {
+   "id": "472d0408",
+   "label": "good",
+   "command": "rewind record -l good -w currentCart -- node demo/traffic.js --sequential",
+   "exit_code": 0,
+   "status": "ok",
+   "event_count": 444,
+   "error_count": 0,
+   "watch": [
+    "currentCart"
+   ]
+  },
+  "fixed": {
+   "id": "08e3540f",
+   "label": "fixed",
+   "command": "rewind record -l fixed -w currentCart -- node demo/traffic.js",
+   "exit_code": 0,
+   "status": "ok",
+   "event_count": 515,
+   "error_count": 0,
+   "watch": [
+    "currentCart"
+   ]
+  }
+ },
+ "views": {
+  "record-bad": {
+   "command": "rewind record -l bad -w currentCart -- node demo/traffic.js",
+   "runs": [
+    "bad"
+   ]
+  },
+  "record-nowatch": {
+   "command": "rewind record -l nowatch -- node demo/traffic.js",
+   "runs": [
+    "nowatch"
+   ]
+  },
+  "record-good": {
+   "command": "rewind record -l good -w currentCart -- node demo/traffic.js --sequential",
+   "runs": [
+    "good"
+   ]
+  },
+  "record-fixed": {
+   "command": "rewind record -l fixed -w currentCart -- node demo/traffic.js",
+   "runs": [
+    "fixed"
+   ]
+  },
+  "why-bad": {
+   "command": "rewind why bad --evidence",
+   "runs": [
+    "bad"
+   ]
+  },
+  "why-bad-seq": {
+   "command": "rewind why bad --seq 260",
+   "runs": [
+    "bad"
+   ]
+  },
+  "why-nowatch": {
+   "command": "rewind why nowatch",
+   "runs": [
+    "nowatch"
+   ]
+  },
+  "timeline-bad": {
+   "command": "rewind timeline bad",
+   "runs": [
+    "bad"
+   ]
+  },
+  "timeline-bad-r3": {
+   "command": "rewind timeline bad -r 3 -c",
+   "runs": [
+    "bad"
+   ]
+  },
+  "tree-bad": {
+   "command": "rewind tree bad",
+   "runs": [
+    "bad"
+   ]
+  },
+  "tree-bad-r3": {
+   "command": "rewind tree bad -r 3",
+   "runs": [
+    "bad"
+   ]
+  },
+  "diff-good-bad": {
+   "command": "rewind diff good bad --evidence",
+   "runs": [
+    "good",
+    "bad"
+   ]
+  },
+  "runs": {
+   "command": "rewind runs",
+   "runs": []
+  },
+  "why-fixed": {
+   "command": "rewind why fixed",
+   "runs": [
+    "fixed"
+   ]
+  }
+ },
+ "a101_log_seq": 260,
+ "normalisations": [
+  {
+   "prefix": "<workdir>",
+   "replacement": "…",
+   "files": {
+    "terminal/plain-node.txt": 4,
+    "terminal/record-bad.110.ansi": 4,
+    "terminal/record-bad.110.txt": 4,
+    "terminal/record-bad.72.ansi": 4,
+    "terminal/record-bad.72.txt": 4,
+    "terminal/record-bad.46.ansi": 4,
+    "terminal/record-bad.46.txt": 4,
+    "terminal/record-nowatch.110.ansi": 4,
+    "terminal/record-nowatch.110.txt": 4,
+    "terminal/record-nowatch.72.ansi": 4,
+    "terminal/record-nowatch.72.txt": 4,
+    "terminal/record-nowatch.46.ansi": 4,
+    "terminal/record-nowatch.46.txt": 4,
+    "runs/bad.json": 4,
+    "runs/nowatch.json": 4,
+    "runs/good.json": 1
+   }
+  },
+  {
+   "prefix": "<fixed workdir>",
+   "replacement": "…",
+   "files": {
+    "runs/fixed.json": 1
+   }
+  }
+ ],
+ "pytest": "54 passed"
+}
