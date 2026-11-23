@@ -1,0 +1,107 @@
+---
+// §4.1 #4: the pipeline, request attribution (causal chain + keep-alive), mutation tracking, and the tree.
+import whyBad from '../data/capture/findings/why-bad.json';
+import manifest from '../data/capture/manifest.json';
+import repoFiles from '../data/capture/source/repo-files.json';
+import checkout from '../data/capture/source/checkout.js?raw';
+import instrumented from '../data/capture/source/checkout.instrumented.js?raw';
+import Terminal from './Terminal.astro';
+import { pipeline, pipelineSource, keepAlive } from '../lib/depth';
+import { runModel } from '../lib/investigation';
+import { blob, captures, short } from '../lib/site';
+
+const bad = runModel('bad');
+const err = bad.events[whyBad.target];
+// The causal chain Rewind derived for the crash, innermost first, then the crash itself.
+const chain = whyBad.chain.map((h) => ({
+  title: h.request ? `request #${h.request}` : `${h.type}${h.name && h.name !== '<anonymous>' ? ' ' + h.name : ''}`,
+  sub: h.request ? bad.lanes.find((l) => l.id === h.request)!.name : `from ${h.site.fn.split('.').pop()} · ${h.site.file}:${h.site.line}`,
+}));
+const nodes = [{ title: `✖ ${err.text.split(':')[0]}`, sub: err.loc!, crash: true }, ...chain.map((c) => ({ ...c, crash: false }))];
+const line12 = [checkout.split('\n')[11], instrumented.split('\n')[11]];
+const has = new Set(repoFiles);
+const W = 340, H = 64, GAP = 30;
+---
+<div class="pipe-wrap">
+  <ol class="pipeline">
+    {pipeline.map((b, i) => (
+      <li>
+        <p class="ph"><span class="pn num">{i + 1}</span> {b.title}</p>
+        <p class="pb">{b.body}</p>
+        {b.chips.length > 0 && <p class="chips">{b.chips.filter((c) => has.has(c)).map((c) => <a class="chip" href={blob(c)} translate="no">{c}</a>)}</p>}
+      </li>
+    ))}
+  </ol>
+  <p class="prov">◇ drawn by us from docs/ARCHITECTURE.md at rewind@{short}: “{pipelineSource.quote}” · file links at that commit</p>
+</div>
+
+<div class="split">
+  <figure class="chain">
+    <svg viewBox={`0 0 ${W} ${nodes.length * (H + GAP) - GAP}`} role="img"
+      aria-label={`Causal chain of the crash, from the crash up to its request: ${nodes.map((n) => `${n.title}, ${n.sub}`).join('; then ')}`}>
+      {nodes.map((n, i) => (
+        <g transform={`translate(0 ${i * (H + GAP)})`}>
+          <rect class={n.crash ? 'n crash' : i === nodes.length - 1 ? 'n req' : 'n'} x="1" y="1" width={W - 2} height={H - 2} rx="6"
+            style={i === nodes.length - 1 ? `stroke: var(--mark-r${whyBad.request})` : undefined} />
+          <text x="14" y="26" class="t1">{n.title}</text>
+          <text x="14" y="47" class="t2">{n.sub}</text>
+          {i < nodes.length - 1 && <path class="edge" d={`M ${W / 2} ${H + 4} V ${H + GAP - 4}`} marker-end="url(#up)" />}
+        </g>
+      ))}
+      <defs><marker id="up" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="tip" /></marker></defs>
+    </svg>
+    <figcaption class="prov">◆ chain derived by Rewind (investigate) for run {manifest.runs.bad.id}, fs.readFile’s internal hops folded · ◇ drawn by us</figcaption>
+  </figure>
+  <div class="explain">
+    <h3>Which request an error belongs to</h3>
+    <p>Every recorded event carries the async id it ran in. Rewind walks that id’s trigger links upward until it reaches a request’s anchor, the way the chain on the left climbs from the crash, through the payment timer and the file read, to the request that started it. A stack trace stops at the timer.</p>
+    <p>Each request gets its own anchor because Node’s <code>HTTPINCOMINGMESSAGE</code> is per connection: under keep-alive, several requests share one. Without a per-request anchor they would be attributed to each other. That bug was found and fixed while building the demo (B12 below). Which requests happen to share a connection varies from run to run.</p>
+    <p class="prov">● “{keepAlive.quote}” — docs/ARCHITECTURE.md</p>
+  </div>
+</div>
+
+<div class="split">
+  <figure class="instr">
+    <h3>How <code>--watch</code> sees a write</h3>
+    <p>At load time, each syntactic write to a watched top-level variable is wrapped. Line 12 of checkout.js, before and after the real <code>instrument()</code> call:</p>
+    <pre translate="no"><span class="lbl">source</span>{'\n'}{line12[0]}</pre>
+    <pre translate="no"><span class="lbl">as loaded with --watch currentCart</span>{'\n'}{line12[1]}</pre>
+    <figcaption class="prov">● output of recorder/instrument.js at rewind@{short} · the line number is unchanged, so stack traces are too · reads are not wrapped: Rewind never records them</figcaption>
+  </figure>
+  <div class="tree">
+    <h3>Who scheduled whom</h3>
+    <Terminal command={manifest.views['tree-bad-r3'].command} ansi={captures('tree-bad-r3')} />
+  </div>
+</div>
+
+<style>
+  h3 { margin: 0 0 0.75rem; font-size: 1.125rem; }
+  .prov { margin: 0.5rem 0 0; font: 400 0.75rem/1.4 var(--font-mono); color: var(--ink-mute); }
+  .pipe-wrap { margin-bottom: 3rem; }
+  .pipeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.5rem; }
+  @media (min-width: 960px) { .pipeline { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.75rem; } }
+  .pipeline li { position: relative; border-top: 2px solid var(--mark-uv); padding-top: 0.75rem; min-width: 0; }
+  .pipeline li:not(:last-child)::after { content: '→'; position: absolute; right: -1.4rem; top: -0.85rem; color: var(--ink-mute); font-family: var(--font-mono); }
+  @media (max-width: 959px) { .pipeline li:not(:last-child)::after { content: '↓'; right: auto; left: 0; top: auto; bottom: -1.35rem; } }
+  .ph { margin: 0 0 0.25rem; font-weight: 600; }
+  .pn { font-family: var(--font-mono); color: var(--ink-uv); }
+  .pb { margin: 0; font-size: 0.875rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 0; }
+  .chip { display: inline-flex; align-items: center; min-height: 32px; padding: 0 0.5rem; border: 1px solid var(--rule); border-radius: 4px; font: 400 0.75rem/1 var(--font-mono); text-decoration: none; overflow-wrap: anywhere; }
+  @media (pointer: coarse) { .chip { min-height: 44px; } }
+  .split { display: grid; gap: 2rem; margin-bottom: 3rem; }
+  @media (min-width: 960px) { .split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+  figure { margin: 0; min-width: 0; }
+  .chain svg { width: 100%; max-width: 420px; height: auto; display: block; font-family: var(--font-mono); }
+  .n { fill: var(--surface-term); stroke: var(--rule); }
+  .n.crash { stroke: var(--mark-err); stroke-width: 1.5; }
+  .n.req { stroke-width: 1.5; }
+  .t1 { font-size: 14px; font-weight: 700; fill: var(--text); }
+  .t2 { font-size: 12px; fill: var(--ink-mute); }
+  .edge { stroke: var(--mark-uv); stroke-width: 1.5; fill: none; }
+  .tip { fill: var(--mark-uv); }
+  .explain p { margin: 0 0 0.75rem; max-width: 62ch; }
+  .instr pre { margin: 0 0 0.75rem; padding: 0.75rem; background: var(--term-bg); border-radius: 6px; overflow-x: auto; font: 400 12px/1.5 var(--font-mono); white-space: pre; }
+  .instr .lbl { color: var(--ink-mute); }
+  .instr p { margin: 0 0 0.75rem; }
+</style>
