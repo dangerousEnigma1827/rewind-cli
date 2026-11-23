@@ -31,9 +31,9 @@ describe('§9.3 forbidden claims', () => {
     for (const t of authored) expect(t, t).not.toMatch(re);
   });
 
-  const page = 'dist/index.html';
-  it.runIf(existsSync(page)).each(FORBIDDEN)('the built page, outside captures, never says %s', (re) => {
-    const html = readFileSync(page, 'utf8')
+  const pages = ['dist/index.html', 'dist/investigation/index.html', 'dist/docs/index.html'];
+  it.runIf(pages.every((p) => existsSync(p))).each(FORBIDDEN)('the built pages, outside captures, never say %s', (re) => {
+    const html = pages.map((p) => readFileSync(p, 'utf8')).join(' ')
       .replace(/<astro-island[\s\S]*?<\/astro-island>/g, '') // island props carry the captures
       .replace(/<noscript>[\s\S]*?<\/noscript>/g, '')
       .replace(/<pre[\s\S]*?<\/pre>/g, '') // captured terminals and source code

@@ -1,0 +1,86 @@
+---
+// Documentation (/docs/): how Rewind works, its architecture, the evidence, limits, commands and installation.
+import Base from '../layouts/Base.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import BuiltOnEvidence from '../components/BuiltOnEvidence.astro';
+import Limits from '../components/Limits.astro';
+import Commands from '../components/Commands.astro';
+import GetStarted from '../components/GetStarted.astro';
+
+const toc = [
+  ['how', 'How it works'], ['architecture', 'Architecture'], ['evidence', 'Evidence and experiments'],
+  ['limits', 'Limitations'], ['commands', 'Usage and commands'], ['install', 'Installation'],
+];
+---
+<Base title="Documentation · Rewind" description="How Rewind works, its architecture, the experiments behind it, its limits, its commands, and how to install it." current="docs">
+  <div class="docs wrap">
+    <header class="page-head">
+      <h1>Documentation</h1>
+      <p class="lede">How Rewind works, the experiments behind it, what it does not capture, its commands, and how to install it.</p>
+    </header>
+    <nav class="toc" aria-label="On this page">
+      <details open>
+        <summary>On this page</summary>
+        <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+      </details>
+    </nav>
+    <div class="content">
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">How it works</h2>
+        <p class="lede">A preloaded recorder writes facts as the program runs. Python reads them afterwards and does all the interpreting.</p>
+        <HowItWorks />
+      </section>
+      <section id="evidence" aria-labelledby="evidence-title">
+        <h2 id="evidence-title">Evidence and experiments</h2>
+        <p class="lede">The main design choices were tested in experiments before they were built, and the experiments are written up with their numbers.</p>
+        <BuiltOnEvidence />
+      </section>
+      <section id="limits" aria-labelledby="limits-title">
+        <h2 id="limits-title">Limitations</h2>
+        <p class="lede">What Rewind records, what it does not, and what has not been tested.</p>
+        <Limits />
+      </section>
+      <section id="commands" aria-labelledby="commands-title">
+        <h2 id="commands-title">Usage and commands</h2>
+        <Commands />
+      </section>
+      <section id="install" aria-labelledby="install-title">
+        <h2 id="install-title">Installation</h2>
+        <GetStarted />
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  // Phones keep the contents collapsed; wide screens show it open as a sticky sidebar.
+  const d = document.querySelector<HTMLDetailsElement>('.toc details');
+  const wide = matchMedia('(min-width: 1024px)');
+  const sync = () => { if (d) d.open = wide.matches; };
+  sync();
+  wide.addEventListener('change', sync);
+</script>
+
+<style>
+  .docs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 var(--s-8); padding-top: var(--s-8); }
+  .docs > * { min-width: 0; }
+  .page-head h1 { margin: 0 0 var(--s-4); }
+  .page-head .lede { margin: 0 0 var(--s-6); }
+  .toc { margin-bottom: var(--s-6); }
+  summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font: 500 12px/1.4 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
+  .toc ol { list-style: none; margin: 0; padding: 0 0 0 var(--s-1); border-left: 1px solid var(--line); }
+  .toc a { display: flex; align-items: center; min-height: 40px; padding-left: var(--s-4); color: var(--text-2); text-decoration: none; }
+  @media (hover: hover) and (pointer: fine) { .toc a:hover { color: var(--text); } }
+  .content section { padding-bottom: var(--s-9); }
+  .content h2 { margin: 0 0 var(--s-4); }
+  .content .lede { margin: 0 0 var(--s-6); }
+  @media (min-width: 1024px) {
+    .docs { grid-template-columns: 13rem minmax(0, 1fr); }
+    .page-head { grid-column: 2; }
+    .toc { grid-column: 1; grid-row: 2; position: sticky; top: calc(var(--nav-h) + var(--s-6)); align-self: start; }
+    .toc summary { pointer-events: none; list-style: none; }
+    .toc summary::-webkit-details-marker { display: none; }
+    .content { grid-column: 2; grid-row: 2; }
+  }
+  @media (max-width: 1023px) { .toc { border: 1px solid var(--line); border-radius: 8px; padding: 0 var(--s-4); } .toc ol { margin-bottom: var(--s-3); } }
+</style>

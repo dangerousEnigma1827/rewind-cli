@@ -1,40 +1,54 @@
 ---
+// Home (/): what Rewind is, the problem, a small real preview, three proven benefits, the next action.
 import Base from '../layouts/Base.astro';
-import Section from '../components/Section.astro';
 import Hero from '../components/Hero.astro';
-import Scenario from '../components/Scenario.astro';
-import InvestigationSection from '../components/InvestigationSection.astro';
-import HowItWorks from '../components/HowItWorks.astro';
-import BuiltOnEvidence from '../components/BuiltOnEvidence.astro';
-import Limits from '../components/Limits.astro';
-import GetStarted from '../components/GetStarted.astro';
 import render from '../data/capture/source/render.json';
-import { orders, steps } from '../lib/investigation';
+import { benefits } from '../lib/site';
 ---
-<Base title="Rewind · Postmortem debugging for asynchronous Node.js" description={`${render.TAGLINE} An interactive walk through a real investigation, with real output.`} current="home">
-    <Hero />
-    <Section id="scenario" tag="the bug" title="The Phantom Discount"
-      lede={`A tiny checkout service keeps one cart in a module-level variable. ${orders().length} orders arrive close together, and the requests overwrite each other’s cart.`}>
-      <Scenario />
-    </Section>
-    <Section id="investigate" tag="investigate" title="Investigation"
-      lede={`${steps().length} steps, each a real command with its real output. Hover, focus or tap any seq to see the recorded event behind it.`}>
-      <InvestigationSection />
-    </Section>
-    <Section id="how" tag="mechanism" title="How it works"
-      lede="A preloaded recorder writes facts as the program runs. Python reads them afterwards and does all the interpreting.">
-      <HowItWorks />
-    </Section>
-    <Section id="evidence" tag="credibility" title="Built on evidence"
-      lede="The main design choices were tested in experiments before they were built, and the experiments are written up with their numbers.">
-      <BuiltOnEvidence />
-    </Section>
-    <Section id="limits" tag="scope" title="Limits"
-      lede="What Rewind records, what it does not, and what has not been tested.">
-      <Limits />
-    </Section>
-    <Section id="start" tag="try it" title="Get started"
-      lede="Clone Rewind, install it, and run the tour on the demo that ships with it.">
-      <GetStarted />
-    </Section>
+<Base title="Rewind · Postmortem debugging for asynchronous Node.js" description={`${render.TAGLINE} Record a Node.js run once, then ask why: which request failed, who scheduled it, and who changed the state.`} current="home">
+  <script is:inline>
+    // Links from the old single page: /#investigate, /?step=N … → /investigation/; /#how, /#start … → /docs/.
+    function go() {
+      var h = location.hash, q = location.search;
+      var inv = { '#investigate': 1, '#scenario': 1 }, docs = { '#how': '#how', '#evidence': '#evidence', '#limits': '#limits', '#start': '#install' };
+      if (inv[h] || /[?&]step=/.test(q)) location.replace('/investigation/' + q);
+      else if (docs[h]) location.replace('/docs/' + docs[h]);
+    }
+    go();
+    addEventListener('hashchange', go);
+  </script>
+  <Hero />
+  <section class="benefits" aria-labelledby="why-title">
+    <h2 id="why-title" class="visually-hidden">Why Rewind is useful</h2>
+    <ul>
+      {benefits().map((b) => (
+        <li>
+          <h3>{b.title}</h3>
+          <p>{b.text}</p>
+          <a href={b.href}>See it in the investigation <span aria-hidden="true">→</span></a>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <section class="next" aria-labelledby="next-title">
+    <h2 id="next-title">Follow a real bug from crash to fix</h2>
+    <p class="lede">Three orders, one shared variable, one crash and one silent overcharge, investigated with Rewind’s real output.</p>
+    <a class="btn" href="/investigation/">Open the investigation</a>
+  </section>
 </Base>
+
+<style>
+  .benefits { max-width: var(--page-max); margin-inline: auto; padding: var(--s-7) var(--gutter) 0; }
+  .benefits ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-6); }
+  @media (min-width: 768px) { .benefits ul { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-7); } }
+  .benefits li { border-top: 1px solid var(--line); padding-top: var(--s-5); }
+  .benefits h3 { margin: 0 0 var(--s-2); }
+  .benefits p { margin: 0 0 var(--s-3); color: var(--text-2); font-size: 16px; }
+  .benefits a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 500; }
+  .next { max-width: var(--page-max); margin-inline: auto; padding: var(--s-9) var(--gutter) 0; }
+  .next h2 { margin: 0 0 var(--s-3); }
+  .next .lede { margin: 0 0 var(--s-6); }
+  .btn { display: inline-flex; align-items: center; min-height: 48px; padding: 0 var(--s-5); border-radius: 8px; background: var(--accent); color: var(--bg); font-weight: 600; text-decoration: none; transition: transform 100ms var(--ease-out); }
+  .btn:active { transform: scale(0.97); }
+  @media (hover: hover) and (pointer: fine) { .btn:hover { background: #A28AFF; } }
+</style>

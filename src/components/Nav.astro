@@ -1,22 +1,28 @@
 ---
-// Primary navigation (plan §4.1): Home · Investigation · Documentation · GitHub ↗.
+// Primary navigation: Home · Investigation · Documentation · GitHub ↗ · Get Started (→ the install instructions).
 import { REPO } from '../lib/site';
 interface Props { current: 'home' | 'investigation' | 'docs' }
 const { current } = Astro.props;
-// shortcut: until R2 creates /investigation/ and /docs/, those destinations are this page's sections; R2 swaps the hrefs.
 const links = [
-  { id: 'home', href: '/', label: 'Home' },
-  { id: 'investigation', href: '/#investigate', label: 'Investigation' },
-  { id: 'docs', href: '/#how', label: 'Documentation' },
+  { id: 'home', href: '/', label: 'Home', short: 'Home' },
+  { id: 'investigation', href: '/investigation/', label: 'Investigation', short: 'Investigation' },
+  { id: 'docs', href: '/docs/', label: 'Documentation', short: 'Docs' },
 ] as const;
 ---
 <header class="site-nav">
   <nav aria-label="Primary" class="inner">
     <a class="mark" href="/" translate="no" aria-label="Rewind, home"><span class="glyph" aria-hidden="true">◂◂</span> rewind</a>
     <ul class="dest">
-      {links.map((l) => <li><a href={l.href} aria-current={current === l.id ? 'page' : undefined}>{l.label}</a></li>)}
+      {links.map((l) => (
+        <li><a href={l.href} aria-current={current === l.id ? 'page' : undefined}>
+          <span class="long">{l.label}</span><span class="short">{l.short}</span>
+        </a></li>
+      ))}
     </ul>
-    <a class="gh" href={REPO}>GitHub <span aria-hidden="true">↗</span></a>
+    <div class="actions">
+      <a class="gh" href={REPO}>GitHub <span aria-hidden="true">↗</span></a>
+      <a class="start" href="/docs/#install">Get Started</a>
+    </div>
   </nav>
 </header>
 
@@ -34,23 +40,30 @@ const links = [
   .mark { display: inline-flex; align-items: center; gap: 0.5ch; min-height: 44px; font: 700 15px/1 var(--font-mono); color: var(--text); text-decoration: none; }
   .glyph { color: var(--accent); }
   .dest { display: flex; justify-content: center; gap: var(--s-2); margin: 0; padding: 0; list-style: none; }
-  .dest a, .gh {
-    display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s-3); border-radius: 6px;
-    font: 500 15px/1 var(--font-sans); color: var(--text-2); text-decoration: none;
+  .actions { display: flex; align-items: center; gap: var(--s-2); }
+  .dest a, .gh, .start {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 var(--s-3); border-radius: 6px;
+    font: 500 15px/1 var(--font-sans); color: var(--text-2); text-decoration: none; white-space: nowrap;
     transition: transform 100ms var(--ease-out);
   }
+  .short { display: none; }
   .dest a[aria-current='page'] { color: var(--text); box-shadow: inset 0 -2px 0 var(--accent-fill); border-radius: 0; }
   .gh { color: var(--text); border: 1px solid var(--line); }
-  .dest a:active, .gh:active { transform: scale(0.97); }
+  /* the one filled control in the bar: the next action */
+  .start { color: var(--bg); background: var(--accent); font-weight: 600; }
+  .dest a:active, .gh:active, .start:active { transform: scale(0.97); }
   @media (hover: hover) and (pointer: fine) {
     .dest a:hover { color: var(--text); background: var(--surface-1); }
     .gh:hover { border-color: var(--line-strong); background: var(--surface-1); }
+    .start:hover { background: #A28AFF; }
   }
-  /* phones: the three destinations get their own full-width row; nothing scrolls or hides */
-  @media (max-width: 639px) {
+  /* phones: brand and the two actions on the first row; the three pages share the second. Nothing hides or scrolls. */
+  @media (max-width: 767px) {
     .inner { grid-template-columns: 1fr auto; gap: 0 var(--s-2); padding-block: var(--s-1); }
     .dest { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; gap: var(--s-2); }
     .dest li { flex: 1; }
-    .dest a { width: 100%; justify-content: center; padding: 0 var(--s-1); font-size: 14px; }
+    .dest a { width: 100%; padding: 0 var(--s-1); font-size: 14px; }
+    .gh, .start { padding: 0 var(--s-3); font-size: 14px; }
   }
+  @media (max-width: 400px) { .long { display: none; } .short { display: inline; } .mark { font-size: 14px; } .gh, .start { padding: 0 10px; } }
 </style>

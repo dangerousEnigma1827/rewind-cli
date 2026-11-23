@@ -26,7 +26,7 @@ describe('dark only (§5.2)', () => {
   });
 
   it.runIf(existsSync('dist/index.html'))('the built page and CSS carry no light styles', () => {
-    const built = [join('dist', 'index.html'), ...files(join('dist', '_astro')).filter((f) => f.endsWith('.css'))];
+    const built = [...files('dist').filter((f) => f.endsWith('.html')), ...files(join('dist', '_astro')).filter((f) => f.endsWith('.css'))];
     for (const f of built) expect(readFileSync(f, 'utf8'), f).not.toMatch(/prefers-color-scheme/);
   });
 

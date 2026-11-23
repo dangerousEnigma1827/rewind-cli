@@ -1,0 +1,28 @@
+---
+// Investigation (/investigation/): the bug, then the step-by-step investigation with Rewind's real output.
+import Base from '../layouts/Base.astro';
+import Section from '../components/Section.astro';
+import Scenario from '../components/Scenario.astro';
+import InvestigationSection from '../components/InvestigationSection.astro';
+import { steps } from '../lib/investigation';
+---
+<Base title="The Wrong Order Total Bug · Rewind investigation" description="Concurrent checkout requests interfere with each other: one customer is charged the wrong amount while another checkout crashes. Investigated with Rewind's real output." current="investigation">
+  <header class="page-head wrap">
+    <p class="eyebrow">Investigation</p>
+    <h1>The Wrong Order Total Bug</h1>
+    <p class="lede">Concurrent checkout requests interfere with each other, causing one customer to be charged the wrong amount while another checkout crashes.</p>
+  </header>
+  <Section id="scenario" tag="the bug" title="Three orders, one shared cart">
+    <Scenario />
+  </Section>
+  <Section id="investigate" tag="investigate" title="Ask Rewind"
+    lede={`${steps().length} steps, each a real command with its real output. Select any seq to see the recorded event behind it.`}>
+    <InvestigationSection />
+  </Section>
+</Base>
+
+<style>
+  .page-head { padding-top: var(--s-8); }
+  .page-head h1 { margin: 0 0 var(--s-4); }
+  .page-head .lede { margin: 0; }
+</style>

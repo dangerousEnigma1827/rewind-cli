@@ -1,13 +1,13 @@
 ---
-// §4.1 #7: only commands the M6 fresh-clone run verified.
+// Installation: the commands verified on fresh clones (see docs/claims.md), then the tour. One repository link.
 import CommandLine from './CommandLine.astro';
 import { install, tour } from '../lib/depth';
-import { REPO, blob, short } from '../lib/site';
+import { REPO } from '../lib/site';
 ---
+<p class="req">Requires Node.js ≥ 20 and Python ≥ 3.12. Source: <a href={REPO}>github.com/dangerousEnigma1827/Rewind</a></p>
 <div class="cols">
   <div>
     <h3>Install</h3>
-    <p class="req">Node.js ≥ 20 and Python ≥ 3.12.</p>
     <ol class="cmds">{install.map((c) => <li><CommandLine command={c.cmd} />{c.note && <p class="note">{c.note}</p>}</li>)}</ol>
   </div>
   <div>
@@ -15,16 +15,13 @@ import { REPO, blob, short } from '../lib/site';
     <ol class="cmds">{tour.map((c) => <li><CommandLine command={c} /></li>)}</ol>
   </div>
 </div>
-<p class="links"><a href={REPO}>Repository <span aria-hidden="true">↗</span></a> · <a href={blob('docs/ARCHITECTURE.md')}>docs/ARCHITECTURE.md</a> · <a href={blob('spikes/RESULTS.md')}>spikes/RESULTS.md</a></p>
 
 <style>
-  .cols { display: grid; gap: 2rem; }
+  .req { margin: 0 0 var(--s-6); }
+  .req a { overflow-wrap: anywhere; }
+  .cols { display: grid; gap: var(--s-6); }
   @media (min-width: 960px) { .cols { grid-template-columns: 1fr 1fr; } }
-  h3 { margin: 0 0 0.5rem; font-size: 1.0625rem; }
-  .req { margin: 0 0 1rem; }
-  .cmds { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.5rem; }
-  .cmds .term { padding-bottom: 0.5rem; }
-  .note { margin: 0.25rem 0 0; font-size: 0.8125rem; color: var(--ink-mute); }
-  .links { margin: 2rem 0 0; }
-  .links a { display: inline-flex; align-items: center; min-height: 44px; }
+  h3 { margin: 0 0 var(--s-3); }
+  .cmds { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s-2); }
+  .note { margin: var(--s-1) 0 var(--s-2); font-size: 14px; color: var(--text-3); }
 </style>
