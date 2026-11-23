@@ -4,9 +4,6 @@ html {
   -webkit-text-size-adjust: 100%;
   scroll-padding-top: var(--nav-h);
 }
-@media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
-}
 
 body {
   margin: 0;
@@ -29,7 +26,7 @@ code, kbd, pre, samp, .mono { font-family: var(--font-mono); }
 .num { font-variant-numeric: tabular-nums; }
 
 a { color: var(--link); text-underline-offset: 0.2em; }
-a:hover { text-decoration-thickness: 2px; }
+@media (hover: hover) and (pointer: fine) { a:hover { text-decoration-thickness: 2px; } }
 a, button { touch-action: manipulation; }
 
 :focus-visible {

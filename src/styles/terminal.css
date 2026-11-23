@@ -28,7 +28,8 @@
   padding: 0.375rem 0.5rem;
   cursor: pointer;
 }
-.copy:hover { border-color: var(--link); }
+@media (hover: hover) and (pointer: fine) { .copy:hover { border-color: var(--link); } }
+.copy { min-height: 32px; }
 
 /* One <pre> per captured width; the container picks one (plan §5.5). */
 .term pre {
@@ -64,3 +65,4 @@
 .t-r2 { color: var(--ink-r2); }
 .t-r3 { color: var(--ink-r3); }
 .t-r4 { color: var(--ink-r4); }
+@media (pointer: coarse) { .copy { min-height: 44px; min-width: 44px; } }

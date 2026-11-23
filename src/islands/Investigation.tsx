@@ -103,11 +103,47 @@ export default function Investigation(p: Props) {
       if (el && box) box.scrollTo({ top: el.offsetTop - box.clientHeight / 2, left: Math.max(0, el.offsetLeft - 24) });
     });
   };
-  const act = { dispatch, pinFromVisual, highlighted, pinned: s.pinned };
+  // Phone layout (< 640px of the island's own width, §5.5): a different design, not a smaller one.
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const ro = new ResizeObserver(([e]) => setNarrow(e.contentRect.width < 640));
+    ro.observe(root.current!);
+    return () => ro.disconnect();
+  }, []);
+  const act = { dispatch, pinFromVisual, highlighted, pinned: s.pinned, narrow };
+  // Focus must never sit under the sticky step bar (browsers don't scroll for an element already "in view").
+  useEffect(() => {
+    if (!narrow) return;
+    const el = root.current!;
+    const onFocus = (e: FocusEvent) => {
+      const bar = el.querySelector('.step-nav.bar'), t = e.target as HTMLElement;
+      if (!bar || bar.contains(t)) return;
+      requestAnimationFrame(() => { // after the browser's own scroll-into-view
+        const over = t.getBoundingClientRect().bottom - bar.getBoundingClientRect().top + 8;
+        if (over > 0) window.scrollBy(0, over);
+      });
+    };
+    el.addEventListener('focusin', onFocus);
+    return () => el.removeEventListener('focusin', onFocus);
+  }, [narrow]);
+
+  // The inspector's request: chosen, else the step's default (why → #3, why --seq → #2), else the failing one.
+  const selected = s.request ?? view.focus.lanes?.[0] ?? run?.ticks.find((t) => t.kind === 'error')?.request ?? run?.lanes[0]?.id ?? null;
+  const [notice, setNotice] = useState('');
+  useEffect(() => {
+    setNotice('');
+    if (!narrow || !run || !s.pinned || s.pinned.run !== run.label || !selected) return;
+    const ev = run.events[s.pinned.seq];
+    if (ev?.request && !requestRows(run, selected).some((r) => r.seq === ev.seq)) {
+      dispatch({ type: 'request', request: ev.request });
+      setNotice(`Switched to request #${ev.request}: seq ${ev.seq} belongs to it.`);
+    }
+  }, [s.pinned, narrow]);
+  const go = (n: number) => dispatch({ type: 'step', step: n });
 
   return (
-    <div class="inv" ref={root}>
-      <Stepper steps={p.steps} step={s.step} go={(n) => dispatch({ type: 'step', step: n })} />
+    <div class={`inv${narrow ? ' narrow' : ''}`} ref={root}>
+      <Stepper steps={p.steps} step={s.step} go={go} narrow={narrow} />
       <div class="inv-panel" role="tabpanel" id="inv-panel" aria-labelledby={`inv-tab-${s.step}`} key={s.step}>
         <div class="inv-head">
           <h3>{step.title}</h3>
@@ -121,7 +157,9 @@ export default function Investigation(p: Props) {
         <div class="inv-stage">
           <div class="inv-visual">
             {view.mode === 'none' && <p class="inv-empty">Plain Node keeps no record: there is nothing to visualise until the run is recorded.</p>}
-            {view.mode === 'lanes' && run && <Swimlanes run={run} lanes={lanes} focus={focus} act={act} request={s.request} />}
+            {view.mode === 'lanes' && run && (narrow
+              ? <Inspector run={run} selected={selected} act={act} notice={notice} />
+              : <Swimlanes run={run} lanes={lanes} focus={focus} act={act} request={s.request} />)}
             {view.mode === 'diff' && <DiffView diff={p.diff} tab={s.diffTab} term={view.terminals[1]} runs={p.runs} act={act} />}
             {view.mode === 'fix' && <FixView patch={p.patch} orders={p.orders} charged={p.charged} runs={p.runs} />}
           </div>
@@ -134,20 +172,21 @@ export default function Investigation(p: Props) {
           ))}
         </div>
       </div>
+      {narrow && <StepNav steps={p.steps} step={s.step} go={go} bar />}
       <div class="visually-hidden" aria-live="polite">{s.pinned && event ? `Pinned: ${describeEvent(event)}` : ''}</div>
     </div>
   );
 }
 
-type Act = { dispatch: (a: Action) => void; pinFromVisual: (r: Ref) => void; highlighted: Set<string>; pinned: Ref | null };
+type Act = { dispatch: (a: Action) => void; pinFromVisual: (r: Ref) => void; highlighted: Set<string>; pinned: Ref | null; narrow: boolean };
 
 // ---- stepper (tablist) ---------------------------------------------------------------------------------
 
-function Stepper({ steps, step, go }: { steps: Step[]; step: number; go: (n: number) => void }) {
+function Stepper({ steps, step, go, narrow }: { steps: Step[]; step: number; go: (n: number) => void; narrow: boolean }) {
   const tabs = useRef<HTMLDivElement>(null);
   const move = (n: number) => {
     go(n);
-    requestAnimationFrame(() => tabs.current?.querySelector<HTMLElement>(`#inv-tab-${n}`)?.focus());
+    requestAnimationFrame(() => document.getElementById(`inv-tab-${n}`)?.focus());
   };
   const onKey = (e: KeyboardEvent) => {
     const to = { ArrowRight: step + 1, ArrowLeft: step - 1, Home: 1, End: steps.length }[e.key];
@@ -165,11 +204,19 @@ function Stepper({ steps, step, go }: { steps: Step[]; step: number; go: (n: num
           </button>
         ))}
       </div>
-      <div class="step-nav">
-        <button type="button" onClick={() => move(step - 1)} disabled={step === 1}>← Prev</button>
-        <span class="step-of">Step {step} of {steps.length} · {steps[step - 1].key}</span>
-        <button type="button" onClick={() => move(step + 1)} disabled={step === steps.length}>Next →</button>
-      </div>
+      {!narrow && <StepNav steps={steps} step={step} go={go} />}
+    </div>
+  );
+}
+
+/** Prev/Next. On phones it is the bottom step bar, sticky within the section (§5.5). */
+function StepNav({ steps, step, go, bar }: { steps: Step[]; step: number; go: (n: number) => void; bar?: boolean }) {
+  const to = (n: number) => { go(n); if (bar) document.getElementById('inv-panel')?.scrollIntoView({ block: 'start' }); };
+  return (
+    <div class={`step-nav${bar ? ' bar' : ''}`}>
+      <button type="button" onClick={() => to(step - 1)} disabled={step === 1}>← Prev</button>
+      <span class="step-of">Step {step} of {steps.length} · {steps[step - 1].key}</span>
+      <button type="button" onClick={() => to(step + 1)} disabled={step === steps.length}>Next →</button>
     </div>
   );
 }
@@ -201,6 +248,10 @@ function TerminalBlock({ block, runs, act, detail }: { block: TermBlock; runs: R
 
 function TermLines({ w, lines, block, runs, act }: { w: number; lines: TermLine[]; block: TermBlock; runs: Record<Label, RunModel>; act: Act }) {
   const refOf = (run: 0 | 1, seq: number): Ref => ({ run: block.runs[run] as Label, seq });
+  const label = (ref: Ref) => {
+    const ev = runs[ref.run]?.events[ref.seq];
+    return ev ? `${block.runs.length > 1 ? `run ${ref.run}, ` : ''}${describeEvent(ev)}` : `seq ${ref.seq}`;
+  };
   // a finding's refs: every hotspot on its lines
   const byFinding = new Map<number, Ref[]>();
   lines.forEach((l) => l.finding !== undefined && byFinding.set(l.finding, [...(byFinding.get(l.finding) ?? []),
@@ -214,20 +265,112 @@ function TermLines({ w, lines, block, runs, act }: { w: number; lines: TermLine[
           {l.segs.map((x, j) => {
             if (!x.hot || !block.runs.length) return x.cls ? <span class={x.cls} key={j}>{x.text}</span> : x.text;
             const ref = refOf(x.hot.run, x.hot.seq);
-            const ev = runs[ref.run]?.events[ref.seq];
-            return (
-              <button type="button" class={`seq ${x.cls}${act.highlighted.has(key(ref)) ? ' hl' : ''}${same(ref, act.pinned) ? ' pin' : ''}`}
-                key={j} data-ref={key(ref)} aria-pressed={same(ref, act.pinned)}
-                aria-label={ev ? `${block.runs.length > 1 ? `run ${ref.run}, ` : ''}${describeEvent(ev)}` : `seq ${ref.seq}`}
-                onMouseEnter={() => act.dispatch({ type: 'hover', ref })} onMouseLeave={() => act.dispatch({ type: 'hover', ref: null })}
-                onFocus={() => act.dispatch({ type: 'hover', ref })} onBlur={() => act.dispatch({ type: 'hover', ref: null })}
-                onClick={() => act.dispatch({ type: 'pin', ref })}>{x.text}</button>
-            );
+            const cls = `seq ${x.cls}${act.highlighted.has(key(ref)) ? ' hl' : ''}${same(ref, act.pinned) ? ' pin' : ''}`;
+            // phones: the seq stays marked in the text; its touch target is the chip row under the line
+            if (act.narrow) return <span class={cls} key={j}>{x.text}</span>;
+            return <SeqButton key={j} cls={cls} r={ref} text={x.text} label={label(ref)} act={act} />;
           })}
           {'\n'}
+          {act.narrow && block.runs.length > 0 && l.segs.some((x) => x.hot) && (
+            <span class="chips">{l.segs.filter((x) => x.hot).map((x, j) => {
+              const ref = refOf(x.hot!.run, x.hot!.seq);
+              return <SeqButton key={j} cls={`chip${act.highlighted.has(key(ref)) ? ' hl' : ''}${same(ref, act.pinned) ? ' pin' : ''}`}
+                r={ref} text={`${block.runs.length > 1 ? (x.hot!.run ? 'B ' : 'A ') : ''}seq ${ref.seq}`} label={label(ref)} act={act} />;
+            })}</span>
+          )}
         </span>
       ))}
     </pre>
+  );
+}
+
+function SeqButton({ cls, r, text, label, act }: { cls: string; r: Ref; text: string; label: string; act: Act }) {
+  return (
+    <button type="button" class={cls} data-ref={key(r)} aria-pressed={same(r, act.pinned)} aria-label={label}
+      onMouseEnter={() => act.dispatch({ type: 'hover', ref: r })} onMouseLeave={() => act.dispatch({ type: 'hover', ref: null })}
+      onFocus={() => act.dispatch({ type: 'hover', ref: r })} onBlur={() => act.dispatch({ type: 'hover', ref: null })}
+      onClick={() => act.dispatch({ type: 'pin', ref: r })}>{text}</button>
+  );
+}
+
+// ---- phone: request inspector (§5.5) ---------------------------------------------------------------------
+
+interface Row { seq: number; foreign: boolean }
+/** A request's events, plus other requests' writes to the watched variable while it was in flight, in seq order
+ *  (Rewind's own "story of request #N + other requests' writes"). */
+function requestRows(run: RunModel, id: number): Row[] {
+  const lane = run.lanes.find((l) => l.id === id);
+  if (!lane) return [];
+  const own = lane.markers.map((m) => ({ seq: m.seq, foreign: false }));
+  const first = lane.markers[0]?.seq ?? 0, last = lane.markers[lane.markers.length - 1]?.seq ?? 0;
+  const foreign = run.holders.filter((h) => h.writer !== id && h.seq > first && h.seq < last).map((h) => ({ seq: h.seq, foreign: true }));
+  return [...own, ...foreign].sort((a, b) => a.seq - b.seq);
+}
+
+function Inspector({ run, selected, act, notice }: { run: RunModel; selected: number | null; act: Act; notice: string }) {
+  const ref = (seq: number): Ref => ({ run: run.label, seq });
+  const lo = run.startMs, hi = run.endMs, x = (m: number) => ((m - lo) / (hi - lo || 1)) * 100;
+  const rows = selected ? requestRows(run, selected) : [];
+  const band = [...run.holders.map((h) => ({ seq: h.seq, holder: h })), ...run.ticks.map((t) => ({ seq: t.seq, tick: t }))].sort((a, b) => a.seq - b.seq);
+  const row = (seq: number, body: ComponentChildren, extra = '') => {
+    const r = ref(seq), open = same(r, act.pinned);
+    return (
+      <li key={seq} class={`irow${extra}${act.highlighted.has(key(r)) ? ' hl' : ''}`}>
+        <button type="button" aria-expanded={open} data-ref={key(r)} aria-label={describeEvent(run.events[seq])}
+          onClick={() => act.dispatch({ type: 'pin', ref: r })}>{body}</button>
+        {open && <EventDetail event={run.events[seq]} run={run} pinned />}
+      </li>
+    );
+  };
+  return (
+    <figure class="inspector" aria-label={`Requests of run ${run.id} (${run.label})`}>
+      <div class="overview" role="group" aria-label="Choose a request">
+        {run.lanes.map((l) => (
+          <button type="button" class={`orow r${l.id}`} aria-pressed={selected === l.id} key={l.id}
+            onClick={() => selected !== l.id && act.dispatch({ type: 'request', request: l.id })}>
+            <span class="olabel" translate="no"><span class="swatch" aria-hidden="true" /> #{l.id} {l.name}</span>
+            <span class="otrack" aria-hidden="true">
+              <span class="span" style={{ left: `${x(l.inMs)}%`, width: `${Math.max(1, x(l.endMs) - x(l.inMs))}%` }} />
+              {l.markers.filter((m) => m.kind === 'mutation' || m.kind.startsWith('error.')).map((m) => (
+                <span class={`omk k-${m.kind.replace('.', '-')}`} style={{ left: `${x(m.ms)}%` }} key={m.seq}>{m.glyph}</span>
+              ))}
+            </span>
+          </button>
+        ))}
+      </div>
+      {notice && <p class="notice" role="status">{notice}</p>}
+      {selected && (
+        <>
+          <h4 class="ihead">Request #{selected} <span class="mono">{run.lanes.find((l) => l.id === selected)?.name}</span></h4>
+          <ol class="ilist">
+            {rows.map((r) => {
+              const e = run.events[r.seq];
+              return row(r.seq, <>
+                <span class="num iseq">{e.seq}</span><span class="num ims">{fmtMs(e.ms)}</span>
+                <span class={`ig k-${e.kind.replace('.', '-')}`} aria-hidden="true">{e.glyph}</span>
+                <span class="itext" translate="no">{e.text}</span>
+                {r.foreign && <span class="foreign">foreign · #{e.request}</span>}
+              </>, r.foreign ? ' is-foreign' : '');
+            })}
+          </ol>
+        </>
+      )}
+      {run.watch.length > 0 ? (
+        <>
+          <h4 class="ihead"><span class="mono" translate="no">{run.watch[0]}</span> holders</h4>
+          {band.length === 0 && <p class="band-none-p">no writes recorded</p>}
+          <ol class="ilist">
+            {band.map((b) => b.holder
+              ? row(b.seq, <><span class={`swatch w${b.holder.writer}`} aria-hidden="true" /><span class="itext"><b translate="no">{b.holder.owner}</b> written by #{b.holder.writer}</span><span class="num iseq">seq {b.seq}</span></>)
+              : row(b.seq, <><span class="ig used-g" aria-hidden="true">┆</span><span class="itext">used here: {b.tick!.kind} by #{b.tick!.request}</span><span class="num iseq">seq {b.seq}</span></>, ' is-used'))}
+          </ol>
+        </>
+      ) : <p class="band-none-p">Writes not recorded: run without --watch.</p>}
+      <figcaption class="prov">
+        run <span translate="no">{run.id} ({run.label})</span> · ● events and times · ◆ request membership
+        {run.holders.length > 0 && <> · ◆ holders (site, from ● writes) · ┆ log/crash time; reads are not recorded</>}
+      </figcaption>
+    </figure>
   );
 }
 
@@ -383,7 +526,16 @@ function DiffView({ diff, tab, term, runs, act }: { diff: Diff; tab: 'aligned' |
           </button>
         ))}
       </div>
-      {tab === 'terminal' ? <TerminalBlock block={term} runs={runs} act={act} detail={null} /> : (
+      {tab === 'terminal' ? <TerminalBlock block={term} runs={runs} act={act} detail={null} /> : act.narrow ? (
+        <ol class="dlist">
+          {diff.rows.flatMap((r, i) =>
+            r.kind === 'collapsed' ? [<li class="dl-note" key={i}>····· {r.count} identical steps</li>]
+            : r.kind === 'divergence' ? [<li class="dl-div" key={i}>▼ first divergence</li>]
+            : r.kind === 'equal' ? [<li class="dl-row equal" key={i}><span class="dl-side">A·B</span>{cell(r.a, A, 'a')}</li>]
+            : [r.a && <li class="dl-row a" key={`${i}a`}><span class="dl-side">A −</span>{cell(r.a, A, 'a')}</li>,
+               r.b && <li class="dl-row b" key={`${i}b`}><span class="dl-side">B +</span>{cell(r.b, B, 'b')}</li>])}
+        </ol>
+      ) : (
         <div class="dgrid" ref={grid}>
           <div class="dhead"><span>A</span><span translate="no">{runs[A].id} ({A})</span><span /><span>B</span><span translate="no">{runs[B].id} ({B})</span></div>
           {diff.rows.map((r, i) => (
