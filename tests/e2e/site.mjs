@@ -86,7 +86,22 @@ for (const route of ROUTES) {
   await page.close();
 }
 
-// 5. no horizontal overflow on any page
+// 5. favicons on every route: linked, served with an image type, and the browser can decode them
+for (const route of ROUTES) {
+  const page = await browser.newPage();
+  await page.goto(ORIGIN + route);
+  const links = await page.$$eval('link[rel~="icon"], link[rel="apple-touch-icon"]', (ls) => ls.map((l) => l.getAttribute('href')));
+  check(links.includes('/favicon.ico') && links.includes('/favicon.svg') && links.includes('/apple-touch-icon.png'), `${route}: favicon links ${links.join(' ')}`);
+  for (const href of links) {
+    const r = await page.request.get(ORIGIN + href);
+    const type = r.headers()['content-type'] ?? '';
+    const decoded = await page.evaluate(async (u) => { const i = new Image(); i.src = u; try { await i.decode(); return i.naturalWidth; } catch { return 0; } }, href);
+    check(r.ok() && /image/.test(type) && decoded > 0, `${route}: ${href} ${r.status()} ${type} decodes at ${decoded}px`);
+  }
+  await page.close();
+}
+
+// 6. no horizontal overflow on any page
 for (const route of ROUTES) for (const width of [320, 390, 768, 1024, 1440]) {
   const page = await browser.newPage({ viewport: { width, height: 800 } });
   await page.goto(ORIGIN + route);

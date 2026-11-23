@@ -9,7 +9,8 @@
     "test": "vitest run",
     "capture": "node capture/run.mjs",
     "ink": "node scripts/ink.ts",
-    "test:e2e": "node tests/e2e/site.mjs && node tests/e2e/investigation.mjs && node tests/e2e/phone.mjs"
+    "test:e2e": "node tests/e2e/site.mjs && node tests/e2e/investigation.mjs && node tests/e2e/phone.mjs",
+    "brand": "node scripts/brand.mjs"
   },
   "dependencies": {
     "@astrojs/preact": "6.1.6",
