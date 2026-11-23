@@ -19,7 +19,7 @@ export const testMetric = {
 export const eventMetric = {
   big: '~330',
   unit: 'events per HTTP request',
-  text: 'Recorded in a 300-request benchmark (an fs read, a timer and Promise.all each, median of 3 runs). Rewind folds them into a short story. Overhead there: 1.1× wall time, 1.9× with promise stacks, the default.',
+  text: 'Measured on a 300-request HTTP benchmark, then folded into a short story. Overhead there: 1.1× wall time, 1.9× with promise stacks (the default).',
   source: 'spikes/RESULTS.md, E6',
   quotes: ['about 330 events per request', 'Workload: 300 HTTP requests (fs read + timer + `Promise.all`), median of 3 runs.', '| recorder, no stacks | 0.69s | 1.1 |', '| stacks incl. promises | 1.12s | 1.9 |'],
 };
@@ -50,7 +50,7 @@ export const showcase = () => COMMANDS.map((c) => ({
 export function preview() {
   const r = runModel('bad');
   const lanes = r.lanes.filter((l) => l.name.startsWith('POST'));
-  const label = new Map(lanes.map((l, i) => [l.id, `Checkout ${i + 1}`]));
+  const label = new Map(lanes.map((l, i) => [l.id, `Customer ${'ABCDEFGH'[i]}`]));
   const crashLane = lanes.find((l) => l.end === 'error')!;
   const overwrite = r.events[whyBad.findings.find((f) => f.level === 'observed' && f.text.startsWith('last write'))!.evidence[0]];
   const start = Math.min(...lanes.map((l) => l.inMs)), end = Math.max(...lanes.map((l) => l.endMs));

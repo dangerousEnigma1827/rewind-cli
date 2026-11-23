@@ -43,7 +43,7 @@ describe('command showcase', () => {
 describe('investigation preview', () => {
   const p = preview();
   it('is the three checkout requests of the captured run, with neutral labels', () => {
-    expect(p.lanes.map((l) => l.label)).toEqual(['Checkout 1', 'Checkout 2', 'Checkout 3']);
+    expect(p.lanes.map((l) => l.label)).toEqual(['Customer A', 'Customer B', 'Customer C']);
     expect(p.lanes.every((l) => l.name === 'POST /order')).toBe(true);
     expect(p.runId).toBe(manifest.runs.bad.id);
   });

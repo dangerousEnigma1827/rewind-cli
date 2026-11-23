@@ -10,18 +10,19 @@ const x = (ms: number) => ((ms - (p.start - pad)) / (p.end - p.start + 2 * pad))
   <div class="intro">
     <p class="eyebrow">The investigation</p>
     <h2 id="preview-title">See the cause, not just the crash</h2>
-    <p class="lede">Three checkout requests run at once and share one cart. Rewind shows which request overwrote it before another one crashed.</p>
+    <p class="lede">Three customers place orders at nearly the same time. While it processes them, the app keeps the order data in one shared place, so one customer’s request can overwrite another’s.</p>
     <ul class="key">
-      <li><span class="g w" aria-hidden="true">✎</span> writes the shared cart</li>
-      <li><span class="g e" aria-hidden="true">✖</span> crashes</li>
-      <li><span class="g" aria-hidden="true">»</span> logs a total</li>
-      <li><span class="g" aria-hidden="true">1 2 3</span> which checkout last wrote the cart</li>
+      <li><span class="g w" aria-hidden="true">✎</span> writes the shared order data</li>
+      <li><span class="g e" aria-hidden="true">✖</span> the request fails</li>
+      <li><span class="g" aria-hidden="true">»</span> logs the amount charged</li>
+      <li><span class="g" aria-hidden="true">A B C</span> whose order data is in the shared state</li>
     </ul>
     <a class="btn" href="/investigation/">Explore the investigation</a>
   </div>
   <figure class="viz"
-    aria-label={`Three checkout requests on a time axis. ${p.overwrite.by} wrote the shared cart at ${fmtMs(p.overwrite.ms)} ms; ${p.crash.lane} crashed afterwards.`}>
+    aria-label={`Order processing for three customers on a time axis. ${p.overwrite.by}’s request wrote the shared order data at ${fmtMs(p.overwrite.ms)} ms; ${p.crash.lane}’s request failed afterwards.`}>
     <div class="lanes" aria-hidden="true">
+      <p class="group">Order processing</p>
       {p.lanes.map((l) => (
         <div class={`lane r${l.id}`}>
           <span class="label">{l.label}</span>
@@ -34,17 +35,18 @@ const x = (ms: number) => ((ms - (p.start - pad)) / (p.end - p.start + 2 * pad))
         </div>
       ))}
       <div class="lane band">
-        <span class="label">shared cart</span>
+        <span class="label">Shared state</span>
         <div class="track">
           {p.holders.map((h) => (
-            <span class={`seg w${h.writer}${h.seq === p.overwrite.seq ? ' hl' : ''}`} style={{ left: `${x(h.fromMs)}%`, width: `${x(h.toMs) - x(h.fromMs)}%` }}>{h.by.replace('Checkout ', '')}</span>
+            <span class={`seg w${h.writer}${h.seq === p.overwrite.seq ? ' hl' : ''}`} style={{ left: `${x(h.fromMs)}%`, width: `${x(h.toMs) - x(h.fromMs)}%` }}>{h.by.replace('Customer ', '')}</span>
           ))}
         </div>
       </div>
     </div>
     <figcaption>
-      <p class="callout"><span class="g w" aria-hidden="true">✎</span> {p.overwrite.by} overwrote the shared cart, then <span class="g e" aria-hidden="true">✖</span> {p.crash.lane} crashed.</p>
-      <p class="inf"><span aria-hidden="true">?</span> Rewind’s inference: “{p.inference.split('. ')[0]}.”</p>
+      <p class="callout"><span class="g w" aria-hidden="true">✎</span> {p.overwrite.by}’s request overwrote the shared order data, then <span class="g e" aria-hidden="true">✖</span> {p.crash.lane}’s request failed.</p>
+      <p class="note">Rewind recorded the writes and the failure. Reads are not recorded, so the link between them is its inference:</p>
+      <p class="inf"><span aria-hidden="true">?</span> “{p.inference.split('. ')[0]}.”</p>
     </figcaption>
   </figure>
 </section>
@@ -79,6 +81,8 @@ const x = (ms: number) => ((ms - (p.start - pad)) / (p.end - p.start + 2 * pad))
   figcaption { margin-top: var(--s-4); display: grid; gap: var(--s-2); }
   figcaption p { margin: 0; }
   .callout { font-size: 16px; color: var(--text); }
+  .group { margin: 0 0 var(--s-1); font: 500 12px/1.4 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3); }
+  .note { font-size: 14px; color: var(--text-2); }
   .inf { font: italic 400 14px/1.5 var(--font-mono); color: var(--text-3); }
   @media (max-width: 479px) { .lane { grid-template-columns: 5.25rem minmax(0, 1fr); } .label { font-size: 12px; } .seg { font-size: 11px; padding: 0 4px; } }
 </style>
