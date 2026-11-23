@@ -8,16 +8,9 @@ import { chromium } from 'playwright';
 const MARK = readFileSync('brand/rewind-mark.svg', 'utf8');
 const inner = MARK.replace(/^[\s\S]*?<g /, '<g ').replace(/<\/svg>\s*$/, '').replace(/<!--[\s\S]*?-->/g, '').trim();
 const PURPLE = /fill="(#[0-9A-F]{6})"/i.exec(MARK)[1];
-// Favicons: a violet tile (the mark's own purple) with the mark in the site's near-black, 5.4:1 against it.
-const TILE = PURPLE;
-const ON_TILE = '#09090B';
-const tileInner = inner.split(PURPLE).join(ON_TILE);
-
-/** The mark on a near-black rounded tile (website favicon). `round` = false for Apple, which rounds the icon itself. */
-const tile = (round = true) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="${round ? 22 : 0}" fill="${TILE}"/>
-  <g transform="translate(50 50) scale(0.74) translate(-50 -50)">${tileInner}</g>
-</svg>`;
+/** The favicon: only the two ultraviolet triangles, centred, on a fully transparent background. No tile, no container.
+ *  (No apple-touch-icon: iOS paints a solid background behind transparent touch icons.) */
+const tile = () => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">${inner}</svg>`;
 
 mkdirSync('public', { recursive: true });
 mkdirSync('brand/submission', { recursive: true });
@@ -36,7 +29,6 @@ const out = {};
 for (const s of [16, 32, 48]) out[`favicon-${s}`] = await png(tile(), s, s, true);
 writeFileSync('public/favicon-16x16.png', out['favicon-16']);
 writeFileSync('public/favicon-32x32.png', out['favicon-32']);
-writeFileSync('public/apple-touch-icon.png', await png(tile(false), 180, 180, false));
 
 // favicon.ico: an ICONDIR with PNG-compressed frames (supported by every current browser and Windows Vista+)
 const frames = [16, 32, 48].map((s) => [s, out[`favicon-${s}`]]);
@@ -63,7 +55,7 @@ await browser.close();
 
 // Self-check: every PNG is a real PNG of the stated size; the ICO lists 16/32/48 PNG frames.
 const dims = (b) => (b.subarray(0, 8).toString('hex') === '89504e470d0a1a0a' ? [b.readUInt32BE(16), b.readUInt32BE(20)] : null);
-const expect = { 'public/favicon-16x16.png': [16, 16], 'public/favicon-32x32.png': [32, 32], 'public/apple-touch-icon.png': [180, 180], [`brand/submission/rewind-submission-${W}x${H}.png`]: [W, H] };
+const expect = { 'public/favicon-16x16.png': [16, 16], 'public/favicon-32x32.png': [32, 32], [`brand/submission/rewind-submission-${W}x${H}.png`]: [W, H] };
 for (const [f, d] of Object.entries(expect)) {
   const got = dims(readFileSync(f));
   if (!got || got[0] !== d[0] || got[1] !== d[1]) throw new Error(`${f}: expected a ${d.join('x')} PNG, got ${got}`);
@@ -75,4 +67,4 @@ const sizes = Array.from({ length: n }, (_, i) => ico.readUInt8(6 + 16 * i));
 if (ico.readUInt16LE(2) !== 1 || sizes.join() !== '16,32,48') throw new Error(`favicon.ico: frames ${sizes}`);
 for (let i = 0; i < n; i++) if (!dims(ico.subarray(ico.readUInt32LE(6 + 16 * i + 12)))) throw new Error('favicon.ico: frame is not PNG');
 console.log(`ok  public/favicon.ico  ICO ${sizes.join(', ')} (PNG frames)`);
-console.log(`favicons: ${ON_TILE} mark on a ${TILE} tile · submission: ${PURPLE} mark on #000000`);
+console.log(`favicons: ${PURPLE} mark on transparent · submission: ${PURPLE} mark on #000000`);
