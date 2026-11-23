@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Section from '../components/Section.astro';
+---
+<Base title="Rewind · Postmortem debugging for asynchronous Node.js" description="Postmortem debugging for asynchronous Node.js.">
+  <Nav />
+  <main id="main">
+    <section id="top" class="hero" aria-labelledby="top-title">
+      <h1 id="top-title">Record a Node.js run once. Then ask <em>why</em>.</h1>
+    </section>
+    <Section id="scenario" title="The Phantom Discount" />
+    <Section id="investigate" title="Investigation" />
+    <Section id="how" title="How it works" />
+    <Section id="evidence" title="Built on evidence" />
+    <Section id="limits" title="Limits" />
+    <Section id="start" title="Get started" />
+  </main>
+  <footer></footer>
+</Base>
+
+<style>
+  .hero {
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding: 5rem var(--gutter) 4rem;
+  }
+</style>

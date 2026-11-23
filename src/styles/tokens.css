@@ -1,0 +1,86 @@
+/* Three layers (design-system skill): primitive → semantic (per theme) → component. Plan §5.2. */
+
+/* ── 1. Primitive: render.PALETTE at rewind@388fe45, exactly; plus the two approved surfaces ── */
+:root {
+  --p-uv: #7F5AF0;
+  --p-uv-hi: #8D6CFF;
+  --p-uv-lo: #6A48D8;
+  --p-mute: #7E7E8C;
+  --p-err: #E5484D;
+  --p-ok: #23905C;
+  --p-write: #A8741F;
+  --p-r1: #2C8C99;
+  --p-r2: #C0567A;
+  --p-r3: #7D8A2E;
+  --p-r4: #5A7FC0;
+
+  --p-paper: #FAFAF9;
+  --p-paper-step: #F2F2F0;
+  --p-paper-text: #1B1B20;
+  --p-night: #101014;
+  --p-night-step: #18181D;
+  --p-night-text: #E7E7EB;
+}
+
+/* ── 2. Semantic ── */
+/* Marks and glyphs use the CLI hex unchanged in both themes (all ≥ 3:1 on both surfaces, §5.2). */
+:root {
+  color-scheme: light dark;
+
+  --mark-uv: var(--p-uv);
+  --mark-mute: var(--p-mute);
+  --mark-err: var(--p-err);
+  --mark-ok: var(--p-ok);
+  --mark-write: var(--p-write);
+  --mark-r1: var(--p-r1);
+  --mark-r2: var(--p-r2);
+  --mark-r3: var(--p-r3);
+  --mark-r4: var(--p-r4);
+
+  /* Light theme */
+  --surface: var(--p-paper);
+  --surface-term: var(--p-paper-step);
+  --text: var(--p-paper-text);
+  --rule: color-mix(in oklab, var(--p-mute) 45%, var(--surface));
+
+  /* Ink = coloured *text*, ≥ 4.5:1. Violet ink is approved: uv.lo in light (5.69). */
+  --ink-uv: var(--p-uv-lo);
+  /* shortcut: until M1's ink-step generator writes the OKLCH-shifted values, these are the raw marks
+     (3.6–4.1:1 in light). Nothing in M0 renders coloured text; M1's contrast test replaces them. */
+  --ink-mute: var(--p-mute);
+  --ink-err: var(--p-err);
+  --ink-ok: var(--p-ok);
+  --ink-write: var(--p-write);
+  --ink-r1: var(--p-r1);
+  --ink-r2: var(--p-r2);
+  --ink-r3: var(--p-r3);
+  --ink-r4: var(--p-r4);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: var(--p-night);
+    --surface-term: var(--p-night-step);
+    --text: var(--p-night-text);
+    /* Violet ink is approved: uv.hi in dark (5.17). */
+    --ink-uv: var(--p-uv-hi);
+  }
+}
+
+/* ── 3. Component ── */
+:root {
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  /* 'Rewind Glyphs' (DejaVu Mono, unicode-range limited) supplies what Plex Mono lacks; see Base.astro. */
+  --font-mono: 'IBM Plex Mono', 'Rewind Glyphs', ui-monospace, monospace;
+
+  --page-max: 1200px;
+  --gutter: 16px;
+  --nav-h: 48px;
+
+  --nav-bg: var(--surface);
+  --nav-rule: var(--rule);
+  --link: var(--ink-uv);
+  --focus-ring: var(--mark-uv);
+  --term-bg: var(--surface-term);
+  --term-fg: var(--text);
+}
