@@ -1,0 +1,104 @@
+---
+// §4.1 #2: the Phantom Discount. Orders, the shared variable, the two victims, and what plain Node says.
+import { Code } from 'astro:components';
+import checkout from '../data/capture/source/checkout.js?raw';
+import plainNode from '../data/capture/terminal/plain-node.txt?raw';
+import manifest from '../data/capture/manifest.json';
+import Terminal from './Terminal.astro';
+import { orders, price, charged, WIDTHS } from '../lib/investigation';
+import { victims } from '../lib/site';
+
+const os = orders();
+const c = charged('bad');
+const v = victims();
+// Where checkout.js declares, writes and uses the shared variable: read from the source (the marks are ours, ◇).
+const MARKS: Record<number, [string, string]> = {};
+checkout.split('\n').forEach((l, i) => {
+  if (/^let currentCart\b/.test(l)) MARKS[i + 1] = ['shared', 'one cart for every request in flight'];
+  else if (/^\s+currentCart = /.test(l)) MARKS[i + 1] = ['write', 'each request’s loadCart overwrites it'];
+  else if (/currentCart\.items/.test(l)) MARKS[i + 1] = ['use', 'read after the payment timer fires'];
+});
+const transformers = [{ line(this: any, node: any, line: number) { if (MARKS[line]) this.addClassToHast(node, `mark-${MARKS[line][0]}`); } }];
+---
+<div class="orders">
+  <table>
+    <caption class="visually-hidden">The orders demo/traffic.js sends</caption>
+    <thead><tr><th scope="col">order</th><th scope="col">items</th><th scope="col">sent at</th><th scope="col">payment takes</th><th scope="col">◇ expected</th><th scope="col">◆ request</th></tr></thead>
+    <tbody>{os.map((o) => (
+      <tr>
+        <th scope="row" translate="no">{o.id}</th>
+        <td translate="no">{o.items.map((s) => `${s} ${price(s)}`).join(' + ')}{o.coupon && `, coupon ${o.coupon}`}</td>
+        <td class="num">{o.at} ms</td><td class="num">{o.paymentMs} ms</td>
+        <td class="num">${o.expected}</td><td class="num">#{c[o.id].request}</td>
+      </tr>
+    ))}</tbody>
+  </table>
+  <p class="prov">From demo/traffic.js and prices.json · ◇ expected: summed by us, coupon applied as checkout.js does · ◆ request: as Rewind numbered them in run {manifest.runs.bad.id}; #1 is the GET /health warm-up</p>
+</div>
+
+<div class="split">
+  <figure class="code">
+    <Code code={checkout} lang="js" themes={{ light: 'min-light', dark: 'min-dark' }} defaultColor={false} transformers={transformers} />
+    <figcaption>
+      <ul class="legend">{Object.entries(MARKS).map(([n, [k, t]]) => <li class={`mark-${k}`}><span class="num">line {n}</span> <b>{k}</b>: {t}</li>)}</ul>
+      <p class="prov">demo/checkout.js at rewind@{manifest.rewind.short}, verbatim · ◇ line marks are ours</p>
+    </figcaption>
+  </figure>
+  <div class="victims">
+    <article class="victim crash">
+      <p class="who"><span class="g" aria-hidden="true">✖</span> request #{v.crash.request} · <span translate="no">{v.crash.order.id}</span> crashes</p>
+      <p><code translate="no">{v.crash.text}</code> at <code translate="no">{v.crash.loc}</code></p>
+    </article>
+    <article class="victim over">
+      <p class="who"><span class="g" aria-hidden="true" style={`color: var(--mark-r${v.overcharge.request})`}>»</span> request #{v.overcharge.request} · <span translate="no">{v.overcharge.order.id}</span> is overcharged</p>
+      <p>Charged <b>${v.overcharge.amount}</b> instead of ${v.overcharge.order.expected}. No error, only a wrong log line.</p>
+    </article>
+    <p class="prov">● log and error events of run {manifest.runs.bad.id} · why it happens is what the investigation finds</p>
+  </div>
+</div>
+
+<div class="split trace">
+  <Terminal command={manifest.plain_node.command} ansi={Object.fromEntries(WIDTHS.map((w) => [w, plainNode]))} label="Plain Node output of the concurrent run" />
+  <div>
+    <p class="notes-head">What this trace can’t tell you</p>
+    <ul class="notes">
+      <li><b>Which order failed.</b> No order id appears.</li>
+      <li><b>Which request.</b> The stack starts at a timer callback.</li>
+      <li><b>Who changed the cart.</b> <code>loadCart</code> is not on the stack.</li>
+      <li><b>That <span translate="no">{v.overcharge.order.id}</span>’s total is wrong.</b> Nothing flags it.</li>
+    </ul>
+    <p class="prov">◇ our notes on the captured output (paths shortened to …, nothing else changed)</p>
+  </div>
+</div>
+
+<style>
+  .orders { overflow-x: auto; margin-bottom: 2.5rem; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9375rem; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 0.5rem 1rem 0.5rem 0; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  thead th { font: 400 0.75rem/1.3 var(--font-mono); color: var(--ink-mute); }
+  .prov { margin: 0.5rem 0 0; font: 400 0.75rem/1.4 var(--font-mono); color: var(--ink-mute); }
+  .split { display: grid; gap: 1.5rem; margin-bottom: 2.5rem; }
+  @media (min-width: 960px) { .split { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: start; } }
+  .code { margin: 0; min-width: 0; }
+  .code :global(pre) { margin: 0; padding: 0.75rem 0; border-radius: 6px; overflow-x: auto; font: 400 12.5px/1.6 var(--font-mono); background: var(--term-bg) !important; }
+  .code :global(.line) { display: inline-block; min-width: 100%; padding: 0 0.75rem; box-sizing: border-box; }
+  .code :global(.astro-code span) { color: var(--shiki-light); }
+  @media (prefers-color-scheme: dark) { .code :global(.astro-code span) { color: var(--shiki-dark); } }
+  .code :global(.line.mark-shared) { box-shadow: inset 3px 0 0 var(--mark-uv); background: color-mix(in oklab, var(--mark-uv) 10%, transparent); }
+  .code :global(.line.mark-write) { box-shadow: inset 3px 0 0 var(--mark-write); background: color-mix(in oklab, var(--mark-write) 12%, transparent); }
+  .code :global(.line.mark-use) { box-shadow: inset 3px 0 0 var(--mark-err); background: color-mix(in oklab, var(--mark-err) 10%, transparent); }
+  .legend { list-style: none; margin: 0.75rem 0 0; padding: 0; display: grid; gap: 0.25rem; font-size: 0.875rem; }
+  .legend li { padding-left: 0.75rem; }
+  .legend .mark-shared { box-shadow: inset 3px 0 0 var(--mark-uv); }
+  .legend .mark-write { box-shadow: inset 3px 0 0 var(--mark-write); }
+  .legend .mark-use { box-shadow: inset 3px 0 0 var(--mark-err); }
+  .legend .num { font-family: var(--font-mono); color: var(--ink-mute); }
+  .victims { display: grid; gap: 1rem; }
+  .victim { border: 1px solid var(--rule); border-radius: 6px; padding: 1rem; }
+  .victim p { margin: 0; }
+  .victim .who { font-weight: 600; margin-bottom: 0.5rem; }
+  .victim code { overflow-wrap: anywhere; font-size: 0.875em; }
+  .crash .g { color: var(--mark-err); }
+  .notes-head { margin: 0 0 0.5rem; font-weight: 600; }
+  .notes { margin: 0; padding-left: 1.25rem; display: grid; gap: 0.5rem; }
+</style>

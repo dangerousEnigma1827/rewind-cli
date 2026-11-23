@@ -94,16 +94,20 @@ export function runModel(label: Label): RunModel {
 // ---- orders (step 8) --------------------------------------------------------------------------------
 
 
-export interface Order { id: string; items: string[]; coupon: string | null; expected: number }
+export interface Order { id: string; items: string[]; coupon: string | null; paymentMs: number; at: number; expected: number }
 /** The orders traffic.js sends, parsed from its source. `expected` is authored (◇): prices.json summed, and the
  *  coupon applied the way checkout.js does (`Math.round(total * 0.9)`). */
 export function orders(): Order[] {
-  return [...traffic.matchAll(/\{ id: '([^']+)', items: \[([^\]]*)\](?:, coupon: '([^']+)')?/g)].map((m) => {
-    const items = [...m[2].matchAll(/'([^']+)'/g)].map((x) => x[1]);
+  return [...traffic.matchAll(/\{ id: '[^}]*\}/g)].map(([o]) => {
+    const field = (k: string) => new RegExp(`${k}: ([^,}]+)`).exec(o)?.[1].trim() ?? null;
+    const items = [.../items: \[([^\]]*)\]/.exec(o)![1].matchAll(/'([^']+)'/g)].map((x) => x[1]);
     const total = items.reduce((s, sku) => s + (prices as Record<string, number>)[sku], 0);
-    return { id: m[1], items, coupon: m[3] ?? null, expected: m[3] ? Math.round(total * 0.9) : total };
+    const coupon = field('coupon')?.replace(/'/g, '') ?? null;
+    return { id: field('id')!.replace(/'/g, ''), items, coupon, paymentMs: Number(field('paymentMs')), at: Number(field('at')),
+      expected: coupon ? Math.round(total * 0.9) : total };
   });
 }
+export const price = (sku: string) => (prices as Record<string, number>)[sku];
 
 /** What each order was charged in a run: the observed `order X: charged $N` log, or the crash of its request. */
 export function charged(label: Label) {

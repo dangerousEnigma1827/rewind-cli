@@ -2,16 +2,23 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import Section from '../components/Section.astro';
+import Hero from '../components/Hero.astro';
+import Scenario from '../components/Scenario.astro';
 import InvestigationSection from '../components/InvestigationSection.astro';
+import Footer from '../components/Footer.astro';
+import render from '../data/capture/source/render.json';
+import { orders, steps } from '../lib/investigation';
 ---
-<Base title="Rewind · Postmortem debugging for asynchronous Node.js" description="Postmortem debugging for asynchronous Node.js.">
+<Base title="Rewind · Postmortem debugging for asynchronous Node.js" description={`${render.TAGLINE} An interactive walk through a real investigation, with real output.`}>
   <Nav />
   <main id="main">
-    <section id="top" class="hero" aria-labelledby="top-title">
-      <h1 id="top-title">Record a Node.js run once. Then ask <em>why</em>.</h1>
-    </section>
-    <Section id="scenario" title="The Phantom Discount" />
-    <Section id="investigate" title="Investigation">
+    <Hero />
+    <Section id="scenario" tag="the bug" title="The Phantom Discount"
+      lede={`A tiny checkout service keeps one cart in a module-level variable. ${orders().length} orders arrive close together, and the requests overwrite each other’s cart.`}>
+      <Scenario />
+    </Section>
+    <Section id="investigate" tag="investigate" title="Investigation"
+      lede={`${steps().length} steps, each a real command with its real output. Hover, focus or tap any seq to see the recorded event behind it.`}>
       <InvestigationSection />
     </Section>
     <Section id="how" title="How it works" />
@@ -19,13 +26,5 @@ import InvestigationSection from '../components/InvestigationSection.astro';
     <Section id="limits" title="Limits" />
     <Section id="start" title="Get started" />
   </main>
-  <footer></footer>
+  <Footer />
 </Base>
-
-<style>
-  .hero {
-    max-width: var(--page-max);
-    margin-inline: auto;
-    padding: 5rem var(--gutter) 4rem;
-  }
-</style>
