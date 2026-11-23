@@ -81,7 +81,7 @@ export const install = [
   { cmd: 'git clone https://github.com/dangerousEnigma1827/Rewind.git', note: '' },
   { cmd: 'cd Rewind', note: '' },
   { cmd: 'python -m venv .venv', note: 'Linux: python3; Ubuntu/Debian may need python3-venv' },
-  { cmd: '.venv/Scripts/activate', note: 'Windows PowerShell. Git Bash: source .venv/Scripts/activate. Linux/macOS: source .venv/bin/activate' },
+  { cmd: '.venv/Scripts/activate', note: 'Windows PowerShell; if it says running scripts is disabled, run Set-ExecutionPolicy -Scope Process RemoteSigned first (this session only). Git Bash: source .venv/Scripts/activate. Linux/macOS: source .venv/bin/activate' },
   { cmd: 'pip install -e ".[dev]"', note: '' },
   { cmd: 'npm install --prefix recorder', note: 'only needed for --watch' },
 ];
