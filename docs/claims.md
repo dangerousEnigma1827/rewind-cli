@@ -95,3 +95,40 @@ Rewind document · **artifact** = read from the capture · **authored** = writte
 | pipeline: Node writes facts, Python interprets | docs/ARCHITECTURE.md:17 — “The Node side only writes facts. All interpretation happens in Python.” | authored diagram of a cited structure |
 | keep-alive: HTTPINCOMINGMESSAGE is per connection | docs/ARCHITECTURE.md:31 — “Node's own `HTTPINCOMINGMESSAGE` is per connection, so without this, keep-alive requests are attributed to each other.” | cited |
 | Get started: install commands | README.md:25 — “npm install --prefix recorder                         # only needed for --watch” | cited; verified by the M6 fresh-clone run |
+
+## Investigation step copy (§3.6, `src/lib/investigation.ts`)
+
+| claim | source | class |
+|---|---|---|
+| 1: N orders arrive at overlapping times; one request crashes; the trace names no order and no request; nothing flags the wrong total | `source/traffic.js` (count, `at`); `terminal/plain-node.txt` (checked by `tests/site.test.ts`) | authored, tested |
+| 2: preloaded with --require, no change to the app; same crash, now recorded | `rewind/cli.py:84`; `terminal/record-bad.*` | cited + observed |
+| 3: findings are graded ● ◆ ? with the event seqs behind them | README.md:7–13; `terminal/why-bad.*` | cited + observed |
+| 4: the A-101 log line belongs to request #2 | `runs/bad.json` (log event `request`), interpolated at build | derived (Rewind) |
+| 5: any event can be explained; Rewind derives the overwrite and says reads are not recorded, so it is not proven | `analysis.py:349–351` wording; `findings/why-bad-seq.json` | derived + inferred (Rewind) |
+| 6: without --watch Rewind claims no write, points at the module-level name, suggests --watch | `analysis.py:303–311`; `findings/why-nowatch.json` | derived + inferred (Rewind) |
+| 7: orders one at a time pass; same code path, different interleaving | `manifest.json` good run exit 0; diff finding "the interleaving changed, not the code path" | observed + derived (Rewind) |
+| 8: the patch passes each request its own cart; why reports no errors; every total right | `source/fix.patch`; `terminal/why-fixed.*`; `tests/investigation.test.ts` totals | observed + authored |
+
+## Other authored copy
+
+| claim | source | class |
+|---|---|---|
+| Section lede, How it works: the recorder writes facts, Python interprets | ARCHITECTURE.md:17 (row below) | cited |
+| Section lede, Built on evidence: the main design choices were tested in experiments before they were built | spikes/RESULTS.md: "Decisions locked for production" after E0–E7 | cited |
+| How it works: Rewind walks an event's trigger links up to a request anchor; a stack trace stops at the timer | `analysis.py:103–111` (`request_of`); `terminal/plain-node.txt` | cited (code) + observed |
+| How it works: which requests share a connection varies from run to run | `capture/SCHEMA.md` "Known run-to-run variation": #1+#2 in one capture, #1+#2+#4 in another (M1, re-seen in M6) | observed by us across captures |
+| How it works: the line number is unchanged, so stack traces are too | `source/checkout.instrumented.js` has the same line count; README.md "Line numbers in your stack traces are unchanged." | artifact + cited |
+| Built on evidence: RESULTS.md calls the overwrite observed; the engine labels the writer derived | RESULTS.md:68 vs `analysis.py:330` (`DERIVED`); plan §2.8 | cited |
+| Get started: Set-ExecutionPolicy -Scope Process RemoteSigned lets the venv activate under the Restricted default | verified in M6 (below) | verified |
+
+## Verification of Get started and the tour (M6, 2026-11-23)
+
+| route | result |
+|---|---|
+| Windows PowerShell 5.1, fresh `git clone` of Rewind.git (main = `388fe45`), every published command | all succeed; bad: A-101 $161, #3 TypeError; good: $128/$186/$11; diff "14 of 21 (A) / 20 (B)", "3 step(s) later"; `why --seq` "not proven"; nowatch claims no write; `git apply demo/fix.patch` applies; fixed: $128/$186/$11, "no errors recorded" |
+| Windows PowerShell 5.1 under the Restricted policy | `.venv/Scripts/activate` refused; works after `Set-ExecutionPolicy -Scope Process RemoteSigned` (now in the published note) |
+| bash, WSL Ubuntu, Python 3.12.3, Node 24.22.2, clone of `388fe45` | the same outcomes for the whole sequence, `git apply` included. `python3 -m venv` needs the python3-venv package (stated in the note; not installable here without sudo, so Rewind's B17 route made the venv) |
+| website fresh clone, no Python on PATH | `npm ci && npm run build && npm test`: build complete, 370 tests pass |
+| re-capture from the fresh Windows clone (to a scratch folder, committed artifacts untouched) | findings, diff tokens and opcodes, per-run stories and writers, and the `tree -r 3` shape identical; keep-alive grouping and counts vary, as documented |
+
+Note: Rewind.git and rewind_demo_website.git return 404 to unauthenticated requests (private). The published `git clone` and every GitHub link work only once Rewind.git is public. The WSL run cloned the same commit locally for that reason.
