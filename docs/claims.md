@@ -133,3 +133,15 @@ Rewind document · **artifact** = read from the capture · **authored** = writte
 | re-capture from the fresh Windows clone (to a scratch folder, committed artifacts untouched) | findings, diff tokens and opcodes, per-run stories and writers, and the `tree -r 3` shape identical; keep-alive grouping and counts vary, as documented |
 
 Note: Rewind.git and rewind_demo_website.git return 404 to unauthenticated requests (private). The published `git clone` and every GitHub link work only once Rewind.git is public. The WSL run cloned the same commit locally for that reason.
+
+## Home showcase (refinement, 2026-11-23)
+
+| claim | source | class |
+|---|---|---|
+| 54 tests pass; 44 of them start real Node.js processes | `src/data/verify/rewind-tests.json`: `pytest -q -p nodespy` (`capture/nodespy.py`) in a fresh clone at the captured sha; agrees with `manifest.json` `pytest` (checked by `tests/home.test.ts`). A later unpushed Rewind commit had 56 / 45 | observed (verification run) |
+| ~330 events per HTTP request, in a 300-request benchmark (fs read + timer + Promise.all, median of 3 runs); overhead 1.1×, 1.9× with promise stacks | spikes/RESULTS.md:43, :48, :50, :53 (E6); figures checked by `tests/home.test.ts` | cited |
+| Six commands: record, runs, timeline, tree, why, diff | `rewind/cli.py` `@app.command` at 388fe45 (and at 1c34e77); README.md commands table (checked) | cited (code) |
+| each command's output in the showcase | `terminal/{record-bad,runs,timeline-bad,tree-bad,why-bad,diff-good-bad}.<w>.ansi`; `tests/home.test.ts` checks command ↔ capture | artifact |
+| First run: `rewind record -- node app.js`, `rewind why` | `rewind/render.py:253` (landing screen's "record your first run"); `why` defaults to the latest run (`cli.py`, RUN default `last`) | cited (code) |
+| Preview: three checkout requests, "Checkout 3 overwrote the shared cart, then Checkout 2 crashed" | `runs/bad.json` lanes, mutations and error; the overwrite is `why-bad.json`'s observed "last write" evidence; Checkout N = Nth POST /order by arrival (authored label) | observed + derived; labels authored |
+| No licence line | neither Rewind nor this repository has a licence file at the captured sha | — |

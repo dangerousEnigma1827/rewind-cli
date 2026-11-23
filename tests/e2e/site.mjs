@@ -20,8 +20,8 @@ for (const route of ROUTES) {
     check(href === path, `${route}: nav ${label} → ${href}`);
   }
   await page.locator('.site-nav .start').click();
-  await page.waitForURL('**/docs/#install');
-  const top = await page.$eval('#install', (e) => e.getBoundingClientRect().top);
+  await page.waitForURL('**/#get-started');
+  const top = await page.$eval('#get-started', (e) => e.getBoundingClientRect().top);
   check(top >= 0 && top < 300, `${route}: Get Started lands on the install instructions (top ${top | 0}px)`);
   await page.close();
 }
@@ -74,15 +74,55 @@ for (const route of ROUTES) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(ORIGIN + '/');
   check((await page.locator('footer').textContent()).includes('Built for CODEFESTTHON 2026'), 'footer: "Built for CODEFESTTHON 2026"');
-  const text = await page.locator('body').innerText();
+  // Rewind's real terminal output keeps whatever it printed (run ids included); everything else must not expose them
+  const text = await page.evaluate(() => { const b = document.body.cloneNode(true); b.querySelectorAll('.term pre').forEach((p) => p.remove()); return b.innerText ?? b.textContent; });
   check(!/\b[0-9a-f]{8}\b/.test(text) && !/@[0-9a-f]{7}/.test(text) && !/Captured from/i.test(text), 'home: no run ids, commit hashes or capture provenance');
   check(!/Phantom Discount/i.test(text), 'home: the scenario is not called "Phantom Discount"');
-  for (const [from, to] of [['/#investigate', '/investigation/'], ['/?step=4', '/investigation/?step=4'], ['/#start', '/docs/#install']]) {
+  for (const [from, to] of [['/#investigate', '/investigation/'], ['/?step=4', '/investigation/?step=4'], ['/#start', '/#get-started']]) {
     await page.goto(ORIGIN + from);
     await page.waitForURL((u) => u.pathname + u.search + u.hash !== from, { timeout: 3000 }).catch(() => {});
     const u = new URL(page.url());
     check(u.pathname + u.search + u.hash === to, `old link ${from} → ${u.pathname + u.search + u.hash}`);
   }
+  await page.close();
+}
+
+// 4b. the homepage: hero within the viewport, the six commands, the evidence labels, every footer link
+for (const [w, h] of [[1440, 900], [1024, 768], [390, 844]]) {
+  const page = await browser.newPage({ viewport: { width: w, height: h } });
+  await page.goto(ORIGIN + '/');
+  const r = await page.$eval('#top', (e) => { const b = e.getBoundingClientRect(); return { bottom: b.bottom + scrollY, actions: [...e.querySelectorAll('.actions a')].map((a) => a.textContent.trim()) }; });
+  check(r.bottom <= h + 1, `${w}x${h}: hero ends within the first viewport (${r.bottom | 0}px)`);
+  check(r.actions.join('|') === 'Open the investigation|Read the documentation|Get Started', `${w}px: hero actions ${r.actions.join(' · ')}`);
+  await page.close();
+}
+{
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(ORIGIN + '/');
+  const tabs = page.locator('#commands [role="tab"]');
+  check((await tabs.count()) === 6, `command showcase lists ${await tabs.count()} commands`);
+  for (let i = 0; i < 6; i++) {
+    await tabs.nth(i).click();
+    const name = (await tabs.nth(i).locator('.name').textContent()).trim();
+    const shown = await page.$$eval('#commands [role="tabpanel"]', (ps) => ps.filter((p) => !p.hidden).map((p) => p.querySelector('.term-title').textContent));
+    check(shown.length === 1 && shown[0].startsWith(name), `selecting "${name}" shows only its terminal: ${shown[0]}`);
+  }
+  await tabs.nth(0).focus();
+  await page.keyboard.press('ArrowDown');
+  check(await page.evaluate(() => document.activeElement.getAttribute('aria-selected')) === 'true' &&
+    (await page.evaluate(() => document.activeElement.textContent)).includes('rewind runs'), 'ArrowDown moves to and selects the next command');
+  const lv = await page.$eval('#features .levels', (e) => ({ own: e.tagName === 'P' && e.querySelectorAll('.lv').length === 3, colours: [...e.querySelectorAll('.lv')].map((x) => getComputedStyle(x).color) }));
+  check(lv.own && new Set(lv.colours).size === 3, `evidence labels: their own line, three colours (${lv.colours.join(' ')})`);
+  const links = await page.$$eval('footer a', (as) => as.map((a) => a.getAttribute('href')));
+  for (const href of links) {
+    if (href.startsWith('http')) { check(/^https:\/\/github\.com\//.test(href), `footer link ${href} (external)`); continue; }
+    const r = await page.request.get(ORIGIN + href.split('#')[0]);
+    const id = href.split('#')[1];
+    let target = true;
+    if (id) { await page.goto(ORIGIN + href); target = (await page.locator(`#${id}`).count()) === 1; }
+    check(r.ok() && target, `footer link ${href} resolves`);
+  }
+  check(new Set(links).size === links.length, 'footer has no repeated links');
   await page.close();
 }
 
