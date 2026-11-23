@@ -20,9 +20,9 @@ for (const route of ROUTES) {
     check(href === path, `${route}: nav ${label} → ${href}`);
   }
   await page.locator('.site-nav .start').click();
-  await page.waitForURL('**/#get-started');
-  const top = await page.$eval('#get-started', (e) => e.getBoundingClientRect().top);
-  check(top >= 0 && top < 300, `${route}: Get Started lands on the install instructions (top ${top | 0}px)`);
+  await page.waitForURL('**/#install');
+  const top = await page.$eval('#install', (e) => e.getBoundingClientRect().top);
+  check(top >= 0 && top < 300, `${route}: navbar Install lands on the homepage install section (top ${top | 0}px)`);
   await page.close();
 }
 
@@ -32,7 +32,7 @@ for (const route of ROUTES) {
   await page.goto(ORIGIN + '/');
   const order = [];
   for (let i = 0; i < 7; i++) { await page.keyboard.press('Tab'); order.push(await page.evaluate(() => document.activeElement.textContent.trim().replace(/\s+/g, ' '))); }
-  check(order[0] === 'Skip to content' && order.includes('Get Started'), `keyboard order: ${order.join(' · ')}`);
+  check(order[0] === 'Skip to content' && order.includes('Install'), `keyboard order: ${order.join(' · ')}`);
   await page.close();
 }
 
@@ -78,7 +78,7 @@ for (const route of ROUTES) {
   const text = await page.evaluate(() => { const b = document.body.cloneNode(true); b.querySelectorAll('.term pre').forEach((p) => p.remove()); return b.innerText ?? b.textContent; });
   check(!/\b[0-9a-f]{8}\b/.test(text) && !/@[0-9a-f]{7}/.test(text) && !/Captured from/i.test(text), 'home: no run ids, commit hashes or capture provenance');
   check(!/Phantom Discount/i.test(text), 'home: the scenario is not called "Phantom Discount"');
-  for (const [from, to] of [['/#investigate', '/investigation/'], ['/?step=4', '/investigation/?step=4'], ['/#start', '/#get-started']]) {
+  for (const [from, to] of [['/#investigate', '/investigation/'], ['/?step=4', '/investigation/?step=4'], ['/#start', '/#install'], ['/#get-started', '/#install']]) {
     await page.goto(ORIGIN + from);
     await page.waitForURL((u) => u.pathname + u.search + u.hash !== from, { timeout: 3000 }).catch(() => {});
     const u = new URL(page.url());
@@ -91,8 +91,11 @@ for (const route of ROUTES) {
 for (const [w, h] of [[1440, 900], [1024, 768], [390, 844]]) {
   const page = await browser.newPage({ viewport: { width: w, height: h } });
   await page.goto(ORIGIN + '/');
-  const r = await page.$eval('#top', (e) => { const b = e.getBoundingClientRect(); return { bottom: b.bottom + scrollY, actions: [...e.querySelectorAll('.actions a')].map((a) => a.textContent.trim()) }; });
-  check(r.bottom <= h + 1, `${w}x${h}: hero ends within the first viewport (${r.bottom | 0}px)`);
+  const r = await page.$eval('#top', (e) => {
+    const intro = e.querySelector('.intro').getBoundingClientRect(), term = e.querySelector('.exhibit .term').getBoundingClientRect();
+    return { right: term.left >= intro.right, below: term.top >= intro.bottom, visible: term.width > 200 && term.height > 200, actions: [...e.querySelectorAll('.actions a')].map((a) => a.textContent.trim()) };
+  });
+  check(r.visible && (w >= 960 ? r.right : r.below), `${w}px: the hero terminal is ${w >= 960 ? 'on the right of' : 'below'} the introduction`);
   check(r.actions.join('|') === 'Open the investigation|Read the documentation|Get Started', `${w}px: hero actions ${r.actions.join(' · ')}`);
   await page.close();
 }
@@ -111,6 +114,10 @@ for (const [w, h] of [[1440, 900], [1024, 768], [390, 844]]) {
   await page.keyboard.press('ArrowDown');
   check(await page.evaluate(() => document.activeElement.getAttribute('aria-selected')) === 'true' &&
     (await page.evaluate(() => document.activeElement.textContent)).includes('rewind runs'), 'ArrowDown moves to and selects the next command');
+  const cards = await page.$$eval('#features li', (ls) => ls.map((l) => { const c = getComputedStyle(l); return c.backgroundColor === 'rgba(0, 0, 0, 0)' && parseFloat(c.borderRadius) === 0 && parseFloat(c.borderLeftWidth) === 0 && parseFloat(c.borderTopWidth) > 0; }));
+  check(cards.length === 3 && cards.every(Boolean), 'features: three open items, a rule above each, no card background, radius or side borders');
+  const active = await page.$eval('#commands [aria-selected="true"]', (t) => { const c = getComputedStyle(t); return { side: parseFloat(c.borderLeftWidth), shadow: c.boxShadow }; });
+  check(active.side === 0 && active.shadow === 'none', `active command: no left border or side accent (border ${active.side}px, shadow ${active.shadow})`);
   const lv = await page.$eval('#features .levels', (e) => ({ own: e.tagName === 'P' && e.querySelectorAll('.lv').length === 3, colours: [...e.querySelectorAll('.lv')].map((x) => getComputedStyle(x).color) }));
   check(lv.own && new Set(lv.colours).size === 3, `evidence labels: their own line, three colours (${lv.colours.join(' ')})`);
   const links = await page.$$eval('footer a', (as) => as.map((a) => a.getAttribute('href')));
@@ -131,7 +138,7 @@ for (const route of ROUTES) {
   const page = await browser.newPage();
   await page.goto(ORIGIN + route);
   const links = await page.$$eval('link[rel~="icon"], link[rel="apple-touch-icon"]', (ls) => ls.map((l) => l.getAttribute('href')));
-  check(links.includes('/favicon.ico') && links.includes('/favicon.svg') && links.includes('/apple-touch-icon.png'), `${route}: favicon links ${links.join(' ')}`);
+  check(['/favicon.ico', '/favicon.svg', '/apple-touch-icon.png'].every((n) => links.some((l) => l.split('?')[0] === n)), `${route}: favicon links ${links.join(' ')}`);
   for (const href of links) {
     const r = await page.request.get(ORIGIN + href);
     const type = r.headers()['content-type'] ?? '';
