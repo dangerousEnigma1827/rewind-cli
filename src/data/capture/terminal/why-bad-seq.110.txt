@@ -1,4 +1,4 @@
-  ◂◂ why  run 47a9592d (bad)  · event seq 258
+  ◂◂ why  run c68f09f8 (bad)  · event seq 260
 
   » order A-101: charged $161
 
@@ -14,7 +14,7 @@
     ce":25}]}                                                                                                 
   ◆ that write was made by request #3 POST /order                                                             
   ◆ #2 POST /order set `currentCart` itself (seq 177); request #3 overwrote it (seq 254) before this point    
-    (seq 258)                                                                                                 
+    (seq 260)                                                                                                 
   ? if #2 POST /order read `currentCart` after seq 254, it got request #3's data, not its own: a likely race  
     between concurrent requests. (Reads are not recorded, so this is not proven.)                             
 
@@ -25,9 +25,9 @@
 
   story of request #2 POST /order ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈ + other requests' writes to watched variables
   seq     ms     req     event                                                                                
-  138   67.2  │  #2   →  POST /order                                                                          
-  177   70.5  │  #2   ✎  currentCart = null → {"order":"A-101","items":[{"sku":"kbd-01","pric…                
+  138   72.2  │  #2   →  POST /order                                                                          
+  177   75.6  │  #2   ✎  currentCart = null → {"order":"A-101","items":[{"sku":"kbd-01","pric…                
                          demo/checkout.js:12:5                                                                
-  254  101.3  │  #3   ✎  currentCart = {"order":"A-101","items":[{"sku":"kbd-01","pric… →                     
+  254  109.3  │  #3   ✎  currentCart = {"order":"A-101","items":[{"sku":"kbd-01","pric… →                     
                          {"order":"B-202","items":[{"sku":"dock-04","pri…  demo/checkout.js:12:5              
-  258  160.6  │  #2   »  order A-101: charged $161                                                            
+  260  164.8  │  #2   »  order A-101: charged $161                                                            

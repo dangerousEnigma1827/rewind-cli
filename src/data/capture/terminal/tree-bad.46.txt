@@ -1,4 +1,4 @@
-  ◂◂ async tree  run 47a9592d (bad)  · who 
+  ◂◂ async tree  run c68f09f8 (bad)  · who 
 scheduled whom
 
   ◉ main module                               
@@ -7,10 +7,10 @@ scheduled whom
       ├── HTTPINCOMINGMESSAGE +1 internal     
       │   ├── #1 GET /health                  
       │   │   ├── → GET /health               
-      │   │   └── ← 404 GET /health 1.6ms     
+      │   │   └── ← 404 GET /health 2.2ms     
       │   └── #2 POST /order                  
       │       ├── → POST /order               
-      │       ├── ← 200 POST /order 96.6ms    
+      │       ├── ← 200 POST /order 94.0ms    
       │       └── FSREQCALLBACK at            
       │           demo/checkout.js:9 in       
       │           loadCart                    
@@ -52,7 +52,7 @@ scheduled whom
       │               └── ◉ exit 1            
       └── #4 POST /order +2 internal          
           ├── → POST /order                   
-          ├── ← 200 POST /order 23.8ms        
+          ├── ← 200 POST /order 27.7ms        
           └── FSREQCALLBACK at                
               demo/checkout.js:9 in loadCart  
               └── FSREQCALLBACK +2 internal   
@@ -69,5 +69,5 @@ scheduled whom
                       └── » order C-303:      
                           charged $11         
 
-  106 quiet async resources with no observable
+  107 quiet async resources with no observable
 effect hidden (--full shows all)

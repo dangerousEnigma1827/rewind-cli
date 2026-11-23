@@ -1,21 +1,21 @@
-  ◂◂ timeline  run 47a9592d (bad)  · 7 events 
-shown of 448 recorded
+  ◂◂ timeline  run c68f09f8 (bad)  · 7 events 
+shown of 451 recorded
 
   seq     ms     req     event            con…
-  215   99.4  │  #3   →  POST /order          
-  221   99.5  │  #3   ▸  TickObject from      
+  215  107.1  │  #3   →  POST /order          
+  221  107.2  │  #3   ▸  TickObject from      
                          handleOrder          
                          fired ·              
                          scheduled at         
                          demo/checkout.j      
                          s:29                 
-  244  101.0  │  #3   ▸  FSREQCALLBACK        
+  244  108.9  │  #3   ▸  FSREQCALLBACK        
                          from loadCart        
                          fired ·              
                          scheduled at         
                          demo/checkout.j      
                          s:9                  
-  254  101.3  │  #3   ✎  currentCart =    in …
+  254  109.3  │  #3   ✎  currentCart =    in …
                          {"order":"A-101      
                          ","items":[{"sk      
                          u":"kbd-01","pr      
@@ -26,7 +26,7 @@ shown of 448 recorded
                          ri…                  
                          demo/checkout.j      
                          s:12:5               
-  445  253.2  │  #3   ▸  Timeout              
+  448  274.2  │  #3   ▸  Timeout              
                          paymentConfirme      
                          d from               
                          chargePayment        
@@ -34,7 +34,7 @@ shown of 448 recorded
                          scheduled at         
                          demo/checkout.j      
                          s:18                 
-  446  254.0  ┃  #3   ✖  TypeError:       in …
+  449  275.3  ┃  #3   ✖  TypeError:       in …
                          Cannot read          
                          properties of        
                          undefined            
@@ -42,4 +42,4 @@ shown of 448 recorded
                          'price')             
                          demo/checkout.j      
                          s:23                 
-  447  254.2  │  ··   ◉  exit 1               
+  450  275.7  │  ··   ◉  exit 1               

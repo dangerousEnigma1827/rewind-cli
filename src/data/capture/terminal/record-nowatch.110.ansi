@@ -1,4 +1,4 @@
-  [1;38;2;127;90;240m◂◂[0m [1mrecording[0m [38;2;127;90;240m52038d68[0m  [38;2;126;126;140mnode demo/traffic.js[0m
+  [1;38;2;127;90;240m◂◂[0m [1mrecording[0m [38;2;127;90;240m8532372a[0m  [38;2;126;126;140mnode demo/traffic.js[0m
 order A-101: charged $161
 order C-303: charged $11
 …\demo\checkout.js:23
@@ -13,4 +13,4 @@ TypeError: Cannot read properties of undefined (reading 'price')
     at process.processTimers (node:internal/timers:618:7)
 
 Node.js v24.22.1
-[?25l[?25h  [1;38;2;229;72;77m✖[0m recorded run [38;2;127;90;240m52038d68[0m [1mnowatch[0m  [38;2;126;126;140m443 events ·[0m [38;2;229;72;77m1 error[0m [38;2;126;126;140m· exit 1 ·[0m [38;2;229;72;77mfailed[0m  [38;2;126;126;140m0.4s[0m
+[?25l[?25h  [1;38;2;229;72;77m✖[0m recorded run [38;2;127;90;240m8532372a[0m [1mnowatch[0m  [38;2;126;126;140m425 events ·[0m [38;2;229;72;77m1 error[0m [38;2;126;126;140m· exit 1 ·[0m [38;2;229;72;77mfailed[0m  [38;2;126;126;140m0.3s[0m

@@ -1,4 +1,4 @@
-  ◂◂ recording 47a9592d  node demo/traffic.js 
+  ◂◂ recording c68f09f8  node demo/traffic.js 
 watch=currentCart
 order A-101: charged $161
 order C-303: charged $11
@@ -14,5 +14,5 @@ TypeError: Cannot read properties of undefined (reading 'price')
     at process.processTimers (node:internal/timers:618:7)
 
 Node.js v24.22.1
-  ✖ recorded run 47a9592d bad  448 events · 1 
+  ✖ recorded run c68f09f8 bad  451 events · 1 
 error · exit 1 · failed  0.3s

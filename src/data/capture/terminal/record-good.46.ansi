@@ -1,7 +1,7 @@
-  [1;38;2;127;90;240m◂◂[0m [1mrecording[0m [38;2;127;90;240mcc603922[0m  [38;2;126;126;140mnode demo/traffic.js [0m
+  [1;38;2;127;90;240m◂◂[0m [1mrecording[0m [38;2;127;90;240m472d0408[0m  [38;2;126;126;140mnode demo/traffic.js [0m
 [38;2;126;126;140m--sequential[0m  [38;2;126;126;140mwatch=[0m[1mcurrentCart[0m
 order A-101: charged $128
 order B-202: charged $186
 order C-303: charged $11
-  [38;2;35;144;92m●[0m recorded run [38;2;127;90;240mcc603922[0m [1mgood[0m  [38;2;126;126;140m441 events ·[0m 
+  [38;2;35;144;92m●[0m recorded run [38;2;127;90;240m472d0408[0m [1mgood[0m  [38;2;126;126;140m444 events ·[0m 
 [38;2;35;144;92mno errors[0m [38;2;126;126;140m· exit 0 ·[0m [38;2;35;144;92mok[0m  [38;2;126;126;140m0.5s[0m

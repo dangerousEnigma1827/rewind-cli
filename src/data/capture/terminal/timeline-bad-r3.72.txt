@@ -1,21 +1,21 @@
-  ◂◂ timeline  run 47a9592d (bad)  · 7 events shown of 448 recorded
+  ◂◂ timeline  run c68f09f8 (bad)  · 7 events shown of 451 recorded
 
   seq     ms     req     event                               context    
-  215   99.4  │  #3   →  POST /order                                    
-  221   99.5  │  #3   ▸  TickObject from handleOrder fired              
+  215  107.1  │  #3   →  POST /order                                    
+  221  107.2  │  #3   ▸  TickObject from handleOrder fired              
                          · scheduled at demo/checkout.js:29             
-  244  101.0  │  #3   ▸  FSREQCALLBACK from loadCart fired              
+  244  108.9  │  #3   ▸  FSREQCALLBACK from loadCart fired              
                          · scheduled at demo/checkout.js:9              
-  254  101.3  │  #3   ✎  currentCart =                       in FSREQCA…
+  254  109.3  │  #3   ✎  currentCart =                       in FSREQCA…
                          {"order":"A-101","items":[{"sku":"             
                          kbd-01","pric… →                               
                          {"order":"B-202","items":[{"sku":"             
                          dock-04","pri…                                 
                          demo/checkout.js:12:5                          
-  445  253.2  │  #3   ▸  Timeout paymentConfirmed from                  
+  448  274.2  │  #3   ▸  Timeout paymentConfirmed from                  
                          chargePayment fired · scheduled at             
                          demo/checkout.js:18                            
-  446  254.0  ┃  #3   ✖  TypeError: Cannot read properties   in Timeout…
+  449  275.3  ┃  #3   ✖  TypeError: Cannot read properties   in Timeout…
                          of undefined (reading 'price')                 
                          demo/checkout.js:23                            
-  447  254.2  │  ··   ◉  exit 1                                         
+  450  275.7  │  ··   ◉  exit 1                                         

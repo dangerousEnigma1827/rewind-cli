@@ -178,7 +178,9 @@ def main(argv: list[str] | None = None) -> None:
                                                 "root": tree_json(bad, node), "provenance": "derived"})
 
         # 5. other real artifacts
-        for src in ("demo/checkout.js", "demo/prices.json", "demo/fix.patch", "spikes/RESULTS.md"):
+        for src in ("demo/checkout.js", "demo/prices.json", "demo/fix.patch", "demo/traffic.js", "spikes/RESULTS.md",
+                    "README.md", "docs/ARCHITECTURE.md", "docs/handover/FEATURES_AND_LIMITATIONS.md",
+                    "docs/handover/ENGINEERING_LOG.md"):
             files[f"source/{Path(src).name}"] = show(rewind, sha, src).decode("utf-8")
         files["source/checkout.instrumented.js"] = instrumented(rewind, work)
         files["source/repo-files.json"] = dump(git(rewind, "ls-tree", "-r", "--name-only", sha).split("\n")[:-1])

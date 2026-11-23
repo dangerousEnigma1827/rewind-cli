@@ -1,32 +1,32 @@
-  [1;38;2;127;90;240m◂◂[0m [1mwhy[0m  run [38;2;127;90;240m47a9592d[0m ([1mbad[0m)  [38;2;126;126;140m· error 1 of 1[0m
+  [1;38;2;127;90;240m◂◂[0m [1mwhy[0m  run [38;2;127;90;240mc68f09f8[0m ([1mbad[0m)  [38;2;126;126;140m· error 1 of 1[0m
 
   [1;38;2;229;72;77m✖ TypeError[0m  [38;2;229;72;77mCannot read properties of undefined (reading 'price')[0m
     demo/checkout.js:23  [38;2;126;126;140min[0m [1mapplyDiscount[0m
     [38;2;126;126;140m  23 │[0m for (let i = 0; i < order.items.length; i++) total += currentCart.items[i].price;
 
   [1mfindings[0m [38;2;126;126;140m┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈[0m [1m●[0m [38;2;126;126;140mobserved[0m  [38;2;127;90;240m◆[0m [38;2;126;126;140mderived[0m  [3;38;2;126;126;140m? inferred[0m
-  [1m●[0m [1mTypeError: Cannot read properties of undefined (reading 'price')  (uncaught [0m        [38;2;126;126;140m               seq 446[0m
+  [1m●[0m [1mTypeError: Cannot read properties of undefined (reading 'price')  (uncaught [0m        [38;2;126;126;140m               seq 449[0m
     [1mexception)[0m                                                                          [38;2;126;126;140m                      [0m
-  [1m●[0m [1mthrown in applyDiscount at demo/checkout.js:23[0m                                      [38;2;126;126;140m               seq 446[0m
-  [1m●[0m [1mran inside the callback of Timeout paymentConfirmed from chargePayment, created at [0m [38;2;126;126;140m          seq 255, 446[0m
+  [1m●[0m [1mthrown in applyDiscount at demo/checkout.js:23[0m                                      [38;2;126;126;140m               seq 449[0m
+  [1m●[0m [1mran inside the callback of Timeout paymentConfirmed from chargePayment, created at [0m [38;2;126;126;140m          seq 255, 449[0m
     [1mdemo/checkout.js:18[0m                                                                 [38;2;126;126;140m                      [0m
   [38;2;127;90;240m◆[0m causal chain: Timeout paymentConfirmed from chargePayment (demo/checkout.js:18) ←   [38;2;126;126;140m     seq 255, 236, 213[0m
     FSREQCALLBACK from loadCart (demo/checkout.js:9) ← request #3 POST /order           [38;2;126;126;140m                      [0m
   [38;2;127;90;240m◆[0m belongs to request #3 POST /order: its async ancestry reaches that request's        [38;2;126;126;140m               seq 215[0m
     handler                                                                             [38;2;126;126;140m                      [0m
-  [38;2;127;90;240m◆[0m request #2 POST /order was active while #3 POST /order was in flight (logged,       [38;2;126;126;140m          seq 258, 271[0m
+  [38;2;127;90;240m◆[0m request #2 POST /order was active while #3 POST /order was in flight (logged,       [38;2;126;126;140m          seq 260, 274[0m
     responded)                                                                          [38;2;126;126;140m                      [0m
-  [38;2;127;90;240m◆[0m request #4 POST /order was active while #3 POST /order was in flight (arrived,      [38;2;126;126;140mseq 348, 387, 391, 403[0m
+  [38;2;127;90;240m◆[0m request #4 POST /order was active while #3 POST /order was in flight (arrived,      [38;2;126;126;140mseq 351, 390, 394, 406[0m
     logged, responded, wrote state)                                                     [38;2;126;126;140m                      [0m
-  [38;2;127;90;240m◆[0m the failing line reads watched variable `currentCart`:  for (let i = 0; i <         [38;2;126;126;140m               seq 446[0m
+  [38;2;127;90;240m◆[0m the failing line reads watched variable `currentCart`:  for (let i = 0; i <         [38;2;126;126;140m               seq 449[0m
     order.items.length; i++) total += currentCart.items[i].price;                       [38;2;126;126;140m                      [0m
-  [1m●[0m [1mlast write to `currentCart` before this point: `currentCart` = at [0m                  [38;2;126;126;140m               seq 387[0m
+  [1m●[0m [1mlast write to `currentCart` before this point: `currentCart` = at [0m                  [38;2;126;126;140m               seq 390[0m
     [1mdemo/checkout.js:12:5, new value [0m                                                   [38;2;126;126;140m                      [0m
     [1m{"order":"C-303","items":[{"sku":"cable-03","price":12}]}[0m                           [38;2;126;126;140m                      [0m
-  [38;2;127;90;240m◆[0m that write was made by request #4 POST /order                                       [38;2;126;126;140m               seq 387[0m
-  [38;2;127;90;240m◆[0m #3 POST /order set `currentCart` itself (seq 254); request #4 overwrote it (seq     [38;2;126;126;140m     seq 254, 387, 446[0m
-    387) before this point (seq 446)                                                    [38;2;126;126;140m                      [0m
-  [3;38;2;126;126;140m?[0m [3;38;2;126;126;140mlikely root cause: a race on shared module-level state. Another request overwrote [0m  [38;2;126;126;140m     seq 254, 387, 446[0m
+  [38;2;127;90;240m◆[0m that write was made by request #4 POST /order                                       [38;2;126;126;140m               seq 390[0m
+  [38;2;127;90;240m◆[0m #3 POST /order set `currentCart` itself (seq 254); request #4 overwrote it (seq     [38;2;126;126;140m     seq 254, 390, 449[0m
+    390) before this point (seq 449)                                                    [38;2;126;126;140m                      [0m
+  [3;38;2;126;126;140m?[0m [3;38;2;126;126;140mlikely root cause: a race on shared module-level state. Another request overwrote [0m  [38;2;126;126;140m     seq 254, 390, 449[0m
     [3;38;2;126;126;140mit between this request's own write and its read, so this request computed with [0m    [38;2;126;126;140m                      [0m
     [3;38;2;126;126;140manother request's data. Fix: keep this state per request instead of in a [0m           [38;2;126;126;140m                      [0m
     [3;38;2;126;126;140mmodule-level variable.[0m                                                              [38;2;126;126;140m                      [0m
@@ -38,9 +38,9 @@
 
   [1mstory of request [0m[1;38;2;125;138;46m#3[0m[1m POST /order[0m [38;2;126;126;140m┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈[0m [38;2;126;126;140m+ other requests' writes to watched variables[0m
   [38;2;126;126;140mseq[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m   ms[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140mreq[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140mevent                                                                                [0m
-  [38;2;126;126;140m215[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m 99.4[0m[38;2;126;126;140m [0m [38;2;126;126;140m│[0m  [38;2;125;138;46m#3[0m   →  POST /order                                                                          
-  [38;2;126;126;140m254[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m101.3[0m[38;2;126;126;140m [0m [38;2;126;126;140m│[0m  [38;2;125;138;46m#3[0m   [38;2;168;116;31m✎[0m  [1mcurrentCart[0m = [38;2;126;126;140m{"order":"A-101","items":[{"sku":"kbd-01","pric… →[0m                     
+  [38;2;126;126;140m215[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m107.1[0m[38;2;126;126;140m [0m [38;2;126;126;140m│[0m  [38;2;125;138;46m#3[0m   →  POST /order                                                                          
+  [38;2;126;126;140m254[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m109.3[0m[38;2;126;126;140m [0m [38;2;126;126;140m│[0m  [38;2;125;138;46m#3[0m   [38;2;168;116;31m✎[0m  [1mcurrentCart[0m = [38;2;126;126;140m{"order":"A-101","items":[{"sku":"kbd-01","pric… →[0m                     
   [38;2;126;126;140m    [0m[38;2;126;126;140m       [0m            {"order":"B-202","items":[{"sku":"dock-04","pri…  demo/checkout.js:12:5              
-  [38;2;126;126;140m387[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m170.9[0m[38;2;126;126;140m [0m [38;2;126;126;140m│[0m  [38;2;90;127;192m#4[0m   [38;2;168;116;31m✎[0m  [1mcurrentCart[0m = [38;2;126;126;140m{"order":"B-202","items":[{"sku":"dock-04","pri… →[0m                     
+  [38;2;126;126;140m390[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m171.0[0m[38;2;126;126;140m [0m [38;2;126;126;140m│[0m  [38;2;90;127;192m#4[0m   [38;2;168;116;31m✎[0m  [1mcurrentCart[0m = [38;2;126;126;140m{"order":"B-202","items":[{"sku":"dock-04","pri… →[0m                     
   [38;2;126;126;140m    [0m[38;2;126;126;140m       [0m            {"order":"C-303","items":[{"sku":"cable-03","pr…  demo/checkout.js:12:5              
-  [38;2;126;126;140m446[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m254.0[0m[38;2;126;126;140m [0m [1;38;2;229;72;77m┃[0m  [38;2;125;138;46m#3[0m   [1;38;2;229;72;77m✖[0m  [38;2;229;72;77mTypeError: Cannot read properties of undefined (reading 'price')[0m  demo/checkout.js:23
+  [38;2;126;126;140m449[0m[38;2;126;126;140m [0m[38;2;126;126;140m [0m[38;2;126;126;140m275.3[0m[38;2;126;126;140m [0m [1;38;2;229;72;77m┃[0m  [38;2;125;138;46m#3[0m   [1;38;2;229;72;77m✖[0m  [38;2;229;72;77mTypeError: Cannot read properties of undefined (reading 'price')[0m  demo/checkout.js:23

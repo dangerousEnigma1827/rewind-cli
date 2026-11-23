@@ -1,12 +1,12 @@
 {
- "id": "cc603922",
+ "id": "472d0408",
  "label": "good",
  "status": "ok",
  "exit_code": 0,
  "watch": [
   "currentCart"
  ],
- "event_count": 441,
+ "event_count": 444,
  "story_count": 17,
  "story": [
   4,
@@ -19,13 +19,13 @@
   173,
   224,
   263,
-  267,
-  279,
-  330,
-  369,
-  373,
-  385,
-  440
+  269,
+  282,
+  333,
+  372,
+  376,
+  388,
+  443
  ],
  "callbacks": [
   10,
@@ -49,44 +49,45 @@
   230,
   253,
   266,
-  273,
-  275,
-  286,
-  297,
-  314,
-  321,
-  336,
-  359,
-  372,
-  379,
-  381,
-  392,
-  403,
-  420,
-  427,
-  429,
-  431,
-  436
+  268,
+  276,
+  278,
+  289,
+  300,
+  317,
+  324,
+  339,
+  362,
+  375,
+  382,
+  384,
+  395,
+  406,
+  423,
+  430,
+  432,
+  434,
+  439
  ],
  "errors": [],
  "events": [
   {
    "seq": 4,
-   "t": 21929.8,
+   "t": 29619.0,
    "kind": "run.start",
    "name": null,
    "aid": null,
    "eid": 1,
    "request": null,
    "data": {
-    "run": "cc603922",
+    "run": "472d0408",
     "argv": [
      "demo/traffic.js",
      "--sequential"
     ],
     "cwd": "…",
     "node": "v24.22.1",
-    "pid": 19440,
+    "pid": 41192,
     "watch": [
      "currentCart"
     ],
@@ -95,7 +96,7 @@
   },
   {
    "seq": 7,
-   "t": 51453.6,
+   "t": 47507.3,
    "kind": "instrument",
    "name": "instrumented",
    "aid": null,
@@ -111,7 +112,7 @@
   },
   {
    "seq": 8,
-   "t": 53168.8,
+   "t": 50975.3,
    "kind": "async.init",
    "name": null,
    "aid": 6,
@@ -129,7 +130,7 @@
   },
   {
    "seq": 10,
-   "t": 55255.4,
+   "t": 52723.0,
    "kind": "async.before",
    "name": null,
    "aid": 7,
@@ -147,7 +148,7 @@
   },
   {
    "seq": 21,
-   "t": 96979.7,
+   "t": 76860.0,
    "kind": "async.before",
    "name": null,
    "aid": 15,
@@ -165,7 +166,7 @@
   },
   {
    "seq": 27,
-   "t": 98081.7,
+   "t": 78582.6,
    "kind": "async.before",
    "name": null,
    "aid": 14,
@@ -183,7 +184,7 @@
   },
   {
    "seq": 31,
-   "t": 98887.3,
+   "t": 79442.2,
    "kind": "async.init",
    "name": null,
    "aid": 21,
@@ -196,7 +197,7 @@
   },
   {
    "seq": 32,
-   "t": 98923.1,
+   "t": 79489.0,
    "kind": "async.before",
    "name": null,
    "aid": 6,
@@ -214,7 +215,7 @@
   },
   {
    "seq": 33,
-   "t": 99301.5,
+   "t": 79913.4,
    "kind": "async.init",
    "name": null,
    "aid": 22,
@@ -227,7 +228,7 @@
   },
   {
    "seq": 41,
-   "t": 100800.5,
+   "t": 81234.6,
    "kind": "async.init",
    "name": null,
    "aid": 24,
@@ -240,7 +241,7 @@
   },
   {
    "seq": 43,
-   "t": 100894.5,
+   "t": 81322.8,
    "kind": "http.in",
    "name": "GET /health",
    "aid": 24,
@@ -254,7 +255,7 @@
   },
   {
    "seq": 54,
-   "t": 102419.8,
+   "t": 83260.4,
    "kind": "async.before",
    "name": null,
    "aid": 26,
@@ -272,7 +273,7 @@
   },
   {
    "seq": 59,
-   "t": 103290.8,
+   "t": 83843.7,
    "kind": "http.out",
    "name": "404 GET /health",
    "aid": null,
@@ -281,12 +282,12 @@
    "data": {
     "req": 1,
     "status": 404,
-    "ms": 2.5211
+    "ms": 2.6352
    }
   },
   {
    "seq": 75,
-   "t": 104214.9,
+   "t": 84496.6,
    "kind": "async.before",
    "name": null,
    "aid": 12,
@@ -304,7 +305,7 @@
   },
   {
    "seq": 84,
-   "t": 106827.1,
+   "t": 85811.7,
    "kind": "async.before",
    "name": null,
    "aid": 31,
@@ -322,7 +323,7 @@
   },
   {
    "seq": 101,
-   "t": 108370.3,
+   "t": 87134.1,
    "kind": "async.before",
    "name": null,
    "aid": 16,
@@ -340,7 +341,7 @@
   },
   {
    "seq": 108,
-   "t": 110286.6,
+   "t": 87882.8,
    "kind": "async.before",
    "name": null,
    "aid": 40,
@@ -358,7 +359,7 @@
   },
   {
    "seq": 115,
-   "t": 111193.0,
+   "t": 88178.8,
    "kind": "async.init",
    "name": null,
    "aid": 44,
@@ -371,7 +372,7 @@
   },
   {
    "seq": 117,
-   "t": 111243.6,
+   "t": 88194.2,
    "kind": "http.in",
    "name": "POST /order",
    "aid": 44,
@@ -385,7 +386,7 @@
   },
   {
    "seq": 123,
-   "t": 112036.9,
+   "t": 88337.7,
    "kind": "async.before",
    "name": null,
    "aid": 45,
@@ -403,7 +404,7 @@
   },
   {
    "seq": 138,
-   "t": 112717.3,
+   "t": 88804.8,
    "kind": "async.init",
    "name": null,
    "aid": 47,
@@ -421,7 +422,7 @@
   },
   {
    "seq": 146,
-   "t": 113488.0,
+   "t": 89991.1,
    "kind": "async.before",
    "name": null,
    "aid": 47,
@@ -439,7 +440,7 @@
   },
   {
    "seq": 147,
-   "t": 113526.3,
+   "t": 90067.5,
    "kind": "async.init",
    "name": null,
    "aid": 49,
@@ -452,7 +453,7 @@
   },
   {
    "seq": 150,
-   "t": 113701.3,
+   "t": 90522.5,
    "kind": "async.init",
    "name": null,
    "aid": 50,
@@ -465,7 +466,7 @@
   },
   {
    "seq": 153,
-   "t": 113874.7,
+   "t": 90839.0,
    "kind": "async.init",
    "name": null,
    "aid": 51,
@@ -478,7 +479,7 @@
   },
   {
    "seq": 156,
-   "t": 114140.7,
+   "t": 91417.5,
    "kind": "mutation",
    "name": "currentCart",
    "aid": null,
@@ -494,7 +495,7 @@
   },
   {
    "seq": 157,
-   "t": 114236.1,
+   "t": 91602.3,
    "kind": "async.init",
    "name": "paymentConfirmed",
    "aid": 52,
@@ -512,7 +513,7 @@
   },
   {
    "seq": 159,
-   "t": 204332.4,
+   "t": 186546.4,
    "kind": "async.before",
    "name": null,
    "aid": 52,
@@ -530,7 +531,7 @@
   },
   {
    "seq": 160,
-   "t": 204604.5,
+   "t": 186896.8,
    "kind": "log",
    "name": "order A-101: charged $128",
    "aid": null,
@@ -542,7 +543,7 @@
   },
   {
    "seq": 167,
-   "t": 206081.7,
+   "t": 187686.9,
    "kind": "async.before",
    "name": null,
    "aid": 54,
@@ -560,7 +561,7 @@
   },
   {
    "seq": 169,
-   "t": 206168.3,
+   "t": 187692.3,
    "kind": "async.before",
    "name": null,
    "aid": 55,
@@ -578,7 +579,7 @@
   },
   {
    "seq": 173,
-   "t": 206312.5,
+   "t": 187768.1,
    "kind": "http.out",
    "name": "200 POST /order",
    "aid": null,
@@ -587,12 +588,12 @@
    "data": {
     "req": 2,
     "status": 200,
-    "ms": 95.1786
+    "ms": 99.606
    }
   },
   {
    "seq": 180,
-   "t": 206370.5,
+   "t": 187800.0,
    "kind": "async.before",
    "name": null,
    "aid": 39,
@@ -610,7 +611,7 @@
   },
   {
    "seq": 191,
-   "t": 206849.0,
+   "t": 188014.6,
    "kind": "async.before",
    "name": null,
    "aid": 58,
@@ -628,7 +629,7 @@
   },
   {
    "seq": 208,
-   "t": 207371.0,
+   "t": 188296.4,
    "kind": "async.before",
    "name": null,
    "aid": 41,
@@ -646,7 +647,7 @@
   },
   {
    "seq": 215,
-   "t": 207819.3,
+   "t": 188668.7,
    "kind": "async.before",
    "name": null,
    "aid": 67,
@@ -664,7 +665,7 @@
   },
   {
    "seq": 222,
-   "t": 208117.7,
+   "t": 188864.8,
    "kind": "async.init",
    "name": null,
    "aid": 71,
@@ -677,7 +678,7 @@
   },
   {
    "seq": 224,
-   "t": 208149.5,
+   "t": 188878.2,
    "kind": "http.in",
    "name": "POST /order",
    "aid": 71,
@@ -691,7 +692,7 @@
   },
   {
    "seq": 230,
-   "t": 208245.6,
+   "t": 188951.0,
    "kind": "async.before",
    "name": null,
    "aid": 72,
@@ -709,7 +710,7 @@
   },
   {
    "seq": 245,
-   "t": 208528.6,
+   "t": 189102.7,
    "kind": "async.init",
    "name": null,
    "aid": 74,
@@ -727,7 +728,7 @@
   },
   {
    "seq": 253,
-   "t": 209801.7,
+   "t": 190840.6,
    "kind": "async.before",
    "name": null,
    "aid": 74,
@@ -745,7 +746,7 @@
   },
   {
    "seq": 254,
-   "t": 209888.1,
+   "t": 190894.6,
    "kind": "async.init",
    "name": null,
    "aid": 76,
@@ -758,7 +759,7 @@
   },
   {
    "seq": 257,
-   "t": 210091.3,
+   "t": 190969.0,
    "kind": "async.init",
    "name": null,
    "aid": 77,
@@ -771,7 +772,7 @@
   },
   {
    "seq": 260,
-   "t": 210230.5,
+   "t": 191051.0,
    "kind": "async.init",
    "name": null,
    "aid": 78,
@@ -784,7 +785,7 @@
   },
   {
    "seq": 263,
-   "t": 210613.7,
+   "t": 191264.1,
    "kind": "mutation",
    "name": "currentCart",
    "aid": null,
@@ -800,7 +801,7 @@
   },
   {
    "seq": 264,
-   "t": 210768.5,
+   "t": 191346.8,
    "kind": "async.init",
    "name": "paymentConfirmed",
    "aid": 79,
@@ -818,7 +819,25 @@
   },
   {
    "seq": 266,
-   "t": 360315.1,
+   "t": 280014.0,
+   "kind": "async.before",
+   "name": null,
+   "aid": 25,
+   "eid": 25,
+   "request": 1,
+   "data": null,
+   "type": "Timeout",
+   "site": {
+    "fn": "<anonymous>",
+    "file": "demo/checkout.js",
+    "line": 44,
+    "col": 29
+   },
+   "describe": "Timeout resetCache"
+  },
+  {
+   "seq": 268,
+   "t": 356403.1,
    "kind": "async.before",
    "name": null,
    "aid": 79,
@@ -835,8 +854,8 @@
    "describe": "Timeout paymentConfirmed from chargePayment"
   },
   {
-   "seq": 267,
-   "t": 360356.4,
+   "seq": 269,
+   "t": 356459.6,
    "kind": "log",
    "name": "order B-202: charged $186",
    "aid": null,
@@ -847,8 +866,8 @@
    }
   },
   {
-   "seq": 273,
-   "t": 361074.7,
+   "seq": 276,
+   "t": 357411.3,
    "kind": "async.before",
    "name": null,
    "aid": 80,
@@ -865,12 +884,12 @@
    "describe": "TickObject"
   },
   {
-   "seq": 275,
-   "t": 361086.3,
+   "seq": 278,
+   "t": 357433.3,
    "kind": "async.before",
    "name": null,
-   "aid": 81,
-   "eid": 81,
+   "aid": 82,
+   "eid": 82,
    "request": 3,
    "data": null,
    "type": "TickObject",
@@ -883,8 +902,8 @@
    "describe": "TickObject"
   },
   {
-   "seq": 279,
-   "t": 361462.6,
+   "seq": 282,
+   "t": 357731.6,
    "kind": "http.out",
    "name": "200 POST /order",
    "aid": null,
@@ -893,12 +912,12 @@
    "data": {
     "req": 3,
     "status": 200,
-    "ms": 153.3607
+    "ms": 168.8727
    }
   },
   {
-   "seq": 286,
-   "t": 361522.3,
+   "seq": 289,
+   "t": 357852.8,
    "kind": "async.before",
    "name": null,
    "aid": 66,
@@ -915,12 +934,12 @@
    "describe": "TCPWRAP"
   },
   {
-   "seq": 297,
-   "t": 361969.8,
+   "seq": 300,
+   "t": 358600.9,
    "kind": "async.before",
    "name": null,
-   "aid": 84,
-   "eid": 84,
+   "aid": 85,
+   "eid": 85,
    "request": null,
    "data": null,
    "type": "TickObject",
@@ -933,8 +952,8 @@
    "describe": "TickObject"
   },
   {
-   "seq": 314,
-   "t": 362185.9,
+   "seq": 317,
+   "t": 359318.9,
    "kind": "async.before",
    "name": null,
    "aid": 68,
@@ -951,12 +970,12 @@
    "describe": "PROMISE"
   },
   {
-   "seq": 321,
-   "t": 362685.9,
+   "seq": 324,
+   "t": 360865.2,
    "kind": "async.before",
    "name": null,
-   "aid": 93,
-   "eid": 93,
+   "aid": 94,
+   "eid": 94,
    "request": null,
    "data": null,
    "type": "TickObject",
@@ -969,11 +988,11 @@
    "describe": "TickObject"
   },
   {
-   "seq": 328,
-   "t": 363051.1,
+   "seq": 331,
+   "t": 362223.5,
    "kind": "async.init",
    "name": null,
-   "aid": 97,
+   "aid": 98,
    "eid": 22,
    "request": 4,
    "data": null,
@@ -982,12 +1001,12 @@
    "describe": "request #4 POST /order"
   },
   {
-   "seq": 330,
-   "t": 363067.5,
+   "seq": 333,
+   "t": 362267.3,
    "kind": "http.in",
    "name": "POST /order",
-   "aid": 97,
-   "eid": 97,
+   "aid": 98,
+   "eid": 98,
    "request": 4,
    "data": {
     "req": 4,
@@ -996,12 +1015,12 @@
    }
   },
   {
-   "seq": 336,
-   "t": 363166.2,
+   "seq": 339,
+   "t": 362449.6,
    "kind": "async.before",
    "name": null,
-   "aid": 98,
-   "eid": 98,
+   "aid": 99,
+   "eid": 99,
    "request": 4,
    "data": null,
    "type": "TickObject",
@@ -1014,12 +1033,12 @@
    "describe": "TickObject from handleOrder"
   },
   {
-   "seq": 351,
-   "t": 363356.4,
+   "seq": 354,
+   "t": 362698.7,
    "kind": "async.init",
    "name": null,
-   "aid": 100,
-   "eid": 97,
+   "aid": 101,
+   "eid": 98,
    "request": 4,
    "data": null,
    "type": "FSREQCALLBACK",
@@ -1032,12 +1051,12 @@
    "describe": "FSREQCALLBACK from loadCart"
   },
   {
-   "seq": 359,
-   "t": 364385.1,
+   "seq": 362,
+   "t": 363802.9,
    "kind": "async.before",
    "name": null,
-   "aid": 100,
-   "eid": 100,
+   "aid": 101,
+   "eid": 101,
    "request": 4,
    "data": null,
    "type": "FSREQCALLBACK",
@@ -1048,27 +1067,14 @@
     "col": 6
    },
    "describe": "FSREQCALLBACK from loadCart"
-  },
-  {
-   "seq": 360,
-   "t": 364445.6,
-   "kind": "async.init",
-   "name": null,
-   "aid": 102,
-   "eid": 100,
-   "request": 4,
-   "data": null,
-   "type": "FSREQCALLBACK",
-   "site": null,
-   "describe": "FSREQCALLBACK via loadCart"
   },
   {
    "seq": 363,
-   "t": 364575.5,
+   "t": 363842.4,
    "kind": "async.init",
    "name": null,
    "aid": 103,
-   "eid": 102,
+   "eid": 101,
    "request": 4,
    "data": null,
    "type": "FSREQCALLBACK",
@@ -1077,7 +1083,7 @@
   },
   {
    "seq": 366,
-   "t": 364741.6,
+   "t": 363975.9,
    "kind": "async.init",
    "name": null,
    "aid": 104,
@@ -1090,11 +1096,24 @@
   },
   {
    "seq": 369,
-   "t": 364895.3,
+   "t": 364041.6,
+   "kind": "async.init",
+   "name": null,
+   "aid": 105,
+   "eid": 104,
+   "request": 4,
+   "data": null,
+   "type": "FSREQCALLBACK",
+   "site": null,
+   "describe": "FSREQCALLBACK via loadCart"
+  },
+  {
+   "seq": 372,
+   "t": 364121.2,
    "kind": "mutation",
    "name": "currentCart",
    "aid": null,
-   "eid": 104,
+   "eid": 105,
    "request": 4,
    "data": {
     "path": "",
@@ -1105,29 +1124,11 @@
    }
   },
   {
-   "seq": 370,
-   "t": 364967.5,
+   "seq": 373,
+   "t": 364244.4,
    "kind": "async.init",
    "name": "paymentConfirmed",
-   "aid": 105,
-   "eid": 104,
-   "request": 4,
-   "data": null,
-   "type": "Timeout",
-   "site": {
-    "fn": "chargePayment",
-    "file": "demo/checkout.js",
-    "line": 18,
-    "col": 3
-   },
-   "describe": "Timeout paymentConfirmed from chargePayment"
-  },
-  {
-   "seq": 372,
-   "t": 375817.0,
-   "kind": "async.before",
-   "name": null,
-   "aid": 105,
+   "aid": 106,
    "eid": 105,
    "request": 4,
    "data": null,
@@ -1141,24 +1142,42 @@
    "describe": "Timeout paymentConfirmed from chargePayment"
   },
   {
-   "seq": 373,
-   "t": 375890.6,
+   "seq": 375,
+   "t": 386914.8,
+   "kind": "async.before",
+   "name": null,
+   "aid": 106,
+   "eid": 106,
+   "request": 4,
+   "data": null,
+   "type": "Timeout",
+   "site": {
+    "fn": "chargePayment",
+    "file": "demo/checkout.js",
+    "line": 18,
+    "col": 3
+   },
+   "describe": "Timeout paymentConfirmed from chargePayment"
+  },
+  {
+   "seq": 376,
+   "t": 387002.9,
    "kind": "log",
    "name": "order C-303: charged $11",
    "aid": null,
-   "eid": 105,
+   "eid": 106,
    "request": 4,
    "data": {
     "level": "log"
    }
   },
   {
-   "seq": 379,
-   "t": 377197.3,
+   "seq": 382,
+   "t": 387682.7,
    "kind": "async.before",
    "name": null,
-   "aid": 106,
-   "eid": 106,
+   "aid": 107,
+   "eid": 107,
    "request": 4,
    "data": null,
    "type": "TickObject",
@@ -1171,12 +1190,12 @@
    "describe": "TickObject"
   },
   {
-   "seq": 381,
-   "t": 377208.9,
+   "seq": 384,
+   "t": 387692.1,
    "kind": "async.before",
    "name": null,
-   "aid": 107,
-   "eid": 107,
+   "aid": 108,
+   "eid": 108,
    "request": 4,
    "data": null,
    "type": "TickObject",
@@ -1189,26 +1208,26 @@
    "describe": "TickObject"
   },
   {
-   "seq": 385,
-   "t": 377378.3,
+   "seq": 388,
+   "t": 387830.2,
    "kind": "http.out",
    "name": "200 POST /order",
    "aid": null,
-   "eid": 97,
+   "eid": 98,
    "request": 4,
    "data": {
     "req": 4,
     "status": 200,
-    "ms": 14.3061
+    "ms": 25.8358
    }
   },
   {
-   "seq": 392,
-   "t": 377427.8,
+   "seq": 395,
+   "t": 387883.4,
    "kind": "async.before",
    "name": null,
-   "aid": 92,
-   "eid": 92,
+   "aid": 93,
+   "eid": 93,
    "request": null,
    "data": null,
    "type": "TCPWRAP",
@@ -1221,12 +1240,12 @@
    "describe": "TCPWRAP"
   },
   {
-   "seq": 403,
-   "t": 377701.7,
+   "seq": 406,
+   "t": 388218.2,
    "kind": "async.before",
    "name": null,
-   "aid": 110,
-   "eid": 110,
+   "aid": 111,
+   "eid": 111,
    "request": null,
    "data": null,
    "type": "TickObject",
@@ -1239,12 +1258,12 @@
    "describe": "TickObject"
   },
   {
-   "seq": 420,
-   "t": 377982.5,
+   "seq": 423,
+   "t": 388830.4,
    "kind": "async.before",
    "name": null,
-   "aid": 94,
-   "eid": 94,
+   "aid": 95,
+   "eid": 95,
    "request": null,
    "data": null,
    "type": "PROMISE",
@@ -1257,26 +1276,8 @@
    "describe": "PROMISE"
   },
   {
-   "seq": 427,
-   "t": 379095.8,
-   "kind": "async.before",
-   "name": null,
-   "aid": 118,
-   "eid": 118,
-   "request": null,
-   "data": null,
-   "type": "TickObject",
-   "site": {
-    "fn": "<anonymous>",
-    "file": "demo/traffic.js",
-    "line": 34,
-    "col": 10
-   },
-   "describe": "TickObject"
-  },
-  {
-   "seq": 429,
-   "t": 379107.9,
+   "seq": 430,
+   "t": 390241.1,
    "kind": "async.before",
    "name": null,
    "aid": 119,
@@ -1293,12 +1294,30 @@
    "describe": "TickObject"
   },
   {
-   "seq": 431,
-   "t": 379171.2,
+   "seq": 432,
+   "t": 390251.5,
    "kind": "async.before",
    "name": null,
-   "aid": 92,
-   "eid": 92,
+   "aid": 120,
+   "eid": 120,
+   "request": null,
+   "data": null,
+   "type": "TickObject",
+   "site": {
+    "fn": "<anonymous>",
+    "file": "demo/traffic.js",
+    "line": 34,
+    "col": 10
+   },
+   "describe": "TickObject"
+  },
+  {
+   "seq": 434,
+   "t": 390297.5,
+   "kind": "async.before",
+   "name": null,
+   "aid": 93,
+   "eid": 93,
    "request": null,
    "data": null,
    "type": "TCPWRAP",
@@ -1311,12 +1330,12 @@
    "describe": "TCPWRAP"
   },
   {
-   "seq": 436,
-   "t": 379358.1,
+   "seq": 439,
+   "t": 390430.8,
    "kind": "async.before",
    "name": null,
-   "aid": 92,
-   "eid": 92,
+   "aid": 93,
+   "eid": 93,
    "request": null,
    "data": null,
    "type": "TCPWRAP",
@@ -1329,8 +1348,8 @@
    "describe": "TCPWRAP"
   },
   {
-   "seq": 440,
-   "t": 380104.5,
+   "seq": 443,
+   "t": 390733.9,
    "kind": "run.end",
    "name": null,
    "aid": null,
@@ -1352,13 +1371,13 @@
    "anchor": 24,
    "in": {
     "seq": 43,
-    "t": 100894.5
+    "t": 81322.8
    },
    "out": {
     "seq": 59,
-    "t": 103290.8,
+    "t": 83843.7,
     "status": 404,
-    "ms": 2.5211
+    "ms": 2.6352
    }
   },
   {
@@ -1367,13 +1386,13 @@
    "anchor": 44,
    "in": {
     "seq": 117,
-    "t": 111243.6
+    "t": 88194.2
    },
    "out": {
     "seq": 173,
-    "t": 206312.5,
+    "t": 187768.1,
     "status": 200,
-    "ms": 95.1786
+    "ms": 99.606
    }
   },
   {
@@ -1382,35 +1401,35 @@
    "anchor": 71,
    "in": {
     "seq": 224,
-    "t": 208149.5
+    "t": 188878.2
    },
    "out": {
-    "seq": 279,
-    "t": 361462.6,
+    "seq": 282,
+    "t": 357731.6,
     "status": 200,
-    "ms": 153.3607
+    "ms": 168.8727
    }
   },
   {
    "id": 4,
    "name": "POST /order",
-   "anchor": 97,
+   "anchor": 98,
    "in": {
-    "seq": 330,
-    "t": 363067.5
+    "seq": 333,
+    "t": 362267.3
    },
    "out": {
-    "seq": 385,
-    "t": 377378.3,
+    "seq": 388,
+    "t": 387830.2,
     "status": 200,
-    "ms": 14.3061
+    "ms": 25.8358
    }
   }
  ],
  "mutations": [
   {
    "seq": 156,
-   "t": 114140.7,
+   "t": 91417.5,
    "name": "currentCart",
    "path": "",
    "op": "=",
@@ -1421,7 +1440,7 @@
   },
   {
    "seq": 263,
-   "t": 210613.7,
+   "t": 191264.1,
    "name": "currentCart",
    "path": "",
    "op": "=",
@@ -1431,8 +1450,8 @@
    "writer": 3
   },
   {
-   "seq": 369,
-   "t": 364895.3,
+   "seq": 372,
+   "t": 364121.2,
    "name": "currentCart",
    "path": "",
    "op": "=",

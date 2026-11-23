@@ -1,4 +1,4 @@
-  ◂◂ diff  A run cc603922 (good)  ·  B run 47a9592d (bad)
+  ◂◂ diff  A run 472d0408 (good)  ·  B run c68f09f8 (bad)
 
   findings ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈ ● observed  ◆ derived  ? inferred
   ◆ 14 of 21 (A) / 20 (B) normalised steps line up                      
@@ -12,8 +12,8 @@
   ◆ 3 step(s) occur in both runs at different positions                 
     (reordered)                                                         
   ◆ 4 step(s) only in A, e.g. #2 log order A-101: charged $128 A seq 160
-  ◆ 3 step(s) only in B, e.g. #2 log order A-101: charged $161 B seq 258
-  ? run B fails and A does not. The first divergence above is  B seq 446
+  ◆ 3 step(s) only in B, e.g. #2 log order A-101: charged $161 B seq 260
+  ? run B fails and A does not. The first divergence above is  B seq 449
     the earliest observable point where they part ways; it is           
     the place to start, not necessarily the cause. Run `rewind          
     why` on B for the causal story.                                     
@@ -30,18 +30,18 @@ lines
       224  #3 http.in POST /order
       253  #3 ▸ FSREQCALLBACK from loadCart @ demo/checkout.js:9
       263  #3 ✎ currentCart = @ demo/checkout.js:12:5
-  -   266  #3 ▸ Timeout paymentConfirmed from chargePayment @ demo/chec…
-  -   267  #3 log order B-202: charged $186
-  -   279  #3 http.out 200 POST /order
-  +   257  #2 ▸ Timeout paymentConfirmed from chargePayment @ demo/chec…
-  +   258  #2 log order A-101: charged $161
-  +   271  #2 http.out 200 POST /order
-      330  #4 http.in POST /order
-      359  #4 ▸ FSREQCALLBACK from loadCart @ demo/checkout.js:9
+  -   268  #3 ▸ Timeout paymentConfirmed from chargePayment @ demo/chec…
+  -   269  #3 log order B-202: charged $186
+  -   282  #3 http.out 200 POST /order
+  +   259  #2 ▸ Timeout paymentConfirmed from chargePayment @ demo/chec…
+  +   260  #2 log order A-101: charged $161
+  +   274  #2 http.out 200 POST /order
+      333  #4 http.in POST /order
+      362  #4 ▸ FSREQCALLBACK from loadCart @ demo/checkout.js:9
     ·····  2 identical steps
-      373  #4 log order C-303: charged $11
-      385  #4 http.out 200 POST /order
-  -   440  run.end exit 0
-  +   445  #3 ▸ Timeout paymentConfirmed from chargePayment @ demo/chec…
-  +   446  #3 error.uncaught Cannot read properties of undefined (readi…
-  +   447  run.end exit 1
+      376  #4 log order C-303: charged $11
+      388  #4 http.out 200 POST /order
+  -   443  run.end exit 0
+  +   448  #3 ▸ Timeout paymentConfirmed from chargePayment @ demo/chec…
+  +   449  #3 error.uncaught Cannot read properties of undefined (readi…
+  +   450  run.end exit 1

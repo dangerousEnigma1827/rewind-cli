@@ -1,13 +1,13 @@
 {
- "run": "47a9592d",
- "target": 446,
+ "run": "c68f09f8",
+ "target": 449,
  "request": 3,
  "findings": [
   {
    "level": "observed",
    "text": "TypeError: Cannot read properties of undefined (reading 'price')  (uncaught exception)",
    "evidence": [
-    446
+    449
    ],
    "run": null
   },
@@ -15,7 +15,7 @@
    "level": "observed",
    "text": "thrown in applyDiscount at demo/checkout.js:23",
    "evidence": [
-    446
+    449
    ],
    "run": null
   },
@@ -24,7 +24,7 @@
    "text": "ran inside the callback of Timeout paymentConfirmed from chargePayment, created at demo/checkout.js:18",
    "evidence": [
     255,
-    446
+    449
    ],
    "run": null
   },
@@ -50,8 +50,8 @@
    "level": "derived",
    "text": "request #2 POST /order was active while #3 POST /order was in flight (logged, responded)",
    "evidence": [
-    258,
-    271
+    260,
+    274
    ],
    "run": null
   },
@@ -59,10 +59,10 @@
    "level": "derived",
    "text": "request #4 POST /order was active while #3 POST /order was in flight (arrived, logged, responded, wrote state)",
    "evidence": [
-    348,
-    387,
-    391,
-    403
+    351,
+    390,
+    394,
+    406
    ],
    "run": null
   },
@@ -70,7 +70,7 @@
    "level": "derived",
    "text": "the failing line reads watched variable `currentCart`:  for (let i = 0; i < order.items.length; i++) total += currentCart.items[i].price;",
    "evidence": [
-    446
+    449
    ],
    "run": null
   },
@@ -78,7 +78,7 @@
    "level": "observed",
    "text": "last write to `currentCart` before this point: `currentCart` = at demo/checkout.js:12:5, new value {\"order\":\"C-303\",\"items\":[{\"sku\":\"cable-03\",\"price\":12}]}",
    "evidence": [
-    387
+    390
    ],
    "run": null
   },
@@ -86,17 +86,17 @@
    "level": "derived",
    "text": "that write was made by request #4 POST /order",
    "evidence": [
-    387
+    390
    ],
    "run": null
   },
   {
    "level": "derived",
-   "text": "#3 POST /order set `currentCart` itself (seq 254); request #4 overwrote it (seq 387) before this point (seq 446)",
+   "text": "#3 POST /order set `currentCart` itself (seq 254); request #4 overwrote it (seq 390) before this point (seq 449)",
    "evidence": [
     254,
-    387,
-    446
+    390,
+    449
    ],
    "run": null
   },
@@ -105,8 +105,8 @@
    "text": "likely root cause: a race on shared module-level state. Another request overwrote it between this request's own write and its read, so this request computed with another request's data. Fix: keep this state per request instead of in a module-level variable.",
    "evidence": [
     254,
-    387,
-    446
+    390,
+    449
    ],
    "run": null
   }
@@ -153,7 +153,7 @@
  "branch": [
   215,
   254,
-  446
+  449
  ],
  "provenance": {
   "findings[].level": "copied from Finding.level",

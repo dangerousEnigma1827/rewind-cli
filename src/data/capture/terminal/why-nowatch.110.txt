@@ -1,4 +1,4 @@
-  ◂◂ why  run 52038d68 (nowatch)  · error 1 of 1
+  ◂◂ why  run 8532372a (nowatch)  · error 1 of 1
 
   ✖ TypeError  Cannot read properties of undefined (reading 'price')
     demo/checkout.js:23  in applyDiscount
@@ -25,7 +25,7 @@
 
   story of request #3 POST /order ┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
   seq     ms     req     event                                                                                
-  211  118.0  │  #3   →  POST /order                                                                          
-  441  271.5  ┃  #3   ✖  TypeError: Cannot read properties of undefined (reading 'price')  demo/checkout.js:23
+  209  125.0  │  #3   →  POST /order                                                                          
+  423  279.8  ┃  #3   ✖  TypeError: Cannot read properties of undefined (reading 'price')  demo/checkout.js:23
 
   tip: record with --watch <variable> to capture writes to shared state

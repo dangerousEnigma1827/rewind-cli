@@ -1,4 +1,4 @@
-  ◂◂ why  run 47a9592d (bad)  · error 1 of 1
+  ◂◂ why  run c68f09f8 (bad)  · error 1 of 1
 
   ✖ TypeError  Cannot read properties of 
 undefined (reading 'price')
@@ -9,15 +9,15 @@ currentCart.items[i].price;
 
   findings ┈┈┈ ● observed  ◆ derived  ? 
 inferred
-  ● TypeError: Cannot                  seq 446
+  ● TypeError: Cannot                  seq 449
     read properties of                        
     undefined (reading                        
     'price')  (uncaught                       
     exception)                                
-  ● thrown in                          seq 446
+  ● thrown in                          seq 449
     applyDiscount at                          
     demo/checkout.js:23                       
-  ● ran inside the                seq 255, 446
+  ● ran inside the                seq 255, 449
     callback of Timeout                       
     paymentConfirmed                          
     from chargePayment,                       
@@ -38,20 +38,20 @@ inferred
     async ancestry                            
     reaches that                              
     request's handler                         
-  ◆ request #2 POST               seq 258, 271
+  ◆ request #2 POST               seq 260, 274
     /order was active                         
     while #3 POST                             
     /order was in                             
     flight (logged,                           
     responded)                                
-  ◆ request #4 POST     seq 348, 387, 391, 403
+  ◆ request #4 POST     seq 351, 390, 394, 406
     /order was active                         
     while #3 POST                             
     /order was in                             
     flight (arrived,                          
     logged, responded,                        
     wrote state)                              
-  ◆ the failing line                   seq 446
+  ◆ the failing line                   seq 449
     reads watched                             
     variable                                  
     `currentCart`:  for                       
@@ -60,7 +60,7 @@ inferred
     i++) total +=                             
     currentCart.items[i                       
     ].price;                                  
-  ● last write to                      seq 387
+  ● last write to                      seq 390
     `currentCart`                             
     before this point:                        
     `currentCart` = at                        
@@ -69,17 +69,17 @@ inferred
     {"order":"C-303","i                       
     tems":[{"sku":"cabl                       
     e-03","price":12}]}                       
-  ◆ that write was made                seq 387
+  ◆ that write was made                seq 390
     by request #4 POST                        
     /order                                    
-  ◆ #3 POST /order set       seq 254, 387, 446
+  ◆ #3 POST /order set       seq 254, 390, 449
     `currentCart`                             
     itself (seq 254);                         
     request #4                                
     overwrote it (seq                         
-    387) before this                          
-    point (seq 446)                           
-  ? likely root cause:       seq 254, 387, 446
+    390) before this                          
+    point (seq 449)                           
+  ? likely root cause:       seq 254, 390, 449
     a race on shared                          
     module-level state.                       
     Another request                           
@@ -106,8 +106,8 @@ demo/checkout.js:9
   story of request #3 POST /order ┈┈┈ + other 
 requests' writes to watched variables
   seq     ms     req     event                
-  215   99.4  │  #3   →  POST /order          
-  254  101.3  │  #3   ✎  currentCart =        
+  215  107.1  │  #3   →  POST /order          
+  254  109.3  │  #3   ✎  currentCart =        
                          {"order":"A-101","ite
                          ms":[{"sku":"kbd-01",
                          "pric… →             
@@ -115,7 +115,7 @@ requests' writes to watched variables
                          ms":[{"sku":"dock-04"
                          ,"pri…               
                          demo/checkout.js:12:5
-  387  170.9  │  #4   ✎  currentCart =        
+  390  171.0  │  #4   ✎  currentCart =        
                          {"order":"B-202","ite
                          ms":[{"sku":"dock-04"
                          ,"pri… →             
@@ -123,7 +123,7 @@ requests' writes to watched variables
                          ms":[{"sku":"cable-03
                          ","pr…               
                          demo/checkout.js:12:5
-  446  254.0  ┃  #3   ✖  TypeError: Cannot    
+  449  275.3  ┃  #3   ✖  TypeError: Cannot    
                          read properties of   
                          undefined (reading   
                          'price')             

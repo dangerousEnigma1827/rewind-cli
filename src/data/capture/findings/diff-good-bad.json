@@ -46,43 +46,43 @@
   },
   {
    "token": "#3 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
-   "seq": 266
+   "seq": 268
   },
   {
    "token": "#3 log order B-202: charged $186",
-   "seq": 267
+   "seq": 269
   },
   {
    "token": "#3 http.out 200 POST /order",
-   "seq": 279
+   "seq": 282
   },
   {
    "token": "#4 http.in POST /order",
-   "seq": 330
+   "seq": 333
   },
   {
    "token": "#4 ▸ FSREQCALLBACK from loadCart @ demo/checkout.js:9",
-   "seq": 359
+   "seq": 362
   },
   {
    "token": "#4 ✎ currentCart = @ demo/checkout.js:12:5",
-   "seq": 369
-  },
-  {
-   "token": "#4 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
    "seq": 372
   },
   {
+   "token": "#4 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
+   "seq": 375
+  },
+  {
    "token": "#4 log order C-303: charged $11",
-   "seq": 373
+   "seq": 376
   },
   {
    "token": "#4 http.out 200 POST /order",
-   "seq": 385
+   "seq": 388
   },
   {
    "token": "run.end exit 0",
-   "seq": 440
+   "seq": 443
   }
  ],
  "b": [
@@ -120,51 +120,51 @@
   },
   {
    "token": "#2 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
-   "seq": 257
+   "seq": 259
   },
   {
    "token": "#2 log order A-101: charged $161",
-   "seq": 258
+   "seq": 260
   },
   {
    "token": "#2 http.out 200 POST /order",
-   "seq": 271
+   "seq": 274
   },
   {
    "token": "#4 http.in POST /order",
-   "seq": 348
+   "seq": 351
   },
   {
    "token": "#4 ▸ FSREQCALLBACK from loadCart @ demo/checkout.js:9",
-   "seq": 377
+   "seq": 380
   },
   {
    "token": "#4 ✎ currentCart = @ demo/checkout.js:12:5",
-   "seq": 387
-  },
-  {
-   "token": "#4 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
    "seq": 390
   },
   {
+   "token": "#4 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
+   "seq": 393
+  },
+  {
    "token": "#4 log order C-303: charged $11",
-   "seq": 391
+   "seq": 394
   },
   {
    "token": "#4 http.out 200 POST /order",
-   "seq": 403
+   "seq": 406
   },
   {
    "token": "#3 ▸ Timeout paymentConfirmed from chargePayment @ demo/checkout.js:18",
-   "seq": 445
+   "seq": 448
   },
   {
    "token": "#3 error.uncaught Cannot read properties of undefined (reading 'price')",
-   "seq": 446
+   "seq": 449
   },
   {
    "token": "run.end exit 1",
-   "seq": 447
+   "seq": 450
   }
  ],
  "opcodes": [
@@ -268,7 +268,7 @@
    "level": "derived",
    "text": "3 step(s) only in B, e.g. #2 log order A-101: charged $161",
    "evidence": [
-    258
+    260
    ],
    "run": "B"
   },
@@ -276,7 +276,7 @@
    "level": "inferred",
    "text": "run B fails and A does not. The first divergence above is the earliest observable point where they part ways; it is the place to start, not necessarily the cause. Run `rewind why` on B for the causal story.",
    "evidence": [
-    446
+    449
    ],
    "run": "B"
   }

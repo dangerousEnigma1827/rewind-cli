@@ -1,13 +1,13 @@
 {
- "run": "52038d68",
- "target": 441,
+ "run": "8532372a",
+ "target": 423,
  "request": 3,
  "findings": [
   {
    "level": "observed",
    "text": "TypeError: Cannot read properties of undefined (reading 'price')  (uncaught exception)",
    "evidence": [
-    441
+    423
    ],
    "run": null
   },
@@ -15,7 +15,7 @@
    "level": "observed",
    "text": "thrown in applyDiscount at demo/checkout.js:23",
    "evidence": [
-    441
+    423
    ],
    "run": null
   },
@@ -23,8 +23,8 @@
    "level": "observed",
    "text": "ran inside the callback of Timeout paymentConfirmed from chargePayment, created at demo/checkout.js:18",
    "evidence": [
-    250,
-    441
+    248,
+    423
    ],
    "run": null
   },
@@ -32,9 +32,9 @@
    "level": "derived",
    "text": "causal chain: Timeout paymentConfirmed from chargePayment (demo/checkout.js:18) ← FSREQCALLBACK from loadCart (demo/checkout.js:9) ← request #3 POST /order",
    "evidence": [
-    250,
-    232,
-    209
+    248,
+    230,
+    207
    ],
    "run": null
   },
@@ -42,7 +42,7 @@
    "level": "derived",
    "text": "belongs to request #3 POST /order: its async ancestry reaches that request's handler",
    "evidence": [
-    211
+    209
    ],
    "run": null
   },
@@ -50,8 +50,8 @@
    "level": "derived",
    "text": "request #2 POST /order was active while #3 POST /order was in flight (logged, responded)",
    "evidence": [
-    253,
-    267
+    251,
+    264
    ],
    "run": null
   },
@@ -59,9 +59,9 @@
    "level": "derived",
    "text": "request #4 POST /order was active while #3 POST /order was in flight (arrived, logged, responded)",
    "evidence": [
-    344,
-    386,
-    398
+    326,
+    368,
+    380
    ],
    "run": null
   },
@@ -69,7 +69,7 @@
    "level": "derived",
    "text": "the failing line uses module-level binding(s) `currentCart`, shared by every request:  for (let i = 0; i < order.items.length; i++) total += currentCart.items[i].price;",
    "evidence": [
-    441
+    423
    ],
    "run": null
   },
@@ -77,14 +77,14 @@
    "level": "inferred",
    "text": "shared state suspected, but writes were not recorded. Re-record with `--watch currentCart` to confirm who changed it.",
    "evidence": [
-    441
+    423
    ],
    "run": null
   }
  ],
  "chain": [
   {
-   "seq": 250,
+   "seq": 248,
    "aid": 86,
    "type": "Timeout",
    "name": "paymentConfirmed",
@@ -98,7 +98,7 @@
    "request": null
   },
   {
-   "seq": 232,
+   "seq": 230,
    "aid": 81,
    "type": "FSREQCALLBACK",
    "name": null,
@@ -112,7 +112,7 @@
    "request": null
   },
   {
-   "seq": 209,
+   "seq": 207,
    "aid": 78,
    "type": "REWIND_REQUEST",
    "name": null,
@@ -122,8 +122,8 @@
   }
  ],
  "branch": [
-  211,
-  441
+  209,
+  423
  ],
  "provenance": {
   "findings[].level": "copied from Finding.level",

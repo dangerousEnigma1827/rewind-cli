@@ -25,7 +25,7 @@ from git blobs (`git show <sha>:demo/...`) into a temp workdir, and the fixed co
 | `findings/why-*.json` | `investigate()` findings, causal chain, branch | `level` copied from `Finding.level` |
 | `findings/diff-good-bad.json` | `diff()` tokens, opcodes, findings | derived (Rewind) |
 | `findings/tree-bad*.json` | `build_tree()` for the whole run and for request #3 | derived (Rewind) |
-| `source/checkout.js`, `prices.json`, `fix.patch`, `RESULTS.md` | verbatim from git at the sha | authored by Rewind's author |
+| `source/checkout.js`, `prices.json`, `fix.patch`, `traffic.js`, `RESULTS.md`, `README.md`, `ARCHITECTURE.md`, `FEATURES_AND_LIMITATIONS.md`, `ENGINEERING_LOG.md` | verbatim from git at the sha (basename only) | authored by Rewind's author |
 | `source/checkout.instrumented.js` | `recorder/instrument.js:instrument(src, file, ['currentCart']).code` | observed (tool output) |
 | `source/render.json` | `render.PALETTE`, `LETTERS`, `TAGLINE`, `WORDMARK`, `WORDMARK_TIGHT` | verbatim |
 | `source/repo-files.json` | `git ls-tree -r --name-only <sha>`, for file chips | observed |

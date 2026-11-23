@@ -1,13 +1,13 @@
 {
- "run": "47a9592d",
- "target": 258,
+ "run": "c68f09f8",
+ "target": 260,
  "request": 2,
  "findings": [
   {
    "level": "observed",
    "text": "log: order A-101: charged $161",
    "evidence": [
-    258
+    260
    ],
    "run": null
   },
@@ -16,7 +16,7 @@
    "text": "ran inside the callback of Timeout paymentConfirmed from chargePayment, created at demo/checkout.js:18",
    "evidence": [
     178,
-    258
+    260
    ],
    "run": null
   },
@@ -65,11 +65,11 @@
   },
   {
    "level": "derived",
-   "text": "#2 POST /order set `currentCart` itself (seq 177); request #3 overwrote it (seq 254) before this point (seq 258)",
+   "text": "#2 POST /order set `currentCart` itself (seq 177); request #3 overwrote it (seq 254) before this point (seq 260)",
    "evidence": [
     177,
     254,
-    258
+    260
    ],
    "run": null
   },
@@ -79,7 +79,7 @@
    "evidence": [
     177,
     254,
-    258
+    260
    ],
    "run": null
   }
@@ -126,7 +126,7 @@
  "branch": [
   138,
   177,
-  258
+  260
  ],
  "provenance": {
   "findings[].level": "copied from Finding.level",

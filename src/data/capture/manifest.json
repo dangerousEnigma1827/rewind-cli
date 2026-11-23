@@ -6,7 +6,7 @@
   "version": "0.1.0",
   "repo": "https://github.com/dangerousEnigma1827/Rewind"
  },
- "captured_at": "2026-11-23T12:37:08+00:00",
+ "captured_at": "2026-11-23T12:44:38+00:00",
  "platform": {
   "os": "Windows",
   "release": "11",
@@ -26,46 +26,46 @@
  },
  "runs": {
   "bad": {
-   "id": "47a9592d",
+   "id": "c68f09f8",
    "label": "bad",
    "command": "rewind record -l bad -w currentCart -- node demo/traffic.js",
    "exit_code": 1,
    "status": "failed",
-   "event_count": 448,
+   "event_count": 451,
    "error_count": 1,
    "watch": [
     "currentCart"
    ]
   },
   "nowatch": {
-   "id": "52038d68",
+   "id": "8532372a",
    "label": "nowatch",
    "command": "rewind record -l nowatch -- node demo/traffic.js",
    "exit_code": 1,
    "status": "failed",
-   "event_count": 443,
+   "event_count": 425,
    "error_count": 1,
    "watch": []
   },
   "good": {
-   "id": "cc603922",
+   "id": "472d0408",
    "label": "good",
    "command": "rewind record -l good -w currentCart -- node demo/traffic.js --sequential",
    "exit_code": 0,
    "status": "ok",
-   "event_count": 441,
+   "event_count": 444,
    "error_count": 0,
    "watch": [
     "currentCart"
    ]
   },
   "fixed": {
-   "id": "c4dc7167",
+   "id": "08e3540f",
    "label": "fixed",
    "command": "rewind record -l fixed -w currentCart -- node demo/traffic.js",
    "exit_code": 0,
    "status": "ok",
-   "event_count": 518,
+   "event_count": 515,
    "error_count": 0,
    "watch": [
     "currentCart"
@@ -104,7 +104,7 @@
    ]
   },
   "why-bad-seq": {
-   "command": "rewind why bad --seq 258",
+   "command": "rewind why bad --seq 260",
    "runs": [
     "bad"
    ]
@@ -157,7 +157,7 @@
    ]
   }
  },
- "a101_log_seq": 258,
+ "a101_log_seq": 260,
  "normalisations": [
   {
    "prefix": "<workdir>",
