@@ -1,0 +1,37 @@
+---
+// Home: the short way in. Install (the M6-verified commands) and a first run; the full guide stays in /docs/.
+import CommandList from './CommandList.astro';
+import { install } from '../lib/depth';
+// rewind/render.py:253 at the captured sha: the landing screen's "record your first run" suggestion.
+const FIRST = ['rewind record -- node app.js', 'rewind why'];
+---
+<section id="get-started" class="start" aria-labelledby="start-title">
+  <p class="eyebrow">Get Started</p>
+  <h2 id="start-title">Install Rewind and record a run</h2>
+  <p class="lede">Needs Node.js 20 or later and Python 3.12 or later.</p>
+  <div class="cols">
+    <div>
+      <h3>1 · Install</h3>
+      <CommandList title="install" commands={install} />
+    </div>
+    <div>
+      <h3>2 · Record, then ask why</h3>
+      <CommandList title="first run" commands={FIRST.map((cmd) => ({ cmd }))} />
+      <p class="note">The first command runs your program under the recorder. The second explains the latest run’s first error.</p>
+      <a class="more" href="/docs/#install">Full installation guide and the tour <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .start { max-width: var(--page-max); margin-inline: auto; padding: var(--s-9) var(--gutter) 0; }
+  h2 { margin: 0 0 var(--s-3); }
+  .lede { margin: 0 0 var(--s-6); }
+  .cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
+  .cols > * { min-width: 0; }
+  @media (min-width: 960px) { .cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+  h3 { margin: 0 0 var(--s-3); }
+  .cmds { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s-2); }
+  .note { margin: var(--s-1) 0 var(--s-2); font-size: 14px; color: var(--text-3); }
+  .more { display: inline-flex; align-items: center; min-height: 44px; margin-top: var(--s-3); font-weight: 500; }
+</style>
