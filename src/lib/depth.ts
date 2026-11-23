@@ -93,3 +93,12 @@ export const tour = [
   'rewind diff good bad --evidence',
 ];
 export const installSource: Src = { file: R, quote: 'npm install --prefix recorder                         # only needed for --watch' };
+
+// ---- Usage and commands -----------------------------------------------------------------------------
+
+/** The README's "## Commands" table as [command, description] rows, verbatim (backticks removed from the command). */
+export function commands(readme: string): [string, string][] {
+  const section = readme.split('## Commands')[1].split('\n## ')[0];
+  return section.split('\n').filter((l) => /^\| `rewind/.test(l))
+    .map((l) => { const [, cmd, what] = l.split('|').map((c) => c.trim()); return [cmd.replace(/`/g, ''), what]; });
+}

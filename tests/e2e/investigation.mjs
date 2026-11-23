@@ -3,7 +3,7 @@
 // BROWSER=chromium|firefox|webkit (default chromium; CHANNEL=chrome uses the installed Chrome).
 import { chromium, firefox, webkit } from 'playwright';
 
-const BASE = process.env.URL ?? 'http://localhost:4321/';
+const BASE = process.env.URL ?? 'http://localhost:4321/investigation/';
 const engine = { chromium, firefox, webkit }[process.env.BROWSER ?? 'chromium'];
 const browser = await engine.launch(process.env.CHANNEL ? { channel: process.env.CHANNEL } : {});
 let failed = 0;

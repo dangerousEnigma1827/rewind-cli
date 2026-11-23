@@ -1,23 +1,30 @@
 ---
-import Wordmark from './Wordmark.astro';
-import { REPO, blob, short, runIds, capturedOn } from '../lib/site';
+// A project signature, not another documentation section: the mark, the event, and the three pages.
 ---
 <footer>
   <div class="inner">
-    <Wordmark size="small" />
-    <ul class="links">
-      <li><a href={REPO}>Rewind on GitHub <span aria-hidden="true">↗</span></a></li>
-      <li><a href={blob('docs/ARCHITECTURE.md')}>docs/ARCHITECTURE.md</a></li>
-      <li><a href={blob('spikes/RESULTS.md')}>spikes/RESULTS.md</a></li>
-    </ul>
-    <p class="prov" translate="no">Captured from rewind@{short}, runs {runIds.join(', ')}, {capturedOn}.</p>
+    <p class="sig"><span class="mark" translate="no"><span class="glyph" aria-hidden="true">◂◂</span> rewind</span> <span class="sep" aria-hidden="true">·</span> Built for <span translate="no">CODEFESTTHON 2026</span></p>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/investigation/">Investigation</a></li>
+        <li><a href="/docs/">Documentation</a></li>
+      </ul>
+    </nav>
   </div>
 </footer>
 
 <style>
-  footer { border-top: 1px solid var(--rule); }
-  .inner { max-width: var(--page-max); margin-inline: auto; padding: 2rem var(--gutter) 3rem; display: grid; gap: 1rem; }
-  .links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
-  .links a { display: inline-flex; align-items: center; min-height: 44px; }
-  .prov { margin: 0; font: 400 0.75rem/1.5 var(--font-mono); color: var(--ink-mute); overflow-wrap: anywhere; }
+  footer { border-top: 1px solid var(--line); margin-top: var(--s-9); }
+  .inner {
+    max-width: var(--page-max); margin-inline: auto; padding: var(--s-6) var(--gutter);
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-4);
+  }
+  .sig { margin: 0; font: 500 15px/1.4 var(--font-sans); color: var(--text-2); }
+  .mark { font: 700 15px/1 var(--font-mono); color: var(--text); }
+  .glyph { color: var(--accent); }
+  .sep { color: var(--text-3); margin: 0 0.25ch; }
+  ul { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: 0; padding: 0; list-style: none; }
+  a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s-2); color: var(--text-2); text-decoration: none; font-size: 15px; }
+  @media (hover: hover) and (pointer: fine) { a:hover { color: var(--text); } }
 </style>

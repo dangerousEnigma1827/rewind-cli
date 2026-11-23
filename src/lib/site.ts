@@ -1,6 +1,5 @@
 // Values for the static sections (M4/M5), all read from the capture artifacts.
 import manifest from '../data/capture/manifest.json';
-import bad from '../data/capture/runs/bad.json';
 import whyBad from '../data/capture/findings/why-bad.json';
 import { renderSpans, type TermLine } from './terminal';
 import { charged, orders, runModel, WIDTHS } from './investigation';
@@ -20,20 +19,36 @@ export const tree = (path: string) => `${REPO}/tree/${sha}/${path}`;
 const HERO = [/^thrown in /, /^belongs to request /, /^last write to /, /^that write was made by /, /^likely root cause/];
 export const heroFindings = HERO.map((re) => whyBad.findings.findIndex((f) => re.test(f.text)));
 
-/** `why bad --evidence`, cut to: its title line, the findings rule, and the picked findings, verbatim. */
+/** `why bad --evidence`, cut to the findings rule and the picked findings, verbatim. The title line (it carries the
+ *  run id, which means nothing to a visitor) is left out; nothing inside a kept line changes. */
 export function heroExcerpt(w: number): TermLine[] {
   const lines = renderSpans(capture('why-bad', w));
   const text = (l: TermLine) => l.segs.map((s) => s.text).join('');
   const rule = lines.findIndex((l) => /^ {2}findings ┈/.test(text(l)));
   const firstFinding = lines.findIndex((l) => l.finding === 0);
-  return [lines[0], { segs: [] }, ...lines.slice(rule, firstFinding), ...lines.filter((l) => l.finding !== undefined && heroFindings.includes(l.finding))];
+  return [...lines.slice(rule, firstFinding), ...lines.filter((l) => l.finding !== undefined && heroFindings.includes(l.finding))];
 }
 
-export const tiles = [
-  { big: '0', text: 'edits to the app: the recorder is preloaded with --require', source: 'rewind/cli.py:84' },
-  { big: `${bad.event_count.toLocaleString('en')} → ${bad.story_count}`, text: `events recorded → lines in the timeline story (run ${bad.id})`, source: 'manifest, runs/bad.json' },
-  { big: manifest.pytest.split(' ')[0], text: `tests pass at rewind@${short}, against real node processes`, source: 'pytest -q at the captured sha' },
-];
+/** The one homepage fact: a product property, verifiable in rewind/cli.py:84 (`node --require <recorder>`).
+ *  Event counts (they vary run to run) and the test count (pinned to the captured commit) live in the docs. */
+export const fact = {
+  title: 'Zero application code changes',
+  text: 'Rewind records the run through Node.js preloading.',
+  source: 'rewind/cli.py:84',
+};
+
+/** Home: three benefits, each shown by the captured investigation and linking to the step that shows it. */
+export function benefits() {
+  const v = victims();
+  return [
+    { title: 'Which request failed', href: '/investigation/?step=3',
+      text: `A stack trace stops at a timer callback. Rewind traces the crash back to request #${v.crash.request}, order ${v.crash.order.id}.` },
+    { title: 'Silent failures, too', href: '/investigation/?step=5',
+      text: `Order ${v.overcharge.order.id} was charged $${v.overcharge.amount} instead of $${v.overcharge.order.expected}, with no error. Rewind ties that line to the request that logged it.` },
+    { title: 'Evidence, graded', href: '/investigation/?step=6',
+      text: 'Every finding is marked ● observed, ◆ derived or ? inferred. When Rewind cannot see something, such as a variable read, it says so.' },
+  ];
+}
 
 // ---- scenario -----------------------------------------------------------------------------------------
 

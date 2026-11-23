@@ -1,0 +1,12 @@
+---
+// Evidence badges (plan §4.2): one vocabulary everywhere. ● Observed · ◆ Derived · ? Inferred · ◇ Authored.
+// `levels` picks which to show; `note` names the source (a run id, a file). Island code uses the same .ev classes.
+export type Level = 'observed' | 'derived' | 'inferred' | 'authored';
+interface Props { levels: Level[]; note?: string }
+const { levels, note } = Astro.props;
+const GLYPH: Record<Level, string> = { observed: '●', derived: '◆', inferred: '?', authored: '◇' };
+---
+<p class="evidence">
+  {levels.map((l) => <span class={`ev ev-${l}`}><span class="ev-g" aria-hidden="true">{GLYPH[l]}</span>{l[0].toUpperCase() + l.slice(1)}</span>)}
+  {note && <span class="ev-note" translate="no">{note}</span>}
+</p>

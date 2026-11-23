@@ -22,7 +22,8 @@ const line12 = [checkout.split('\n')[11], instrumented.split('\n')[11]];
 const has = new Set(repoFiles);
 const W = 340, H = 64, GAP = 30;
 ---
-<div class="pipe-wrap">
+<div class="pipe-wrap" id="architecture">
+  <h3>Architecture</h3>
   <ol class="pipeline">
     {pipeline.map((b, i) => (
       <li>
@@ -79,21 +80,19 @@ const W = 340, H = 64, GAP = 30;
   .prov { margin: 0.5rem 0 0; font: 400 0.75rem/1.4 var(--font-mono); color: var(--ink-mute); }
   .pipe-wrap { margin-bottom: 3rem; }
   .pipeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.5rem; }
-  @media (min-width: 960px) { .pipeline { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.75rem; } }
+  @media (min-width: 640px) { .pipeline { grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: var(--s-6) var(--s-5); } }
   .pipeline li { position: relative; border-top: 2px solid var(--mark-uv); padding-top: 0.75rem; min-width: 0; }
-  .pipeline li:not(:last-child)::after { content: '→'; position: absolute; right: -1.4rem; top: -0.85rem; color: var(--ink-mute); font-family: var(--font-mono); }
-  @media (max-width: 959px) { .pipeline li:not(:last-child)::after { content: '↓'; right: auto; left: 0; top: auto; bottom: -1.35rem; } }
   .ph { margin: 0 0 0.25rem; font-weight: 600; }
   .pn { font-family: var(--font-mono); color: var(--ink-uv); }
   .pb { margin: 0; font-size: 0.875rem; }
   .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 0; }
-  .chip { display: inline-flex; align-items: center; min-height: 32px; padding: 0 0.5rem; border: 1px solid var(--rule); border-radius: 4px; font: 400 0.75rem/1 var(--font-mono); text-decoration: none; overflow-wrap: anywhere; }
+  .chip { display: inline-flex; align-items: center; min-height: 32px; padding: 0 0.5rem; border: 1px solid var(--line); border-radius: 4px; font: 400 0.75rem/1 var(--font-mono); text-decoration: none; overflow-wrap: anywhere; }
   @media (pointer: coarse) { .chip { min-height: 44px; } }
   .split { display: grid; gap: 2rem; margin-bottom: 3rem; }
   @media (min-width: 960px) { .split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
   figure { margin: 0; min-width: 0; }
   .chain svg { width: 100%; max-width: 420px; height: auto; display: block; font-family: var(--font-mono); }
-  .n { fill: var(--surface-term); stroke: var(--rule); }
+  .n { fill: var(--surface-1); stroke: var(--line); }
   .n.crash { stroke: var(--mark-err); stroke-width: 1.5; }
   .n.req { stroke-width: 1.5; }
   .t1 { font-size: 14px; font-weight: 700; fill: var(--text); }

@@ -1,7 +1,7 @@
 # Rewind Demo Website: Implementation Plan
 
 > **Single source of truth** for building the Rewind demo website. It is self-contained: a fresh session should need nothing else.
-> Status: **approved for review, not started.** M0 begins only on explicit approval.
+> Status: **M0–M6 done** (single-page site, merged to `main` as PR #1). **Redesign approved 2026-11-23** (§4, §5, §8 R1–R5) on `feat/redesign`; each R phase stops for owner review.
 > Last verified against `../rewind` at commit `388fe45` (2026-11-23).
 
 ---
@@ -305,229 +305,197 @@ request #3 POST /order ← FSREQCALLBACK from loadCart (checkout.js:9) ← Timeo
 
 ---
 
-## 4. Website structure
+## 4. Website structure (redesign, approved 2026-11-23; replaces the single-page structure of M0–M6)
 
-### 4.1 Page order (approved)
-| # | section (anchor) | content and purpose |
+### 4.0 Why the redesign
+M0–M6 built a correct single page. Its presentation did not communicate the project's quality:
+1. one excessively long page, with the investigation too far down;
+2. too many navigation destinations (7);
+3. generic typography with a weak hierarchy between headings, body and metadata;
+4. a terminal that looked like a coloured card, not a terminal window;
+5. an investigation that showed too much at once;
+6. a narrow, hard-to-read event detail panel;
+7. inconsistent scenario, code and documentation layouts;
+8. a phone experience that felt like a compressed desktop;
+9. unfinished scrollbars and small interaction details;
+10. accessibility handled as a final checklist instead of a design input.
+
+The engineering (capture pipeline, investigation logic, real output, evidence, tests, browser compatibility) is preserved. The redesign changes information architecture and presentation.
+
+### 4.1 Pages and navigation
+Three Astro pages share one layout. Primary navigation: **Home · Investigation · Documentation · GitHub ↗ · Get Started** (Get Started is the one filled ultraviolet control and goes to `/docs/#install` from every route).
+
+**Naming (refinement, 2026-11-23):** the user-facing name of the scenario is **The Wrong Order Total Bug** ("Concurrent checkout requests interfere with each other, causing one customer to be charged the wrong amount while another checkout crashes."). "Phantom Discount" remains only in internal identifiers and in Rewind's own files, which are shown verbatim.
+
+**Footer:** the ◂◂ rewind mark, "Built for CODEFESTTHON 2026", and links to the three pages. No commit hashes, run ids or repeated links. Capture provenance lives in the artifacts and the documentation, not on Home.
+
+#### Home (`/`), concise
+- **Hero:** Rewind wordmark; a strong statement of what Rewind does; the approved headline "Record a Node.js run once. Then ask *why*."; the problem in one sentence (a stack trace says where an error surfaced, not which request caused it, who scheduled it or who changed the state). Primary action **Open the investigation**; secondary **GitHub**.
+- **Investigation preview:** real, static, server-rendered: the bad run's swimlanes, the `currentCart` band, and a short real `rewind why bad` excerpt, generated from committed artifacts with the same model and rendering code. Home ships no investigation island. Clicking the preview opens the investigation at the matching stage.
+- **Why Rewind is useful:** three concise points, each backed by captured evidence: which request an error belongs to; silent failures such as the Phantom Discount overcharge; observed / derived / inferred conclusions.
+- **One fact:** "Zero application code changes: Rewind records the run through Node.js preloading" (`rewind/cli.py:84`). The event-count reduction (it varies per capture) and the test count (pinned to the captured commit) are not homepage statistics; the test count is shown in Documentation → Evidence.
+- Concise footer with the provenance line.
+
+#### Investigation (`/investigation/`), the central product experience
+The Wrong Order Total Bug and every existing investigation function, organised as the existing 8 steps (§3.6) grouped into four stages:
+
+| stage | contains | leads with |
 |---|---|---|
-| 1 | **Hero** (`#top`) | REWIND wordmark (from `render.LETTERS`). Headline "Record a Node.js run once. Then ask *why*." *(authored copy)*. A one-line subtitle. A **static, real excerpt of `why bad`** showing five findings with ● ◆ ?. Two actions: **"Investigate the bug"** (to §3) and **"GitHub ↗"**. Up to three fact tiles, each **sourced from the capture manifest**: e.g. "0 source changes: `--require` preload", "<event_count> events → <story_count>-line story", "<pytest> tests · real node processes". |
-| 2 | **The Phantom Discount** (`#scenario`) | Orders and expected-totals table. `checkout.js` with lines 6 / 12 / 23 marked "shared" / "write" / "use". Two victims: the #3 crash and the #2 silent overcharge. The real plain-Node trace, with margin notes on what it can't tell you. (This absorbs a separate "problem" section and the "traditional vs Rewind" idea.) |
-| 3 | **Investigation** (`#investigate`) | **The centrepiece**: the dominant section, full content width, the only interactive island. The 8 steps of §3.6, with a linked terminal pane, run view and event detail (§4.3). |
-| 4 | **How it works** (`#how`) | The pipeline diagram; a request-attribution explainer (causal chain plus the keep-alive note); a mutation-tracking before/after of line 12 (from a real `instrument()` call); the `tree bad -r 3` capture. |
-| 5 | **Built on evidence** (`#evidence`) | The E0–E7 table (question → verdict → number). The E7 four-approach comparison. The B12 and B13 "found and fixed" notes. The test count. Plain text. |
-| 6 | **Limits** (`#limits`) | "Captures" / "does not capture" in two columns, plus untested platforms and overhead with its workload. Shown in full, neutral tone. |
-| 7 | **Get started** (`#start`) | Copyable install commands, then the tour commands. These are **only** commands verified by the M6 fresh-clone run, including `npm install --prefix recorder` for `--watch`. Links to the repo, `docs/ARCHITECTURE.md` and `spikes/RESULTS.md`. |
-| — | **Footer** | Wordmark, links, and the provenance line: "Captured from rewind@<sha>, runs <ids>, <date>". |
+| **1 · The bug** | the three orders and expected totals; expected vs actual; `checkout.js` with lines 6/12/23 marked; plain Node reproduction (step 1); the original stack trace and what it cannot establish | expected-vs-actual table, then the source |
+| **2 · The investigation** | steps 2–5: `rewind record`, `rewind why --evidence`, `rewind timeline`, `rewind why --seq` | the terminal, with a compact linked run strip above it |
+| **3 · The causal explanation** | async causal chain/graph (from committed chain and tree data), request swimlanes, `currentCart` band, evidence-level legend, watched vs unwatched (step 6 `--watch` toggle) | the run visualisation; the terminal as a linked evidence panel beside it (desktop) or below (smaller) |
+| **4 · The resolution** | step 7 DiffView with its terminal tab; step 8 fix patch; corrected totals; expected vs bad vs fixed | DiffView, then the patch and totals |
 
-**Nav:** sticky, with Scenario · Investigate · How it works · Evidence · Limits · Get started · GitHub ↗. Anchors use `scroll-margin-top`.
+- Nothing from the eight steps is removed.
+- **Navigation:** a four-stage stepper with visible labels; the individual steps stay reachable inside their stage.
+- **URL state:** `?stage=2&step=4&seq=…&request=…&watch=…`. Old `?step=N` links keep working (the stage is derived from the step); old `/#investigate` links lead to `/investigation/`.
+- **Without JavaScript:** all four stages render as ordinary ordered sections with every capture.
+
+#### Documentation (`/docs/`)
+One organised page: 1 How Rewind works · 2 Architecture · 3 Evidence and experiments · 4 Limitations · 5 Installation · 6 Usage and commands. A sticky table of contents on desktop; an accessible disclosure-based contents navigation on phones. It keeps the existing pipeline and chain diagrams, file references, evidence tables and installation instructions. Only verified claims and commands, consistent with Rewind's implementation (§9).
 
 ### 4.2 Provenance labelling (site-wide)
-| class | mark | meaning | examples |
+One evidence vocabulary, shown as consistent badges:
+
+| class | badge | meaning | examples |
 |---|---|---|---|
-| Observed | ● | a recorded event, as recorded | http.in/out, log, error, mutation, their seq and time |
-| Derived | ◆ | computed deterministically from recorded events | request attribution, causal chain, diff alignment (Rewind); cart-holder segments (**derived (site)**) |
-| Inferred | ? | Rewind's own heuristic conclusion | the race explanation, "not proven", "suspected" |
-| Authored | ◇ *explanatory* | written or drawn by us | diagrams, prose, expected-total arithmetic, diff connectors |
+| Observed | ● Observed | a recorded event, as recorded | http.in/out, log, error, mutation, their seq and time |
+| Derived | ◆ Derived | computed deterministically from recorded events | request attribution, causal chain, diff alignment (Rewind); cart-holder segments (**derived (site)**) |
+| Inferred | ? Inferred | Rewind's own heuristic conclusion | the race explanation, "not proven", "suspected" |
+| Authored | ◇ Authored | written or drawn by us | diagrams, prose, expected-total arithmetic, diff connectors |
 
 **Rules:**
-- Each visualization has one short provenance line naming its run id and the classes it contains.
-- Rewind's ● ◆ ? are never re-labelled.
-- Site-computed values are never presented as Rewind output.
-- **Reads are never drawn as events.** A moment of use is shown as the observed log or crash event, labelled "reads are not recorded".
+- Badges replace repetitive provenance footnotes; every visualisation still states its run id and the classes it contains.
+- Rewind's ● ◆ ? are never re-labelled; site-computed values are never presented as Rewind output.
+- **Reads are never drawn as events.** A moment of use is the observed log or crash event, labelled "reads are not recorded".
 
 ### 4.3 The Investigation (interactions)
-- **Stepper.** 8 steps. Each has a title, one sentence, and the real command with a copy button.
-  - Prev and Next buttons. Arrow keys work (tablist pattern).
-  - **No autoplay.**
-  - The URL reflects state: `?step=4&seq=371&request=3&watch=off#investigate` (via `history.replaceState`), and is restored on load.
-- **Terminal pane.** The step's real capture. Every `seq N` (timeline seq column, evidence column) is a button hotspot.
-- **Run view** (desktop and tablet):
-  - Swimlanes: 4 labelled lanes on a ms axis, with span bars `→` … `←`/`✖` and markers ✎ » ✖.
-  - Below them, the **`currentCart` band**: the holder between consecutive writes, coloured by writer request, with dashed "used here" ticks at the A-101 log, the C-303 log and the crash, labelled "log/crash time; reads are not recorded".
-- **Evidence linking (the main interaction):**
-  - Hovering or focusing a seq highlights its marker and its terminal row.
-  - Click pins it, and `EventDetail` shows the event's real fields: kind, request, ms, location, before→after.
-  - Hovering a finding highlights every seq it cites.
-  - Clicking a marker pins it and scrolls the terminal row into view *inside* the pane.
-  - Esc unpins.
-  - A single `aria-live="polite"` region announces the pinned event.
-- **Default focus per step** comes from the data:
-  - timeline: all lanes
-  - `why`: lane #3 and the #4 write
-  - `why --seq`: lane #2 and the #3 write
-  - no-watch: lane #3 with no writes
-  - diff: the DiffView
-  - fix: the fixed run's totals in ok-green
-- **Step 6:** an `aria-pressed` toggle, `--watch currentCart` on/off, swapping the two real `why` captures.
-- **Step 7 (`DiffView`, the only implementation):**
-  - Two aligned token columns, with the shared prefix collapsed and a `▼ first divergence` rule.
-  - Connectors join moved steps. These are an *explanatory aid*: identical token text.
-  - A "terminal view" tab shows the captured `diff` output.
-- **Step 8:** the real `fix.patch` hunks, and an expected-vs-charged table. Expected is computed from `prices.json` and labelled authored. Charged is observed from the logs.
-- **Without JavaScript:** an ordered list of the 8 steps, each with its static terminal output.
+Reuse the existing implementation: `renderSpans`, hotspots, the reducer, URL sync, Swimlanes, Inspector, EventDetail, DiffView, FixView. The redesign changes presentation and organisation, not working logic.
+
+- **Stage stepper and steps:** the stage stepper has visible labels; steps keep the tablist pattern inside a stage, with Prev/Next and arrow keys. No autoplay.
+- **Stage 2:** the terminal leads; the compact run strip above it keeps seq ↔ marker linking.
+- **Stage 3:** the run visualisation leads: swimlanes, `currentCart` band, causal graph built from `findings/why-bad.json` (chain) and `findings/tree-bad-r3.json` (tree), the evidence legend, and the `--watch` toggle (it changes what can be established). **Graph nodes are buttons** that select their seq. The terminal is a linked evidence panel.
+- **Evidence linking (unchanged behaviour):** hovering or focusing a seq highlights its marker and terminal row; click pins; EventDetail shows the real fields; hovering or focusing a finding highlights every seq it cites; clicking a marker pins it and scrolls its terminal row into view inside the terminal; Esc unpins.
+- **EventDetail:** one docked panel on desktop; inline expansion on tablet and phone; JSON previews in a readable wide monospace block. The duplicated side and inline instances are merged.
+- **Stage 4:** DiffView (two aligned token columns, collapsed shared prefix, `▼ first divergence`, connectors as an explanatory aid ◇) with its terminal tab; the real `fix.patch`; expected (◇, computed from `prices.json`) vs bad vs fixed (● from logs).
+- **Phone:** keep the request inspector (overview strip, selected request's events with foreign writes interleaved) and the holder list. Seq chips move to a separate evidence row **below** each terminal, so captured text is never interrupted. A four-item stage stepper with visible labels. Avoid nested scrolling.
+- **Announcements:** a polite live region announces stage and step changes ("Stage 3 of 4, The causal explanation, step 6") and pinned events.
+- **Focus:** stage changes move focus to the stage heading.
 
 ### 4.4 Visualizations and their evidence
 | viz | form | data | provenance |
 |---|---|---|---|
-| Swimlanes | lanes, span bars, glyph markers | `bad` story events | events and times ●; lane membership ◆ |
+| Swimlanes / run strip | lanes, span bars, glyph markers | `bad` story events | events and times ●; lane membership ◆ |
 | Request inspector (phone) | overview strip plus one request's event list | same | same |
 | Cart band | segmented bar (desktop) / holder list (phone) | `bad` mutations | writes ●; segments ◆ (site); ticks = ● log/crash times |
 | `why` findings | captured terminal lines with hotspots | captures + findings JSON | Rewind's own levels |
+| Causal graph | nodes as buttons, SVG edges | chain + `tree-bad-r3` | ◆ (Rewind), drawn ◇ |
 | Diff alignment | DiffView | diff tokens and opcodes | ◆ (Rewind); connectors ◇ |
-| Causal chain | 4-node SVG | `investigate(bad)` chain | ◆ (Rewind), drawn ◇ |
-| Pipeline | 5 boxes with file chips | repo structure | ◇ authored; paths checked at the sha |
+| Pipeline | 5 stages with file chips | repo structure | ◇ authored; paths checked at the sha |
 | Expected vs charged | table | `prices.json` + logs | expected ◇ computed; charged ● |
+| Home preview | static swimlanes, cart band, `why` excerpt | same artifacts | same as above |
 
 ---
 
-## 5. Visual design system
+## 5. Visual design system (redesign; replaces the M0–M6 light/dark system)
 
 ### 5.1 Identity
-Carry over the CLI's **"Ultraviolet"** identity (`render.py`, ARCHITECTURE "Terminal presentation"):
-- one violet accent;
-- **certainty is shown by brightness** (observed bold; derived violet ◆; inferred dim italic ?);
-- red only for errors;
-- the `◂◂` mark;
-- **structure without boxes**: labelled dotted rules like `findings ┈┈┈┈`. Each terminal block is headed by its real `◂◂ command  subject · meta` line.
+Rewind's "Ultraviolet" terminal identity on a **dark-only**, neutral near-black foundation. A sophisticated developer tool, not a generic dark SaaS dashboard.
+- One ultraviolet accent, used deliberately: links, focus, selection, important information. It never dominates surfaces.
+- Certainty is shown by brightness in captures (observed bold; derived violet ◆; inferred dim italic ?), exactly as Rewind prints it.
+- Red only for errors. The `◂◂` mark. Captured terminal blocks keep their real `◂◂ command  subject · meta` headers.
+- **Forbidden:** blue-tinted backgrounds, blue overlays, blue-centric palettes, purple/blue gradients, glows, decorative colour washes, decorative grids or background effects, excessively coloured cards.
 
-### 5.2 Colour
-**Primitive tokens = `render.PALETTE`, exactly:**
+### 5.2 Colour: dark only
+**The site is always dark.** No light theme, no toggle, no system-preference detection, no alternate light styles, no theme persistence. `color-scheme: dark`; one `theme-color` (`#09090B`).
 
-| token | hex | use |
+| token | value | purpose |
 |---|---|---|
-| uv / uv.hi / uv.lo | `#7F5AF0` / `#8D6CFF` / `#6A48D8` | derived, accent, ids, links, wordmark |
-| mute | `#7E7E8C` | secondary, inferred |
-| err | `#E5484D` | errors only |
-| ok | `#23905C` | good / fixed runs, the + side of the diff |
-| write | `#A8741F` | ✎ mutations, the cart band |
-| r1–r4 | `#2C8C99` `#C0567A` `#7D8A2E` `#5A7FC0` | request lanes **#1–#4** (mapping verified in `render.req_tag`) |
+| `bg` | `#09090B` | page |
+| `surface-1` | `#111114` | raised panels |
+| `surface-2` | `#18181C` | secondary surfaces, terminal title bar |
+| `line` | `#26262C` | hairlines and separators |
+| `text` | `#EDEDF0` | primary text |
+| `text-2` | `#B4B4BD` | supporting text |
+| `text-3` | `#8A8A96` | metadata |
+| `term-bg` | `#060608` | terminal windows |
+| `accent` | `#8D6CFF` (render `uv.hi`) | links and text accents |
+| `accent-fill` | `#7F5AF0` (render `uv`) | focus rings and selected states |
 
-- **Surfaces:** `#FAFAF9` (light), `#101014` (dark). The terminal panel is one small step off the background.
-- **Marks and glyphs** use the CLI hex values unchanged (all ≥ 3:1 on both surfaces).
-- **Ink steps for small coloured text** (approved). Measured WCAG contrast:
-  - light: uv 4.35, mute 3.83, err/ok/write/r* 3.6–4.1; uv.lo 5.69
-  - dark: r2 4.39, uv.lo 3.19; uv.hi 5.17
-
-  So coloured *text* uses a per-theme **ink** step: same hue, OKLCH lightness shifted to ≥ 4.5:1, generated by a script and checked by a test. Violet text uses `uv.lo` in light and `uv.hi` in dark.
-- **dataviz validator** on r1–r4 against both surfaces:
-  - Lightness, normal-vision floor (ΔE 21.4) and contrast: PASS.
-  - Chroma: **FAIL** for r1.
-  - CVD: **WARN**, r2↔r1 ΔE 6.5 (deutan).
-  - **Accepted (approved)**, on condition that lanes never depend on colour alone. The conditions:
-    - text labels (`#1 GET /health` …);
-    - a distinct glyph per marker;
-    - lane position and rules;
-    - labelled buttons on mobile;
-    - lane #1 drawn recessive;
-    - greyscale and deuteranopia checks in M3.
-- **Never Trace's orange.** Never one hue collapsing semantic meaning.
+- **Primitive tokens = `render.PALETTE` exactly** (uv `#7F5AF0`, uv.hi `#8D6CFF`, uv.lo `#6A48D8`, mute `#7E7E8C`, err `#E5484D`, ok `#23905C`, write `#A8741F`, r1–r4 `#2C8C99` `#C0567A` `#7D8A2E` `#5A7FC0`; lane mapping verified in `render.req_tag`).
+- **Marks and glyphs** use the CLI hex unchanged and must be ≥ 3:1 on `bg`, `surface-1`, `surface-2` and `term-bg`.
+- **Ink steps** for small coloured text: same hue, OKLCH lightness shifted until ≥ 4.5:1 on every dark surface (generated by `npm run ink`, checked by a test). Normal text ≥ 4.5:1, aim for 7:1 where practical.
+- **Request lanes:** the dataviz validator result (chroma FAIL r1, CVD WARN r2↔r1 ΔE 6.5) is accepted on condition that lanes never depend on colour alone: text labels, a distinct glyph per marker, lane position and rules, labelled buttons on mobile, lane #1 recessive, greyscale and deuteranopia checks. Re-validated against the dark surfaces.
 
 ### 5.3 Typography
-- **IBM Plex Sans:** prose and headings. Tight headings, not italic, `text-wrap: balance`.
-- **IBM Plex Mono:** terminal output, data, labels, the wordmark.
-- **Captured text is never typographically "corrected".** No curly quotes, no ellipsis substitution.
-- `tabular-nums` on seq and ms columns.
-- `translate="no"` on code and terminal text.
-- Self-hosted via `@fontsource`, `font-display: swap`, mono preloaded.
-- **To verify in M0:** Plex Mono must cover every glyph used in the captures (● ◆ ✖ ✎ ▸ ◉ ⚙ ◂ ┈ ┃ ◌ → ← » and box drawing). If it doesn't, add a `unicode-range` fallback to a 0.6 em-advance mono (e.g. JetBrains Mono) so columns stay aligned. **Never** use the CLI's glyph-substitution table.
+Chosen 2026-11-23 after comparing six display/body pairings rendered at 1440 and 390 px on `#09090B` (Space Grotesk/Manrope, Space Grotesk/IBM Plex Sans, Manrope, Bricolage Grotesque/Instrument Sans, Schibsted Grotesk, Hanken Grotesk):
+- **Headings: Space Grotesk** (`@fontsource/space-grotesk`, OFL-1.1), 500–700. Distinctive geometric grotesk with a technical character; it derives from Space Mono, so it ties to the terminal. Space Grotesk has no italic: emphasis in headings is upright ultraviolet, never a synthesised oblique.
+- **Body: IBM Plex Sans**: highly readable at small sizes, and the same skeleton as Plex Mono, so prose and terminal read as one system.
+- **Terminal and code: IBM Plex Mono**, with the DejaVu Mono fallback restricted by `unicode-range` to the glyphs Plex Mono lacks and its `size-adjust` (0.6 em advance), as audited in M0/M1.
+- Rejected: Manrope body (soft and wide next to Plex Mono), Bricolage (heavy and condensed at phone sizes), Schibsted (poor heading wraps at 390 px), Hanken (generic).
 
-### 5.4 Themes
-- Follow the system preference only (`prefers-color-scheme`). No switcher.
-- `color-scheme: light dark`, plus two `theme-color` metas.
-- Dark-mode values are *selected and validated*, not inverted.
+| role | font | size / line-height | weight / tracking |
+|---|---|---|---|
+| display | Space Grotesk | 64/1.04 desktop, 40/1.08 phone | 600, −0.03 em |
+| h1 (page title) | Space Grotesk | 44/1.1 | 600, −0.025 em |
+| h2 | Space Grotesk | 30/1.2 | 600, −0.02 em |
+| h3 | Space Grotesk | 20/1.3 | 600, −0.01 em |
+| body | IBM Plex Sans | 17/1.65, measure ≤ 68 ch | 400 |
+| small | IBM Plex Sans | 14/1.5 | 400 |
+| label (eyebrows only) | IBM Plex Mono | 12, uppercase | 500, +0.06 em |
+| terminal | IBM Plex Mono | 13.5 (12.5 phone) | 400/700 |
 
-### 5.5 Layout and responsive behaviour
-- One column, `max-width` about 1200 px, 16 px phone gutters, equal edges, one idea per screen.
-- **No horizontal page scroll at 320 px.**
-- **Terminal capture width per container** (container queries):
+No text below 12 px. Captured text is never typographically "corrected". `tabular-nums` on numeric columns. `translate="no"` on code and terminal text. Self-hosted via `@fontsource`, `font-display: swap`, mono preloaded.
 
-| container width | capture |
-|---|---|
-| ≥ 960 px | 110 cols |
-| 640–959 px | 72 cols |
-| < 640 px | 46 cols |
+### 5.4 Layout and spacing
+- Content max width about 1200 px; prose about 720 px; a 12-column grid for split layouts; 16 px phone gutters.
+- 8-point spacing scale: 4, 8, 12, 16, 24, 32, 48, 64, 96, 128 px. Strong vertical rhythm; sections separated by spacing (96–128 px), not borders.
+- Cards only for something interactive or a real window: terminal, EventDetail, investigation stepper. No containers around ordinary text.
+- **No horizontal page scroll from 320 to 1440 px.**
+- **Terminal capture width per container** (container queries): ≥ 960 px → 110 cols; 640–959 → 72; < 640 → 46. Only the active variant is displayed. Below 360 px the terminal scrolls horizontally inside itself.
 
-  Only the active variant is displayed (`display:none` on the others). Below 360 px the terminal block scrolls horizontally *inside itself*.
-- **Investigation by width:**
+### 5.5 Terminal component
+- **Title bar** (about 36 px, `surface-2`): three neutral grey decorative window dots (`aria-hidden`), the real command as the title, a Copy button on the right that copies exactly that command.
+- **Body** (`term-bg` `#060608`): a violet prompt marker and the command, then the captured output beneath, unchanged (contents and colours). The component only adds the window around the real output.
+- **Long output:** never silently clipped; scroll regions are keyboard-focusable and labelled; a visible indication shows when more lines are available. The 110/72/46 widths are preserved.
 
-  **Desktop (≥ 960 px)**
-  - The run view sits above the terminal and is **sticky under the nav inside the section**. This is not scroll-jacking.
-  - EventDetail sits beside the swimlanes.
+### 5.6 Other components
+- **Evidence badges:** ● Observed · ◆ Derived · ? Inferred · ◇ Authored, one consistent component (glyphs in Plex Mono).
+- **Code:** a custom Shiki theme from the palette: mostly monochrome, ultraviolet keywords, muted comments, readable line numbers, highlighted source lines. Source is verbatim.
+- **Scrollbars:** thin; neutral transparent track; subtle grey thumb, slightly brighter on hover; the same on page and terminals; visible enough to discover.
 
-  **Tablet (640–959 px)**
-  - Full-height lanes with labels, and a compressed ms axis.
-  - Not sticky.
-  - EventDetail appears inline under the terminal line.
-
-  **Phone (< 640 px)**
-  - The swimlanes are **not shrunk**. They are replaced by a **request inspector**:
-    1. An overview strip: 4 thin labelled rows showing span, ✎ and ✖, each a ≥ 44 px button that selects its request.
-    2. The selected request's events as a vertical list (seq, ms, glyph, text), with **other requests' writes to `currentCart` interleaved** and marked foreign. This mirrors Rewind's own "story of request #N + other requests' writes".
-    3. Each row expands into EventDetail.
-    4. The cart band becomes a holder list.
-    5. Each step selects a default request (`why bad` → #3, `why --seq` → #2). Tapping a seq from another request switches the selection and says so.
-    6. A bottom step bar *within the section* with ≥ 44 px Prev/Next and "Step 4 of 8 · why".
-    7. Seq hotspots have ≥ 44 px hit areas and ≥ 8 px spacing.
-  - The DiffView becomes one interleaved column with A/B labels.
-- **Hero:** two columns at ≥ 960 px, stacked below that. The wordmark falls back below 45 columns, as in `render.py`.
-
-### 5.6 Motion and accessibility
+### 5.7 Motion and accessibility
 **Motion**
-- **Allowed:**
-  - highlight transitions, 150 ms;
-  - step crossfade, 200 ms;
-  - the run-view playhead `transform` on a step change, 250 ms ease-out.
-- These are CSS transitions on `transform`/`opacity` only and are interruptible.
-- **Under `prefers-reduced-motion: reduce`, all of them are instant.**
-- **Forbidden:**
-  - typewriter output;
-  - autoplay loops;
-  - fade-in on scroll;
-  - parallax;
-  - decorative backgrounds or grids;
-  - `transition: all`.
+- Allowed: highlight transitions 150 ms; the run-view playhead `transform` 250 ms; press feedback 100 ms. One strong ease-out curve (`--ease-out`). CSS transitions on `transform`/`opacity` only, interruptible.
+- Under `prefers-reduced-motion: reduce`, all are instant.
+- Forbidden: typewriter output, autoplay loops, fade-in on scroll, parallax, decorative backgrounds, `transition: all`, step crossfades.
 
-**Accessibility**
-- Semantic `<button>`/`<a>`.
-- Visible `:focus-visible` rings, never covered by the sticky nav.
-- A skip link and ordered headings.
-- Accessible names on hotspots and markers (e.g. "seq 371, request #4 wrote currentCart, 218.0 ms").
-- Colour never the only signal: glyph + word + label.
-- Touch: `touch-action: manipulation`, deliberate tap-highlight styling.
+**Accessibility (a design input, not a final checklist)**
+- One `<h1>` per page, ordered headings, semantic landmarks, accessible navigation with no hidden overflow on phones.
+- Complete keyboard navigation; a visible 2 px ultraviolet focus ring with offset, never hidden by the sticky navigation; stage changes move focus to the stage heading; terminal scrolling works by keyboard.
+- Polite live region for stage/step changes and pinned events.
+- Contrast as §5.2; colour never the only signal (glyph + word + label).
+- Touch targets ≥ 44 px with ≥ 8 px spacing; `touch-action: manipulation`; hover styles only for fine pointers; `:active` press feedback.
+- Readable sizes (§5.3); reduced motion; `translate="no"` where needed.
 
-### 5.7 Design references
-**Reference studied:** `trace-cli.vercel.app`, from its raw JSX and CSS source. It is used to learn from, never as a template.
-
-**Borrow:**
-- one interactive artifact as the centre of the page;
-- a position control that drives every panel (for Rewind, the control is **seq**);
-- the section-head pattern: tag, short title, a mechanism sentence;
-- code-path chips on claims;
-- easy-to-find limits.
-
-**Avoid:**
-- hand-written fake terminal lines;
-- typewriter animation;
-- a mock GitHub/video shell and waveform;
-- one-hue semantics;
-- dark-only;
-- bracket/crosshair decoration;
-- unqualified claims like "No hallucination";
-- invented stats.
-
-### 5.8 Installed UI skills (`.claude/skills/`, 29), and how they're used
+### 5.8 Installed UI skills (`.claude/skills/`) and how they're used
 | skill | use |
 |---|---|
-| dataviz (global) | Form → colour by job → **run the validator** → thin marks, direct labels. The terminal timeline is the table view. Dark mode is selected. Re-run in M6. |
-| web-design-guidelines | Rules applied throughout. Formal review in M6. |
-| emil-design-eng, review-animations, remove-animations | Animation decision framework (almost nothing animates). Audit in M6. |
-| design-system | Three token layers: primitive → semantic → component. |
-| pick-ui-library | **shiki** via Astro's `<Code>` only. No motion library, no recharts, no zustand. |
-| break-ui, mobile-native | A few rules: long lines, touch handling. |
-| **design-taste-frontend** | **Not invoked; its gate is not armed.** It bans violet, requires entrance and hover motion, dealt palettes, photographs and effects, and installs a Stop-hook gate. That conflicts with the approved direction. Borrow only its neutral rules: equal edges, one system, no scroll fade-ins, no invented figures, 44 px targets, nothing past 320 px, headings that name things. |
-| others (animate-expo, apple-design, gestures, ask-sonner, banner-design, brand, design, slides, ui-styling, ui-ux-pro-max, prototype, learn-taste, find-animation-opportunities, animate, animation-*, choreograph, improve-animations, ask-emil, write-swift) | not used |
+| web-design-guidelines | accessibility and interface rules throughout; final review |
+| ui-ux-pro-max | accessibility, typography, colour-token and responsive rules (its font suggestions were evaluated, not adopted) |
+| design-system | token layers (primitive → semantic → component) and consistent component rules |
+| emil-design-eng | component polish and interaction states |
+| mobile-native | phone layout and touch |
+| dataviz | run view, causal graph, validator |
+| break-ui | worst-case text, long terminal output and JSON layouts |
+| review-animations | motion review |
+| apple-design | typography and materials guidance only |
+| design-taste-frontend | **not applied wholesale** (it bans violet and requires entrance motion); only compatible neutral principles: equal edges, one system, no scroll fade-ins, no invented figures |
 
----
+The approved specification takes priority over generic skill recommendations. Skill files and `skills-lock.json` are never modified.
+
+### 5.9 Design references
+**Reference studied:** `trace-cli.vercel.app`, learned from, never used as a template. Borrow: one interactive artifact as the centre; a position control (here, **seq**) driving every panel; section heads with a tag, a short title and a mechanism sentence; code-path chips; easy-to-find limits. Avoid: hand-written fake terminal lines, typewriter animation, mock video shells, one-hue semantics, bracket/crosshair decoration, unqualified claims, invented stats.
 
 ## 6. Technical architecture
 
@@ -537,21 +505,24 @@ Carry over the CLI's **"Ultraviolet"** identity (`render.py`, ARCHITECTURE "Term
   - `astro`
   - `@astrojs/preact`
   - `preact`
-  - `@fontsource/ibm-plex-sans`
-  - `@fontsource/ibm-plex-mono`
+  - `@fontsource/ibm-plex-sans` (body)
+  - `@fontsource/ibm-plex-mono` (terminal)
+  - `@fontsource/dejavu-mono` (glyph fallback, added in M0 after the glyph audit)
+  - `@fontsource/space-grotesk` (headings, added by the redesign, §5.3)
   - `vitest`
   - `playwright` (dev)
-- Versions are pinned at M0 from the npm registry. **Not yet chosen; do not assume.**
+- Versions are pinned exactly in `package.json`.
 - **No** global state library, chart library, motion library or CSS framework. Native SVG and CSS for every visualization.
-- Static `dist/`. **Hosting is deferred to M6.** Any static host works.
+- Static `dist/`, three pages. Hosting is chosen by the owner; any static host works.
 
 ### 6.2 Files
 ```
 capture/                         Python, independent of the site (§7)
   capture.py   SCHEMA.md
 src/
-  layouts/Base.astro             head, fonts, color-scheme, theme-color×2, skip link, OG tags
-  styles/tokens.css              primitive (CLI hex) → semantic per theme (ink, mark, surface, rule) → component
+  pages/index.astro · investigation.astro · docs.astro      Home, Investigation, Documentation (§4.1)
+  layouts/Base.astro             head, fonts, color-scheme: dark, theme-color, skip link, OG tags, shared nav and footer
+  styles/tokens.css              primitive (CLI hex) → semantic, dark only (surfaces, text, ink, mark, line) → component
   styles/base.css                type scale, labelled dotted rules, focus ring, reduced-motion
   lib/ansi.ts                    SGR parser → spans {text, token, bold, italic, dim}; hex→token map = PALETTE
   lib/hotspots.ts                seq tokens in parsed lines (timeline seq column, evidence column)
@@ -559,7 +530,7 @@ src/
   components/                    static .astro, no JS
     Nav, Footer, Section, Wordmark, Terminal, CommandLine (+ one shared copy script), Provenance,
     Hero, Scenario, HowItWorks (PipelineDiagram, ChainDiagram, InstrumentDiff), BuiltOnEvidence, Limits, GetStarted
-  islands/Investigation.tsx      THE ONLY ISLAND (client:visible)
+  islands/Investigation.tsx      THE ONLY ISLAND (client:visible), on /investigation/ only
     Stepper · TerminalPane · RunView { Swimlanes | RequestInspector } · EventDetail · DiffView
 tests/                           vitest + playwright
 docs/claims.md                   claims table (§9.4)
@@ -573,12 +544,12 @@ docs/claims.md                   claims table (§9.4)
 
 ### 6.3 State (inside the island only)
 ```
-useReducer → { step: 1..8, pinned: seq|null, hover: seq|null, request: 1..4|null, watch: 'on'|'off', diffTab: 'aligned'|'terminal' }
+useReducer → { step: 1..8 (stage derived: 1 → 1, 2–5 → 2, 6 → 3, 7–8 → 4; stage 3 also shows the causal view), pinned: seq|null, hover: seq|null, request: 1..4|null, watch: 'on'|'off', diffTab: 'aligned'|'terminal' }
 derived:      focus = pinned ?? hover ?? stepDefault(step) ; highlighted = focus ∪ evidence(hoveredFinding)
 ```
 - The step config is a static table built from the artifacts: capture id, run, view mode, and default focus computed from the data.
 - The capture width is CSS, not state.
-- URL sync covers `step`, `seq`, `request` and `watch`.
+- URL sync covers `stage`, `step`, `seq`, `request` and `watch`; a bare `?step=` derives the stage.
 
 ### 6.4 Testing strategy
 - **Vitest:**
@@ -596,7 +567,7 @@ derived:      focus = pinned ?? hover ?? stepDefault(step) ; highlighted = focus
   - reduced motion;
   - tap targets and overflow at 390 and 320 px;
   - greyscale and deuteranopia screenshots;
-  - screenshots at 1440/1024/768/390/320 in both themes;
+  - screenshots at 1440/1024/768/390/320 (dark only);
   - Chromium, Firefox and WebKit.
 - `npm test` must pass on a machine with no Python.
 
@@ -708,6 +679,8 @@ Plus: hero excerpt lines exist verbatim in the capture; the ink tokens are ≥ 4
 ---
 
 ## 8. Milestones
+
+> M0–M6 below are **done** and kept as history (they describe the pre-redesign single page, including its old light/dark themes). The redesign phases R1–R5 at the end of this section are the current work; where they differ, §4, §5 and R1–R5 win.
 
 **Every milestone:**
 - ends with the §0 untouched-check;
@@ -890,6 +863,31 @@ It was regrouped into **vertical slices**, so that each milestone can be checked
 
 ---
 
+### Redesign (approved 2026-11-23)
+Branch `feat/redesign`, cut from the merged `main` (identical tree to `feat/rewind-demo-website`). Logical commits per phase, no AI trailers, owner's author identity, no push or deploy without approval, `../rewind` read-only, repository visibility unchanged. **Each phase stops for owner review.** Preserve the Astro + Preact + TypeScript + custom CSS + SVG architecture, the capture pipeline and committed artifacts (not modified unless a genuine correctness issue is found and explained), all investigation functionality, the claims safeguards, the integrity checks, and the Vitest and Playwright tests. No unnecessary dependencies.
+
+#### R1: Foundation
+- Dark-only tokens and surfaces (§5.2); the final typography pairing (§5.3); the spacing system (§5.4); scrollbars; the rebuilt terminal (§5.5); evidence badges; the custom Shiki theme; the shared layout with three-destination navigation.
+- **Accept:** contrast tests pass; the glyph audit passes; terminal output stays byte-identical after ANSI stripping; the terminal renders at all three capture widths; responsive and keyboard checks pass; no light theme or theme toggle exists.
+
+#### R2: Information architecture
+- `/`, `/investigation/`, `/docs/`; shared navigation; existing content moved to the right pages; the documentation contents; old anchors and `?step=` links preserved.
+- **Accept:** every existing claim and section retained; no horizontal overflow from 320 to 1440 px; no-JS content accessible; navigation works at all widths.
+
+#### R3: Investigation
+- Four stages; the linked run strip; the causal graph; docked EventDetail; the phone evidence chip row; stage announcements; deep-link restoration.
+- **Accept:** all existing desktop and phone checks pass; keyboard navigation across four stages and eight steps; every seq, marker and graph node links correctly; deep links restore stage, step, seq, request and watch; DiffView behaviour unchanged.
+
+#### R4: Home
+- Hero; the static real investigation preview; three evidence-backed points; fact tiles.
+- **Accept:** the first screen at 1440 and 390 px explains Rewind and shows genuine output; no island JS on Home; the preview is generated from committed artifacts.
+
+#### R5: Verification
+- Chromium, Firefox and WebKit tests; Lighthouse; screenshots at 1440/1024/768/390/320; final accessibility and motion audits; deployment-readiness review.
+- **Accept:** browser tests pass; Lighthouse accessibility has no failures; Lighthouse performance ≥ 90 on all three pages; the investigation island ≤ 30 KB gzipped; screenshots reviewed.
+
+---
+
 ## 9. Implementation constraints
 
 ### 9.1 Data
@@ -965,7 +963,7 @@ It was regrouped into **vertical slices**, so that each milestone can be checked
 **Accessibility**
 - Keyboard-complete, with visible focus and named controls.
 - `aria-live` announcements.
-- Ink text ≥ 4.5:1 and marks ≥ 3:1 in both themes.
+- Ink text ≥ 4.5:1 (aim 7:1 for body text) and marks ≥ 3:1 on every dark surface.
 - Colour is never the only signal (greyscale and deuteranopia checks pass).
 - Reduced motion is honoured.
 - Lighthouse a11y has no failures.
@@ -974,7 +972,7 @@ It was regrouped into **vertical slices**, so that each milestone can be checked
 - No horizontal page scroll from 1440 down to 320.
 - The terminal width variant switches correctly.
 - The phone request inspector is usable, with 44 px targets.
-- Screenshots reviewed at 1440/1024/768/390/320 in both themes.
+- Screenshots reviewed at 1440/1024/768/390/320, dark only, on all three pages.
 
 **Content accuracy**
 - Every claim has a row in `docs/claims.md`.

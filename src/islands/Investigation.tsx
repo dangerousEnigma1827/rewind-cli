@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { renderSpans, type TermLine } from '../lib/terminal';
+import { watchMore } from '../lib/term-more';
 import { describeEvent, fmtMs, type EventInfo, type Label, type RunModel, type Step, type StepView, type TermBlock } from '../lib/investigation';
 import type { diffView } from '../lib/diffview';
 
@@ -236,15 +237,21 @@ function TerminalBlock({ block, runs, act, detail }: { block: TermBlock; runs: R
     try { await navigator.clipboard.writeText(block.command); setCopied('Copied'); } catch { setCopied('Copy failed'); }
     setTimeout(() => setCopied(''), 1500);
   };
+  const body = useRef<HTMLDivElement>(null), more = useRef<HTMLParagraphElement>(null);
+  useEffect(() => watchMore(body.current!, more.current!), [block]);
   return (
-    <figure class="term" aria-label={`Output of ${block.command}`}>
-      <div class="term-cmd">
-        <span class="prompt" aria-hidden="true">$</span>
-        <code translate="no">{block.command}</code>
-        <button class="copy" type="button" onClick={copy}>{copied || 'Copy'}</button>
+    <figure class="term" aria-label={`Terminal: ${block.command}`}>
+      <div class="term-bar">
+        <span class="term-dots" aria-hidden="true"><i /><i /><i /></span>
+        <span class="term-title" translate="no" aria-hidden="true">{block.command}</span>
+        <button class="copy" type="button" onClick={copy} aria-label={`Copy command: ${block.command}`}>{copied || 'Copy'}</button>
         <span class="visually-hidden" aria-live="polite">{copied}</span>
       </div>
-      {variants.map(([w, lines]) => <TermLines key={w} w={w} lines={lines} block={block} runs={runs} act={act} />)}
+      <div class="term-body" ref={body}>
+        <p class="term-prompt" translate="no"><span class="ps" aria-hidden="true">$</span><code>{block.command}</code></p>
+        {variants.map(([w, lines]) => <TermLines key={w} w={w} lines={lines} block={block} runs={runs} act={act} />)}
+        <p class="term-more" ref={more} hidden />
+      </div>
       {detail && act.pinned && block.runs.includes(act.pinned.run) && variants[0][1].some((l) => l.segs.some((x) => x.hot?.seq === act.pinned!.seq))
         && <div class="detail-inline">{detail}</div>}
     </figure>
@@ -262,7 +269,7 @@ function TermLines({ w, lines, block, runs, act }: { w: number; lines: TermLine[
   lines.forEach((l) => l.finding !== undefined && byFinding.set(l.finding, [...(byFinding.get(l.finding) ?? []),
     ...l.segs.filter((x) => x.hot).map((x) => refOf(x.hot!.run, x.hot!.seq))]));
   return (
-    <pre class={`w${w}`} translate="no" tabIndex={0}>
+    <pre class={`w${w}`} translate="no" tabIndex={0} aria-label={`Output of ${block.command}`}>
       {lines.map((l, i) => (
         <span class={`tl${l.finding !== undefined ? ' fd' : ''}`} key={i}
           onMouseEnter={l.finding !== undefined ? () => act.dispatch({ type: 'finding', refs: byFinding.get(l.finding!)! }) : undefined}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { heroExcerpt, heroFindings, tiles, victims } from '../src/lib/site';
+import { benefits, fact, heroExcerpt, heroFindings, victims } from '../src/lib/site';
+import { existsSync, readFileSync } from 'node:fs';
 import { WIDTHS } from '../src/lib/investigation';
 import { json, manifest, read, runs } from './capture';
 
@@ -25,10 +26,20 @@ describe('hero (M4)', () => {
     expect(heroFindings.length).toBe(5);
   });
 
-  it('tiles come from the artifacts', () => {
-    expect(tiles[1].big).toBe(`${runs.bad.event_count.toLocaleString('en')} → ${runs.bad.story_count}`);
-    expect(tiles[2].big).toBe(manifest.pytest.split(' ')[0]);
-    expect(tiles.length).toBeLessThanOrEqual(3);
+  it('the one fact is sourced; benefits come from the captured run', () => {
+    expect(read('source/README.md')).toContain('runs the program with the recorder preloaded');
+    expect(fact.title).toBe('Zero application code changes');
+    const v = victims(), [a, b] = benefits();
+    expect(a.text).toContain(`request #${v.crash.request}`);
+    expect(b.text).toContain(`charged $${v.overcharge.amount} instead of $${v.overcharge.order.expected}`);
+  });
+
+  it.runIf(existsSync('dist/index.html'))('the home page shows no run ids, commit hashes or capture bookkeeping', () => {
+    const html = readFileSync('dist/index.html', 'utf8');
+    for (const r of Object.values(manifest.runs) as { id: string }[]) expect(html).not.toContain(r.id);
+    expect(html).not.toContain(manifest.rewind.short);
+    expect(html).not.toMatch(/Captured from/i);
+    expect(html).not.toContain('astro-island'); // no island JS on Home
   });
 });
 

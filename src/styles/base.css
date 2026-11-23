@@ -1,79 +1,105 @@
+/* Foundation (plan §5.3–§5.7): type scale, rhythm, focus, scrollbars. Dark only. */
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
   -webkit-text-size-adjust: 100%;
-  scroll-padding-top: var(--nav-h);
+  scroll-padding-top: calc(var(--nav-h) + var(--s-4));
+  background: var(--bg);
+  scrollbar-color: var(--scroll-thumb) transparent;
+  scrollbar-width: thin;
 }
 
 body {
   margin: 0;
-  background: var(--surface);
+  background: var(--bg);
   color: var(--text);
-  font: 400 1rem/1.55 var(--font-sans);
-  -webkit-tap-highlight-color: transparent; /* replaced by the :active and focus styles below */
+  font: 400 17px/1.65 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent; /* replaced by the :active and focus styles */
 }
 
-h1, h2, h3 {
-  line-height: 1.15;
+/* ── type scale ── */
+h1, h2, h3, .display {
+  font-family: var(--font-display);
   font-weight: 600;
-  letter-spacing: -0.01em;
+  color: var(--text);
   text-wrap: balance;
 }
-h1 { font-size: clamp(2rem, 1.4rem + 3vw, 3.25rem); }
-h2 { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem); }
+.display { font-size: clamp(40px, 5.2vw + 12px, 64px); line-height: 1.04; letter-spacing: -0.03em; }
+h1 { font-size: clamp(34px, 3vw + 18px, 44px); line-height: 1.1; letter-spacing: -0.025em; }
+h2 { font-size: clamp(26px, 1.2vw + 20px, 30px); line-height: 1.2; letter-spacing: -0.02em; }
+h3 { font-size: 20px; line-height: 1.3; letter-spacing: -0.01em; }
+/* Space Grotesk has no italic: emphasis in headings is upright ultraviolet, never a synthesised oblique */
+:is(h1, h2, h3, .display) em { font-style: normal; color: var(--accent); }
+
+p { max-width: var(--prose); }
+.lede { font-size: 19px; line-height: 1.6; color: var(--text-2); }
+small, .small { font-size: 14px; line-height: 1.5; }
+.meta { font-size: 14px; color: var(--text-3); }
+/* Eyebrow labels only: mono, uppercase, tracked */
+.eyebrow {
+  margin: 0 0 var(--s-3);
+  font: 500 12px/1.4 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
 
 code, kbd, pre, samp, .mono { font-family: var(--font-mono); }
+:not(pre) > code { font-size: 0.88em; color: var(--text); }
 .num { font-variant-numeric: tabular-nums; }
 
-a { color: var(--link); text-underline-offset: 0.2em; }
+a { color: var(--link); text-underline-offset: 0.22em; text-decoration-thickness: 1px; }
 @media (hover: hover) and (pointer: fine) { a:hover { text-decoration-thickness: 2px; } }
 a, button { touch-action: manipulation; }
 
+/* ── focus: a 2px ultraviolet ring with offset, never under the sticky nav ── */
 :focus-visible {
   outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: 3px;
 }
+[id] { scroll-margin-top: calc(var(--nav-h) + var(--s-4)); }
 
-/* Every in-page target clears the sticky nav, so focus rings are never covered. */
-[id] { scroll-margin-top: calc(var(--nav-h) + 8px); }
+/* ── scrollbars: thin, transparent track, a grey thumb that brightens on hover (page and terminals) ── */
+* { scrollbar-color: var(--scroll-thumb) transparent; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius: 10px; border: 3px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background-color: var(--scroll-thumb-hover); }
+::-webkit-scrollbar-corner { background: transparent; }
+@media (hover: hover) and (pointer: fine) { * :hover { scrollbar-color: var(--scroll-thumb-hover) transparent; } }
 
-/* Labelled dotted rule, after the CLI's "findings ┈┈┈┈" (§5.1). */
-.rule-label {
-  display: flex;
-  align-items: center;
-  gap: 1ch;
-  font: 400 0.8125rem/1 var(--font-mono);
-}
-.rule-label::after {
-  content: '';
-  flex: 1;
-  border-top: 1px dotted var(--rule);
-}
+/* ── shared pieces ── */
+.wrap { max-width: var(--page-max); margin-inline: auto; padding-inline: var(--gutter); }
+.rule-label { display: flex; align-items: center; gap: 1ch; }
+.rule-label::after { content: ''; flex: 1; border-top: 1px solid var(--line); }
 
 .skip-link {
-  position: absolute;
-  left: var(--gutter);
-  top: -100px;
-  z-index: 10;
-  padding: 0.5rem 0.75rem;
-  background: var(--surface);
-  color: var(--link);
+  position: absolute; left: var(--gutter); top: -100px; z-index: 20;
+  padding: var(--s-2) var(--s-3); background: var(--surface-2); color: var(--text); border-radius: 6px;
 }
-.skip-link:focus { top: 8px; }
+.skip-link:focus { top: var(--s-2); }
 
 .visually-hidden {
-  position: absolute;
-  width: 1px; height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
 
-/* §5.6: allowed transitions are instant under reduced motion. */
+/* §5.7: allowed transitions are instant under reduced motion. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    transition-duration: 0s !important;
-    animation-duration: 0s !important;
-  }
+  *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; }
 }
+
+/* ── evidence badges (plan §4.2) ── */
+.evidence { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); max-width: none; margin: var(--s-3) 0 0; }
+.ev {
+  display: inline-flex; align-items: center; gap: 0.5ch; padding: 2px var(--s-2); border-radius: 999px;
+  font: 500 12px/1.6 var(--font-mono); color: var(--text-2); border: 1px solid var(--line);
+}
+.ev-g { font-weight: 700; }
+.ev-observed .ev-g { color: var(--text); }
+.ev-derived .ev-g { color: var(--accent); }
+.ev-inferred { font-style: italic; }
+.ev-inferred .ev-g { color: var(--text-3); }
+.ev-authored .ev-g { color: var(--text-3); }
+.ev-note { font: 400 12px/1.6 var(--font-mono); color: var(--text-3); }

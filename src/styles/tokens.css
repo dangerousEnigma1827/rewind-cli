@@ -1,6 +1,7 @@
-/* Three layers (design-system skill): primitive → semantic (per theme) → component. Plan §5.2. */
+/* Three layers (design-system skill): primitive → semantic → component. Dark only (plan §5.2): no light theme,
+   no toggle, no system-preference detection. */
 
-/* ── 1. Primitive: render.PALETTE at rewind@388fe45, exactly; plus the two approved surfaces ── */
+/* ── 1. Primitive: render.PALETTE at rewind@388fe45, exactly; plus the neutral near-black foundation ── */
 :root {
   --p-uv: #7F5AF0;
   --p-uv-hi: #8D6CFF;
@@ -14,19 +15,36 @@
   --p-r3: #7D8A2E;
   --p-r4: #5A7FC0;
 
-  --p-paper: #FAFAF9;
-  --p-paper-step: #F2F2F0;
-  --p-paper-text: #1B1B20;
-  --p-night: #101014;
-  --p-night-step: #18181D;
-  --p-night-text: #E7E7EB;
+  --p-bg: #09090B;
+  --p-surface-1: #111114;
+  --p-surface-2: #18181C;
+  --p-line: #26262C;
+  --p-line-strong: #3A3A42;
+  --p-text: #EDEDF0;
+  --p-text-2: #B4B4BD;
+  --p-text-3: #8A8A96;
+  --p-term-bg: #060608;
+  --p-scroll-thumb: #6B6B77;       /* ≥ 3:1 on every surface: discoverable */
+  --p-scroll-thumb-hover: #8A8A96;
 }
 
 /* ── 2. Semantic ── */
-/* Marks and glyphs use the CLI hex unchanged in both themes (all ≥ 3:1 on both surfaces, §5.2). */
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
 
+  --bg: var(--p-bg);
+  --surface-1: var(--p-surface-1);
+  --surface-2: var(--p-surface-2);
+  --line: var(--p-line);
+  --line-strong: var(--p-line-strong);
+  --text: var(--p-text);
+  --text-2: var(--p-text-2);
+  --text-3: var(--p-text-3);
+  --term-bg: var(--p-term-bg);
+  --accent: var(--p-uv-hi);      /* links and text accents */
+  --accent-fill: var(--p-uv);    /* focus rings and selected states */
+
+  /* Marks and glyphs: the CLI hex unchanged (≥ 3:1 on every surface, tests/ink.test.ts). */
   --mark-uv: var(--p-uv);
   --mark-mute: var(--p-mute);
   --mark-err: var(--p-err);
@@ -37,49 +55,24 @@
   --mark-r3: var(--p-r3);
   --mark-r4: var(--p-r4);
 
-  /* Light theme */
-  --surface: var(--p-paper);
-  --surface-term: var(--p-paper-step);
-  --text: var(--p-paper-text);
-  --rule: color-mix(in oklab, var(--p-mute) 45%, var(--surface));
-
-  /* Ink = coloured *text*: the mark's hue at an OKLCH lightness that is ≥ 4.5:1 on both this theme's
-     surfaces. Violet ink is the approved pair: uv.lo in light. The rest is written by `npm run ink`. */
-  --ink-uv: var(--p-uv-lo);
-  /* ink:light */
-  --ink-mute: #6D6D7A;
-  --ink-err: #CE303A;
-  --ink-ok: #0B7D4C;
-  --ink-write: #95640E;
-  --ink-r1: #0E7A87;
-  --ink-r2: #B24A6E;
-  --ink-r3: #697512;
-  --ink-r4: #496DAD;
-  /* /ink:light */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --surface: var(--p-night);
-    --surface-term: var(--p-night-step);
-    --text: var(--p-night-text);
-    /* Violet ink is the approved pair: uv.hi in dark. */
-    --ink-uv: var(--p-uv-hi);
-    /* ink:dark */
-    --ink-mute: #81818F;
-    --ink-err: #E5484D;
-    --ink-ok: #25925D;
-    --ink-write: #AB7723;
-    --ink-r1: #2E8E9B;
-    --ink-r2: #C95E81;
-    --ink-r3: #7D8A2E;
-    --ink-r4: #5B81C2;
-    /* /ink:dark */
-  }
+  /* Ink = coloured *text*: the mark's hue at an OKLCH lightness that is ≥ 4.5:1 on every dark surface.
+     Violet ink is the approved uv.hi. The rest is written by `npm run ink`. */
+  --ink-uv: var(--p-uv-hi);
+  /* ink:dark */
+  --ink-mute: #81818F;
+  --ink-err: #E5484D;
+  --ink-ok: #25925D;
+  --ink-write: #AB7723;
+  --ink-r1: #2E8E9B;
+  --ink-r2: #C95E81;
+  --ink-r3: #7D8A2E;
+  --ink-r4: #5B81C2;
+  /* /ink:dark */
 }
 
 /* ── 3. Component ── */
 :root {
+  --font-display: 'Space Grotesk', 'IBM Plex Sans', system-ui, sans-serif;
   --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
   /* 'Rewind Glyphs' (DejaVu Mono, unicode-range limited) supplies what Plex Mono lacks; see Base.astro. */
   --font-mono: 'IBM Plex Mono', 'Rewind Glyphs', ui-monospace, monospace;
@@ -87,14 +80,24 @@
   /* the one easing curve: a strong ease-out, so motion responds at once (review-animations) */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
-  --page-max: 1200px;
-  --gutter: 16px;
-  --nav-h: 48px;
+  /* 8-point spacing scale (§5.4) */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
+  --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px;
 
-  --nav-bg: var(--surface);
-  --nav-rule: var(--rule);
-  --link: var(--ink-uv);
-  --focus-ring: var(--mark-uv);
-  --term-bg: var(--surface-term);
+  --page-max: 1200px;
+  --prose: 720px;
+  --gutter: 16px;
+  --nav-h: 56px;
+
+  --nav-bg: color-mix(in oklab, var(--bg) 88%, transparent);
+  --link: var(--accent);
+  --focus-ring: var(--accent-fill);
   --term-fg: var(--text);
+  --term-bar: var(--surface-2);
+  --scroll-thumb: var(--p-scroll-thumb);
+  --scroll-thumb-hover: var(--p-scroll-thumb-hover);
 }
+/* phones: the nav has two rows (§5.7: sticky nav never hides focus) */
+@media (max-width: 767px) { :root { --nav-h: 104px; } }
+@media (min-width: 640px) { :root { --gutter: 24px; } }
+@media (min-width: 1024px) { :root { --gutter: 32px; } }
