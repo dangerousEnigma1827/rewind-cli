@@ -93,7 +93,7 @@ for (const [w, h] of [[1440, 900], [1024, 768], [390, 844]]) {
   await page.goto(ORIGIN + '/');
   const r = await page.$eval('#top', (e) => {
     const intro = e.querySelector('.intro').getBoundingClientRect(), term = e.querySelector('.exhibit .term').getBoundingClientRect();
-    return { right: term.left >= intro.right, below: term.top >= intro.bottom, visible: term.width > 200 && term.height > 200, actions: [...e.querySelectorAll('.actions a')].map((a) => a.textContent.trim()) };
+    return { right: term.left >= intro.right, below: term.top >= intro.bottom, visible: term.width > 200 && term.height > 200, actions: [...e.querySelectorAll('.actions a')].map((a) => a.textContent.replace('→', '').trim()) };
   });
   check(r.visible && (w >= 960 ? r.right : r.below), `${w}px: the hero terminal is ${w >= 960 ? 'on the right of' : 'below'} the introduction`);
   check(r.actions.join('|') === 'Open the investigation|Read the documentation|Get Started', `${w}px: hero actions ${r.actions.join(' · ')}`);
@@ -137,8 +137,8 @@ for (const [w, h] of [[1440, 900], [1024, 768], [390, 844]]) {
 for (const route of ROUTES) {
   const page = await browser.newPage();
   await page.goto(ORIGIN + route);
-  const links = await page.$$eval('link[rel~="icon"], link[rel="apple-touch-icon"]', (ls) => ls.map((l) => l.getAttribute('href')));
-  check(['/favicon.ico', '/favicon.svg', '/apple-touch-icon.png'].every((n) => links.some((l) => l.split('?')[0] === n)), `${route}: favicon links ${links.join(' ')}`);
+  const links = await page.$$eval('link[rel~="icon"]', (ls) => ls.map((l) => l.getAttribute('href')));
+  check(['/favicon.ico', '/favicon.svg', '/favicon-32x32.png', '/favicon-16x16.png'].every((n) => links.some((l) => l.split('?')[0] === n)), `${route}: favicon links ${links.join(' ')}`);
   for (const href of links) {
     const r = await page.request.get(ORIGIN + href);
     const type = r.headers()['content-type'] ?? '';
