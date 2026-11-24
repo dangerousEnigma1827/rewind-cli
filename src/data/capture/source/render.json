@@ -62,7 +62,7 @@
    "####."
   ]
  },
- "TAGLINE": "Postmortem debugging for asynchronous Node.js.",
+ "TAGLINE": "Postmortem debugging for Node.js applications.",
  "WORDMARK": [
   "█▀▀▀▄  █▀▀▀▀  █   █  ▀█▀  █▄  █  █▀▀▀▄",
   "█▀█▀   █▀▀▀   █ █ █   █   █ ▀▄█  █   █",

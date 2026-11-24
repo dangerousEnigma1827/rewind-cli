@@ -10,6 +10,7 @@ export const captures = (view: string) => Object.fromEntries(WIDTHS.map((w) => [
 
 export const sha = manifest.rewind.sha, short = manifest.rewind.short;
 export const REPO = manifest.rewind.repo;
+export const DEMO_REPO = 'https://github.com/dangerousEnigma1827/rewind-demo-test';
 export const blob = (path: string) => `${REPO}/blob/${sha}/${path}`;
 export const tree = (path: string) => `${REPO}/tree/${sha}/${path}`;
 

@@ -49,8 +49,8 @@ Everything here was verified in `../rewind` at `388fe45`: the code was read, `py
 
 ### 2.1 What it is
 A causal debugger for Node.js. You record a run once, then query it after the fact.
-- The CLI's own tagline (`rewind/render.py:TAGLINE`) is **"Postmortem debugging for asynchronous Node.js."**
-- The README and `pyproject.toml` say "Causal time-travel debugging for Node.js". **The website must not suggest replay or stepping backwards.** The README itself says Rewind "cannot step backwards".
+- The CLI's own tagline (`rewind/render.py:TAGLINE`) is **"Postmortem debugging for Node.js applications."**
+- The README and `pyproject.toml` used to say "Causal time-travel debugging for Node.js"; since Rewind `234cab6` they use the same tagline. **The website must not suggest replay or stepping backwards.** The README itself says Rewind "cannot step backwards".
 - Version `0.1.0`. Requires Python ≥ 3.12 and Node ≥ 20 (only Node 24 has been run).
 
 ### 2.2 Architecture (`docs/ARCHITECTURE.md`)

@@ -1,14 +1,14 @@
 ---
 // Footer: on the left, Rewind's block wordmark (render.WORDMARK, the CLI splash) and the attribution; on the right,
-// three compact link columns. No licence line or link: neither Rewind nor this site has a licence file. GitHub is
-// the repository, so it appears once.
+// three compact link columns. GitHub is the repository, so it appears once; the demo repository is the judge-facing
+// walkthrough.
 import render from '../data/capture/source/render.json';
-import { REPO } from '../lib/site';
+import { REPO, DEMO_REPO } from '../lib/site';
 const tones = ['uv-hi', 'uv', 'uv-lo'];
 const groups = [
   { title: 'Product', links: [['CLI Commands', '/#commands'], ['Investigation', '/investigation/'], ['Features', '/#features'], ['Install', '/#install']] },
   { title: 'Learn', links: [['Documentation', '/docs/']] },
-  { title: 'Project', links: [['GitHub ↗', REPO]] },
+  { title: 'Project', links: [['GitHub ↗', REPO], ['Demo repository ↗', DEMO_REPO]] },
 ];
 ---
 <footer>

@@ -12,7 +12,7 @@ Rewind document · **artifact** = read from the capture · **authored** = writte
 
 | claim | source | class |
 |---|---|---|
-| "Postmortem debugging for asynchronous Node.js." | `rewind/render.py:TAGLINE` → `source/render.json` | artifact (verbatim) |
+| "Postmortem debugging for Node.js applications." | `rewind/render.py:TAGLINE` → `source/render.json` | artifact (verbatim) |
 | Headline "Record a Node.js run once. Then ask *why*." | approved copy (plan §4.1) | authored |
 | "A stack trace says where an error surfaced. Rewind says which request caused it, who scheduled the failing work, and who changed the state it read." | README.md:5 — "Rewind tells you which request it belonged to, which callback scheduled the failing work and from where, what other requests were doing meanwhile, who last changed the state it read" | cited |
 | excerpt of `why bad --evidence` (findings only; the title line with the run id is left out) | `terminal/why-bad.<w>.ansi`; `tests/site.test.ts` checks every line is verbatim and in order | artifact |
